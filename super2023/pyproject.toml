@@ -1,0 +1,9 @@
+[project]
+authors = ["Mark Vasilkov (https://github.com/mvasilkov)"]
+license = "GPL-3.0-only"
+
+[tool.black]
+line-length = 119
+
+[tool.ruff]
+line-length = 119
