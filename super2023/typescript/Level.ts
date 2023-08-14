@@ -44,7 +44,7 @@ export class Level {
                 con.fillStyle = '#ffcd75'
                 con.fillRect(u, v, this.cellSize, this.cellSize)
                 break
-            case PieceType.SLEEPING_DUCK:
+            case PieceType.DUCKLING:
                 con.fillStyle = '#94b0c2'
                 con.fillRect(u, v, this.cellSize, this.cellSize)
         }

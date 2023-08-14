@@ -21,10 +21,10 @@ new Cluster([
 ])
 
 new Cluster([
-    level.board.createPiece(PieceType.SLEEPING_DUCK, 5, 11),
-    level.board.createPiece(PieceType.SLEEPING_DUCK, 4, 12),
-    level.board.createPiece(PieceType.SLEEPING_DUCK, 5, 12),
-    level.board.createPiece(PieceType.SLEEPING_DUCK, 6, 12),
+    level.board.createPiece(PieceType.DUCKLING, 5, 11),
+    level.board.createPiece(PieceType.DUCKLING, 4, 12),
+    level.board.createPiece(PieceType.DUCKLING, 5, 12),
+    level.board.createPiece(PieceType.DUCKLING, 6, 12),
 ])
 //#endregion
 

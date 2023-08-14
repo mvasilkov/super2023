@@ -9,7 +9,7 @@ import { Vec2 } from '../node_modules/natlib/Vec2.js'
 export const enum PieceType {
     VOID,
     DUCK,
-    SLEEPING_DUCK,
+    DUCKLING,
 }
 
 export class Piece<T extends PieceType = PieceType> extends Vec2 {
