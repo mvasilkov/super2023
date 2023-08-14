@@ -5,7 +5,28 @@
 'use strict'
 
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
-import { con, Settings } from './setup.js'
+import { Level } from './Level.js'
+import { Cluster, PieceType } from './Piece.js'
+import { Settings, con } from './setup.js'
+
+//#region Move to another file
+const level = new Level(16, 16)
+
+new Cluster([
+    level.board.createPiece(PieceType.DUCK, 8, 7),
+    level.board.createPiece(PieceType.DUCK, 7, 8),
+    level.board.createPiece(PieceType.DUCK, 8, 8),
+    level.board.createPiece(PieceType.DUCK, 9, 8),
+    level.board.createPiece(PieceType.DUCK, 8, 9),
+])
+
+new Cluster([
+    level.board.createPiece(PieceType.SLEEPING_DUCK, 5, 11),
+    level.board.createPiece(PieceType.SLEEPING_DUCK, 4, 12),
+    level.board.createPiece(PieceType.SLEEPING_DUCK, 5, 12),
+    level.board.createPiece(PieceType.SLEEPING_DUCK, 6, 12),
+])
+//#endregion
 
 function update() {
 }
@@ -13,6 +34,8 @@ function update() {
 function render() {
     con.fillStyle = '#1a1c2c'
     con.fillRect(0, 0, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
+
+    level.render()
 }
 
 startMainloop(update, render)
