@@ -4,6 +4,7 @@
  */
 'use strict'
 
+import { ShortBool } from '../node_modules/natlib/prelude.js'
 import type { Board } from './Board'
 import { PieceType, type Piece } from './Piece.js'
 
@@ -19,14 +20,14 @@ export function cascadeMove(board: Board, piece: Piece, Δx: number, Δy: number
         // Out of bounds, stop
         return
 
-    if (board.positions[y]![x]!.some(p => collide.has(p.type)))
+    if (board.positions[y]![x]!.some(p => collide.has(p.type) && (!p.cluster || p.cluster !== piece.cluster)))
         // Collision, stop
         return
 
     // Moving a piece bound to a cluster pushes the entire cluster,
     // except if caused by another piece in that cluster.
     const cluster: Piece[] = (piece.cluster && piece.cluster !== cause?.cluster) ?
-        piece.cluster.pieces.filter(p => p !== piece) : []
+        piece.cluster.pieces.filter(p => p !== piece) : [] // .Inline(1)
 
     // Find pieces that'll be pushed this turn.
     // Pieces sharing a cluster with the current piece can't be pushed.
@@ -35,14 +36,26 @@ export function cascadeMove(board: Board, piece: Piece, Δx: number, Δy: number
 
     const cascade: MoveTuple[] = [[piece, Δx, Δy]]
 
-    for (const other of active) {
-        const dependencies = cascadeMove(board, other, Δx, Δy, piece)
-        if (!dependencies)
-            // Can't resolve, stop
-            return
+    // Change the board state for the recursive calls.
+    board.putPiece(piece, x, y)
 
-        cascade.push(...dependencies)
+    try {
+        for (const other of active) {
+            const dependencies = cascadeMove(board, other, Δx, Δy, piece)
+            if (!dependencies)
+                // Can't resolve, stop
+                return
+
+            cascade.push(...dependencies)
+        }
+    }
+    finally {
+        // Restore the board state.
+        board.putPiece(piece, piece.x - Δx, piece.y - Δy)
     }
 
-    return cascade
+    // The direction doesn't change, so just dedup the pieces.
+    const dedup: Set<Piece> = new Set
+    return cascade.filter(([piece, ,]) =>
+        dedup.has(piece) ? ShortBool.FALSE : dedup.add(piece))
 }

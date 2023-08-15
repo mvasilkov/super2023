@@ -4,9 +4,13 @@
  */
 'use strict'
 
+import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
+import { enterPhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
 import { PieceType, type Piece } from './Piece.js'
+import { cascadeMove } from './rules.js'
 import { Settings, con } from './setup.js'
+import { DuckPhase, duckState } from './state.js'
 
 export class Level {
     readonly board: Board
@@ -23,6 +27,23 @@ export class Level {
         this.cellSize = Math.min(Settings.SCREEN_WIDTH / width, Settings.SCREEN_HEIGHT / height)
         this.boardLeft = 0.5 * (Settings.SCREEN_WIDTH - width * this.cellSize)
         this.boardTop = 0.5 * (Settings.SCREEN_HEIGHT - height * this.cellSize)
+    }
+
+    tryMove(piece: Piece, Δx: -1 | 1, Δy: 0): ExtendedBool
+    tryMove(piece: Piece, Δx: 0, Δy: -1 | 1): ExtendedBool
+
+    /** Move a piece. Return TRUE on failure. */
+    tryMove(piece: Piece, Δx: number, Δy: number): ExtendedBool {
+        const plan = cascadeMove(this.board, piece, Δx, Δy)
+        if (!plan) return ShortBool.TRUE
+        for ([piece, Δx, Δy] of plan) {
+            this.board.putPiece(piece, piece.x + Δx, piece.y + Δy)
+            this.active.add(piece)
+        }
+        enterPhase(duckState, DuckPhase.MOVING, Settings.MOVE_DURATION)
+        // .DeadCode
+        return
+        // .EndDeadCode
     }
 
     render() {
