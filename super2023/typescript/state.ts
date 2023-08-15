@@ -10,11 +10,13 @@ export const enum DuckPhase {
     INITIAL,
     INTERACTIVE,
     MOVING,
+    CONNECTING,
 }
 
 export const duckPhaseMap = [
     DuckPhase.INTERACTIVE, ,
     , ,
+    DuckPhase.INTERACTIVE, ,
     DuckPhase.INTERACTIVE, ,
 ]
 

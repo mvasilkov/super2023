@@ -47,6 +47,9 @@ export class Level {
         // .EndDeadCode
     }
 
+    connectDucklings(ducks: Piece[]) {
+    }
+
     render(t: number) {
         const tDuck = duckState.phase === DuckPhase.MOVING ?
             easeInOutQuad(interpolatePhase(duckState, Settings.MOVE_DURATION, t)) : 0

@@ -34,11 +34,27 @@ export class Board {
         return piece
     }
 
+    discardPiece(piece: Piece) {
+        let stack = this.pieces[piece.type]!
+        stack.splice(stack.indexOf(piece), 1)
+
+        stack = this.positions[piece.y]![piece.x]!
+        stack.splice(stack.indexOf(piece), 1)
+    }
+
     /** Move a piece to a position on the board. */
     putPiece(piece: Piece, x: number, y: number) {
         const stack = this.positions[piece.y]![piece.x]!
         stack.splice(stack.indexOf(piece), 1)
 
         this.positions[y]![x]!.push(piece.set(x, y))
+    }
+
+    getBorderingPieces<T extends PieceType>(piece: Readonly<Piece>, type: T): Piece<T>[] | undefined {
+        return this.pieces[type]?.filter(p => p.distanceSquared(piece) === 1)
+    }
+
+    hasBorderingPieces(piece: Readonly<Piece>, type: PieceType): boolean | undefined {
+        return this.pieces[type]?.some(p => p.distanceSquared(piece) === 1)
     }
 }

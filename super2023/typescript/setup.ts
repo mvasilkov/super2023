@@ -14,6 +14,7 @@ export const enum Settings {
     SCREEN_HEIGHT = 540, // 16:9
     // Durations (in ticks, 1 second = 50 ticks)
     MOVE_DURATION = 20,
+    CONNECT_DURATION = 20,
 }
 
 // Output

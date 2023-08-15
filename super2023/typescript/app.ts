@@ -8,7 +8,7 @@ import { Input } from '../node_modules/natlib/controls/Keyboard.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 import { updatePhase } from '../node_modules/natlib/state.js'
 import { Level } from './Level.js'
-import { Cluster, PieceType } from './Piece.js'
+import { Cluster, PieceType, type Piece } from './Piece.js'
 import { Settings, con, keyboard } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState } from './state.js'
 
@@ -65,10 +65,18 @@ function update() {
     switch (duckState.phase) {
         case DuckPhase.INTERACTIVE:
             if (oldPhase === DuckPhase.MOVING) {
+                const ducks: Piece[] = []
+
                 for (const piece of level.active) {
                     piece.oldPosition.copy(piece)
+
+                    if (piece.type === PieceType.DUCK) {
+                        ducks.push(piece)
+                    }
                 }
                 level.active.clear()
+
+                level.connectDucklings(ducks)
             }
             updateControls()
     }
