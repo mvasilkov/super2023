@@ -8,7 +8,7 @@ import { ShortBool } from '../node_modules/natlib/prelude.js'
 import type { Board } from './Board'
 import { PieceType, type Piece } from './Piece.js'
 
-const collide: Set<PieceType> = new Set([PieceType.VOID, PieceType.DUCK])
+const collide: Set<PieceType> = new Set([PieceType.VOID])
 const push: Set<PieceType> = new Set([PieceType.DUCKLING])
 
 export type MoveTuple = [piece: Piece, Δx: number, Δy: number]
@@ -36,23 +36,31 @@ export function cascadeMove(board: Board, piece: Piece, Δx: number, Δy: number
 
     const cascade: MoveTuple[] = [[piece, Δx, Δy]]
 
+    //#region Mutate the board (disabled)
+    /*
     // Change the board state for the recursive calls.
     board.putPiece(piece, x, y)
 
     try {
-        for (const other of active) {
-            const dependencies = cascadeMove(board, other, Δx, Δy, piece)
-            if (!dependencies)
-                // Can't resolve, stop
-                return
+    */
+    //#endregion
+    for (const other of active) {
+        const dependencies = cascadeMove(board, other, Δx, Δy, piece)
+        if (!dependencies)
+            // Can't resolve, stop
+            return
 
-            cascade.push(...dependencies)
-        }
+        cascade.push(...dependencies)
+    }
+    //#region Mutate the board (disabled)
+    /*
     }
     finally {
         // Restore the board state.
         board.putPiece(piece, piece.x - Δx, piece.y - Δy)
     }
+    */
+    //#endregion
 
     // The direction doesn't change, so just dedup the pieces.
     const dedup: Set<Piece> = new Set

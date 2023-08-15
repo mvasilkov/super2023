@@ -49,12 +49,12 @@ function updateControls() {
 
         if (Δx) {
             ducks.sort((a, b) => Δx * (b.x - a.x))
-            level.tryMove(ducks[0]!, Δx, 0)
+            if (!level.tryMove(ducks[0]!, Δx, 0)) return
         }
 
         if (Δy) {
             ducks.sort((a, b) => Δy * (b.y - a.y))
-            level.tryMove(ducks[0]!, 0, Δy)
+            if (!level.tryMove(ducks[0]!, 0, Δy)) return
         }
     }
 }
@@ -74,11 +74,11 @@ function update() {
     }
 }
 
-function render() {
+function render(t: number) {
     con.fillStyle = '#1a1c2c'
     con.fillRect(0, 0, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
 
-    level.render()
+    level.render(t)
 }
 
 startMainloop(update, render)

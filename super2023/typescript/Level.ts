@@ -4,8 +4,9 @@
  */
 'use strict'
 
+import { easeInOutQuad, lerp } from '../node_modules/natlib/interpolation.js'
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
-import { enterPhase } from '../node_modules/natlib/state.js'
+import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
 import { PieceType, type Piece } from './Piece.js'
 import { cascadeMove } from './rules.js'
@@ -46,17 +47,25 @@ export class Level {
         // .EndDeadCode
     }
 
-    render() {
+    render(t: number) {
+        const tDuck = duckState.phase === DuckPhase.MOVING ?
+            easeInOutQuad(interpolatePhase(duckState, Settings.MOVE_DURATION, t)) : 0
+
         for (let y = 0; y < this.board.height; ++y) {
             for (let x = 0; x < this.board.width; ++x) {
                 const pieces = this.board.positions[y]![x]! // .Inline(1)
 
-                pieces.forEach(piece => this.renderPiece(piece, x, y))
+                pieces.forEach(piece => this.renderPiece(piece, x, y, tDuck))
             }
         }
     }
 
-    renderPiece(piece: Piece, x: number, y: number) {
+    renderPiece(piece: Piece, x: number, y: number, tDuck: number) {
+        if (this.active.has(piece)) {
+            x += lerp(piece.oldPosition.x - piece.x, 0, tDuck)
+            y += lerp(piece.oldPosition.y - piece.y, 0, tDuck)
+        }
+
         const u = x * this.cellSize + this.boardLeft
         const v = y * this.cellSize + this.boardTop
 
