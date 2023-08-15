@@ -29,6 +29,13 @@ new Cluster([
     level.board.createPiece(PieceType.DUCKLING, 5, 12),
     level.board.createPiece(PieceType.DUCKLING, 6, 12),
 ])
+
+new Cluster([
+    level.board.createPiece(PieceType.DUCKLING, 3, 13),
+    level.board.createPiece(PieceType.DUCKLING, 4, 13),
+    level.board.createPiece(PieceType.DUCKLING, 5, 13),
+    level.board.createPiece(PieceType.DUCKLING, 4, 14),
+])
 //#endregion
 
 type MoveScalar = -1 | 0 | 1
@@ -64,10 +71,11 @@ function update() {
 
     switch (duckState.phase) {
         case DuckPhase.INTERACTIVE:
-            if (oldPhase === DuckPhase.MOVING) {
+            if (oldPhase === DuckPhase.MOVING || oldPhase === DuckPhase.CONNECTING) {
                 const ducks: Piece[] = []
 
                 for (const piece of level.active) {
+                    // Does nothing if oldPhase === DuckPhase.CONNECTING
                     piece.oldPosition.copy(piece)
 
                     if (piece.type === PieceType.DUCK) {
@@ -78,7 +86,10 @@ function update() {
 
                 level.connectDucklings(ducks)
             }
-            updateControls()
+            // Could've changed in connectDucklings()
+            if (duckState.phase === DuckPhase.INTERACTIVE) {
+                updateControls()
+            }
     }
 }
 

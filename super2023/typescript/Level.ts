@@ -8,7 +8,7 @@ import { easeInOutQuad, lerp } from '../node_modules/natlib/interpolation.js'
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
-import { PieceType, type Piece } from './Piece.js'
+import { Cluster, PieceType, type Piece } from './Piece.js'
 import { cascadeMove } from './rules.js'
 import { Settings, con } from './setup.js'
 import { DuckPhase, duckState } from './state.js'
@@ -48,11 +48,34 @@ export class Level {
     }
 
     connectDucklings(ducks: Piece[]) {
+        const clusters: Set<Cluster> = new Set
+
+        ducks.forEach(duck => {
+            this.board.getBorderingPieces(duck, PieceType.DUCKLING)?.forEach(duckling => {
+                clusters.add(duckling.cluster!)
+            })
+        })
+
+        if (!clusters.size) return
+
+        clusters.forEach(cluster => {
+            cluster.pieces.forEach(duckling => {
+                this.board.discardPiece(duckling)
+                const duck = this.board.createPiece(PieceType.DUCK, duckling.x, duckling.y)
+                this.active.add(duck)
+            })
+        })
+
+        new Cluster([...ducks, ...this.active])
+
+        enterPhase(duckState, DuckPhase.CONNECTING, Settings.CONNECT_DURATION)
     }
 
     render(t: number) {
         const tDuck = duckState.phase === DuckPhase.MOVING ?
-            easeInOutQuad(interpolatePhase(duckState, Settings.MOVE_DURATION, t)) : 0
+            easeInOutQuad(interpolatePhase(duckState, Settings.MOVE_DURATION, t)) :
+            duckState.phase === DuckPhase.CONNECTING ?
+                easeInOutQuad(interpolatePhase(duckState, Settings.CONNECT_DURATION, t)) : 0
 
         for (let y = 0; y < this.board.height; ++y) {
             for (let x = 0; x < this.board.width; ++x) {
@@ -64,7 +87,7 @@ export class Level {
     }
 
     renderPiece(piece: Piece, x: number, y: number, tDuck: number) {
-        if (this.active.has(piece)) {
+        if (duckState.phase === DuckPhase.MOVING && this.active.has(piece)) {
             x += lerp(piece.oldPosition.x - piece.x, 0, tDuck)
             y += lerp(piece.oldPosition.y - piece.y, 0, tDuck)
         }
@@ -76,6 +99,13 @@ export class Level {
             case PieceType.DUCK:
                 con.fillStyle = '#ffcd75'
                 con.fillRect(u, v, this.cellSize, this.cellSize)
+
+                if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
+                    const progress = this.cellSize * tDuck
+
+                    con.fillStyle = '#94b0c2'
+                    con.fillRect(u + progress, v, this.cellSize - progress, this.cellSize)
+                }
                 break
             case PieceType.DUCKLING:
                 con.fillStyle = '#94b0c2'
