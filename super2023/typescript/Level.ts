@@ -39,6 +39,13 @@ export class Level {
         if (!plan) return ShortBool.TRUE
         for ([piece, Δx, Δy] of plan) {
             this.board.putPiece(piece, piece.x + Δx, piece.y + Δy)
+            if (this.board.positions[piece.y]![piece.x]!.some(p => p.type === PieceType.CUTTER)) {
+                this.board.discardPiece(piece)
+                if (piece.cluster) {
+                    new Cluster(piece.cluster.pieces.filter(p => p !== piece))
+                }
+                continue
+            }
             this.active.add(piece)
         }
         enterPhase(duckState, DuckPhase.MOVING, Settings.MOVE_DURATION)
@@ -113,6 +120,10 @@ export class Level {
                 break
             case PieceType.BOX:
                 con.fillStyle = '#566c86'
+                con.fillRect(u, v, this.cellSize, this.cellSize)
+                break
+            case PieceType.CUTTER:
+                con.fillStyle = '#b13e53'
                 con.fillRect(u, v, this.cellSize, this.cellSize)
         }
     }

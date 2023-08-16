@@ -11,6 +11,7 @@ export const enum PieceType {
     DUCK,
     DUCKLING,
     BOX,
+    CUTTER,
 }
 
 export class Piece<T extends PieceType = PieceType> extends Vec2 {
