@@ -5,11 +5,12 @@
 'use strict'
 
 import { Input } from '../node_modules/natlib/controls/Keyboard.js'
+import { register0, register1 } from '../node_modules/natlib/runtime.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 import { updatePhase } from '../node_modules/natlib/state.js'
 import { Level } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
-import { Settings, con, keyboard } from './setup.js'
+import { Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState } from './state.js'
 
 //#region Move to another file
@@ -46,6 +47,7 @@ new Cluster([
 //#endregion
 
 type MoveScalar = -1 | 0 | 1
+type MoveScalarNonzero = -1 | 1
 
 function updateControls() {
     const left = keyboard.state[Input.LEFT] || keyboard.state[Input.LEFT_A]
@@ -55,7 +57,7 @@ function updateControls() {
 
     // Left XOR right || up XOR down
     if ((left ? !right : right) || (up ? !down : down)) {
-        let ducks = level.board.pieces[PieceType.DUCK] ?? []
+        const ducks = level.board.pieces[PieceType.DUCK] ?? []
         if (!ducks.length) return
 
         const Δx = (right ? 1 : 0) - (left ? 1 : 0) as MoveScalar
@@ -69,6 +71,38 @@ function updateControls() {
         if (Δy) {
             ducks.sort((a, b) => Δy * (b.y - a.y))
             if (!level.tryMove(ducks[0]!, 0, Δy)) return
+        }
+    }
+
+    if (pointer.held) {
+        const ducks = level.board.pieces[PieceType.DUCK] ?? []
+        if (!ducks.length) return
+
+        // Pointer position in board coordinates
+        register0.set(
+            (pointer.x - level.boardLeft) / level.cellSize - 0.5,
+            (pointer.y - level.boardTop) / level.cellSize - 0.5)
+
+        // Centroid of ducks
+        register1.set(
+            ducks.reduce((xs, duck) => xs + duck.x, 0) / ducks.length,
+            ducks.reduce((ys, duck) => ys + duck.y, 0) / ducks.length)
+
+        let Δx: number, Δy: number
+        const x = Math.abs(Δx = register0.x - register1.x)
+        const y = Math.abs(Δy = register0.y - register1.y)
+
+        if (x < y) {
+            if (y < Settings.POINTER_DEAD_ZONE) return
+            Δy = Δy < 0 ? -1 : 1
+            ducks.sort((a, b) => Δy * (b.y - a.y))
+            level.tryMove(ducks[0]!, 0, Δy as MoveScalarNonzero)
+        }
+        else {
+            if (x < Settings.POINTER_DEAD_ZONE) return
+            Δx = Δx < 0 ? -1 : 1
+            ducks.sort((a, b) => Δx * (b.x - a.x))
+            level.tryMove(ducks[0]!, Δx as MoveScalarNonzero, 0)
         }
     }
 }

@@ -15,6 +15,8 @@ export const enum Settings {
     // Durations (in ticks, 1 second = 50 ticks)
     MOVE_DURATION = 20,
     CONNECT_DURATION = 20,
+    // Pointer controls dead zone in tiles
+    POINTER_DEAD_ZONE = 0.5,
 }
 
 // Output
