@@ -16,6 +16,13 @@ import { DuckPhase, duckPhaseMap, duckState } from './state.js'
 const level = new Level(16, 16)
 
 new Cluster([
+    level.board.createPiece(PieceType.BOX, 3, 3),
+    level.board.createPiece(PieceType.BOX, 4, 3),
+    level.board.createPiece(PieceType.BOX, 3, 4),
+    level.board.createPiece(PieceType.BOX, 4, 4),
+])
+
+new Cluster([
     level.board.createPiece(PieceType.DUCK, 8, 7),
     level.board.createPiece(PieceType.DUCK, 7, 8),
     level.board.createPiece(PieceType.DUCK, 8, 8),

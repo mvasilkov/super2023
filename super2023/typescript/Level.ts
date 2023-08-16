@@ -66,7 +66,7 @@ export class Level {
             })
         })
 
-        new Cluster([...ducks, ...this.active])
+        new Cluster(this.board.pieces[PieceType.DUCK]!)
 
         enterPhase(duckState, DuckPhase.CONNECTING, Settings.CONNECT_DURATION)
     }
@@ -109,6 +109,10 @@ export class Level {
                 break
             case PieceType.DUCKLING:
                 con.fillStyle = '#94b0c2'
+                con.fillRect(u, v, this.cellSize, this.cellSize)
+                break
+            case PieceType.BOX:
+                con.fillStyle = '#566c86'
                 con.fillRect(u, v, this.cellSize, this.cellSize)
         }
     }

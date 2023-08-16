@@ -9,7 +9,7 @@ import type { Board } from './Board'
 import { PieceType, type Piece } from './Piece.js'
 
 const collide: Set<PieceType> = new Set([PieceType.VOID])
-const push: Set<PieceType> = new Set([PieceType.DUCKLING])
+const push: Set<PieceType> = new Set([PieceType.DUCKLING, PieceType.BOX])
 
 export type MoveTuple = [piece: Piece, Δx: number, Δy: number]
 
