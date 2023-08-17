@@ -23,7 +23,9 @@ new Cluster([
     level.board.createPiece(PieceType.BOX, 4, 4),
 ])
 
+level.board.createPiece(PieceType.CUTTER, 5, 6)
 level.board.createPiece(PieceType.CUTTER, 6, 6)
+level.board.createPiece(PieceType.CUTTER, 7, 6)
 
 new Cluster([
     level.board.createPiece(PieceType.DUCK, 8, 7),

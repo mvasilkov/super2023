@@ -40,15 +40,21 @@ export class Level {
         for ([piece, Δx, Δy] of plan) {
             this.board.putPiece(piece, piece.x + Δx, piece.y + Δy)
             if (this.board.positions[piece.y]![piece.x]!.some(p => p.type === PieceType.CUTTER)) {
-                if (this.board.pieces[PieceType.DUCK]?.length === 1) {
-                    // Don't kill the last duck
-                    this.board.putPiece(piece, piece.x - Δx, piece.y - Δy)
-                    return ShortBool.TRUE
-                }
                 piece.killed = ShortBool.TRUE
             }
             this.active.add(piece)
         }
+
+        if (!this.board.pieces[PieceType.DUCK]?.filter(d => !d.killed).length) {
+            // Don't kill the last duck: undo the changes.
+            for ([piece, Δx, Δy] of plan) {
+                this.board.putPiece(piece, piece.x - Δx, piece.y - Δy)
+                piece.killed = ShortBool.FALSE
+                this.active.delete(piece)
+            }
+            return ShortBool.TRUE
+        }
+
         enterPhase(duckState, DuckPhase.MOVING, Settings.MOVE_DURATION)
         // .DeadCode
         return

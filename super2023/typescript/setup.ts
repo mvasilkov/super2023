@@ -31,6 +31,8 @@ export const canvas = new CanvasHandle(document.querySelector('#c'),
 
 export const { con } = canvas
 
+con.lineWidth = 1.5
+
 // Input
 
 export const keyboard = new Keyboard
