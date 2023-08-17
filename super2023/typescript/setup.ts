@@ -13,7 +13,7 @@ export const enum Settings {
     SCREEN_WIDTH = 960,
     SCREEN_HEIGHT = 540, // 16:9
     // Durations (in ticks, 1 second = 50 ticks)
-    MOVE_DURATION = 20,
+    MOVE_DURATION = 10,
     CONNECT_DURATION = 20,
     // Pointer controls dead zone in tiles
     POINTER_DEAD_ZONE = 0.5,

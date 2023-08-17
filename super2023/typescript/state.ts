@@ -5,6 +5,7 @@
 'use strict'
 
 import type { IState } from '../node_modules/natlib/state'
+import type { Piece } from './Piece'
 
 export const enum DuckPhase {
     INITIAL,
@@ -21,10 +22,14 @@ export const duckPhaseMap = [
 ]
 
 export interface IDuckState extends IState {
+    ducksOnGoal: Set<Piece>
 }
 
 export const duckState: IDuckState = {
+    // IState
     phase: DuckPhase.INITIAL,
     phaseTtl: 0,
     oldTtl: 0,
+    // IDuckState
+    ducksOnGoal: new Set,
 }

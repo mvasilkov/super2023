@@ -46,6 +46,11 @@ new Cluster([
     level.board.createPiece(PieceType.DUCKLING, 5, 13),
     level.board.createPiece(PieceType.DUCKLING, 4, 14),
 ])
+
+level.board.createPiece(PieceType.GOAL, 13, 14)
+level.board.createPiece(PieceType.GOAL, 14, 14)
+level.board.createPiece(PieceType.GOAL, 15, 14)
+level.board.createPiece(PieceType.GOAL, 14, 15)
 //#endregion
 
 type MoveScalar = -1 | 0 | 1
@@ -127,6 +132,7 @@ function update() {
                 }
                 level.active.clear()
 
+                level.updateDucksOnGoal()
                 level.connectDucklings(ducks)
             }
             // Could've changed in connectDucklings()

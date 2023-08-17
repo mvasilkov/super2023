@@ -54,6 +54,15 @@ export class Level {
         // .EndDeadCode
     }
 
+    updateDucksOnGoal() {
+        this.board.pieces[PieceType.DUCK]?.forEach(duck => {
+            const onGoal = this.board.positions[duck.y]![duck.x]!.some(p => p.type === PieceType.GOAL)
+
+            if (onGoal) duckState.ducksOnGoal.add(duck)
+            else duckState.ducksOnGoal.delete(duck)
+        })
+    }
+
     connectDucklings(ducks: Piece[]) {
         const clusters: Set<Cluster> = new Set
 
@@ -104,7 +113,7 @@ export class Level {
 
         switch (piece.type) {
             case PieceType.DUCK:
-                con.fillStyle = '#ffcd75'
+                con.fillStyle = duckState.ducksOnGoal.has(piece) ? '#a7f070' : '#ffcd75'
                 con.fillRect(u, v, this.cellSize, this.cellSize)
 
                 if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
@@ -125,6 +134,12 @@ export class Level {
             case PieceType.CUTTER:
                 con.fillStyle = '#b13e53'
                 con.fillRect(u, v, this.cellSize, this.cellSize)
+                break
+            case PieceType.GOAL:
+                con.strokeStyle = '#a7f070'
+                con.beginPath()
+                con.arc(u + 0.5 * this.cellSize, v + 0.5 * this.cellSize, 0.4 * this.cellSize, 0, 2 * Math.PI)
+                con.stroke()
         }
     }
 }
