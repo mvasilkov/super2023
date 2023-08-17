@@ -123,6 +123,14 @@ function update() {
                 const ducks: Piece[] = []
 
                 for (const piece of level.active) {
+                    if (piece.killed) {
+                        level.board.discardPiece(piece)
+                        if (piece.cluster) {
+                            new Cluster(piece.cluster.pieces.filter(p => p !== piece))
+                        }
+                        continue
+                    }
+
                     // Does nothing if oldPhase === DuckPhase.CONNECTING
                     piece.oldPosition.copy(piece)
 

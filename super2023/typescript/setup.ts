@@ -17,6 +17,8 @@ export const enum Settings {
     CONNECT_DURATION = 20,
     // Pointer controls dead zone in tiles
     POINTER_DEAD_ZONE = 0.5,
+    // Linear hatching
+    HATCHING_AMOUNT = 3,
 }
 
 // Output

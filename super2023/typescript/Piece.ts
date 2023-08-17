@@ -5,6 +5,7 @@
 'use strict'
 
 import { Vec2 } from '../node_modules/natlib/Vec2.js'
+import type { ExtendedBool } from '../node_modules/natlib/prelude'
 
 export const enum PieceType {
     VOID,
@@ -19,6 +20,7 @@ export class Piece<T extends PieceType = PieceType> extends Vec2 {
     readonly type: PieceType
     readonly oldPosition: Vec2
     cluster?: Cluster<T>
+    killed?: ExtendedBool
 
     constructor(type: T, x: number, y: number) {
         super(x, y)

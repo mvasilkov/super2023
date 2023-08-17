@@ -40,11 +40,7 @@ export class Level {
         for ([piece, Δx, Δy] of plan) {
             this.board.putPiece(piece, piece.x + Δx, piece.y + Δy)
             if (this.board.positions[piece.y]![piece.x]!.some(p => p.type === PieceType.CUTTER)) {
-                this.board.discardPiece(piece)
-                if (piece.cluster) {
-                    new Cluster(piece.cluster.pieces.filter(p => p !== piece))
-                }
-                continue
+                piece.killed = ShortBool.TRUE
             }
             this.active.add(piece)
         }
@@ -108,37 +104,54 @@ export class Level {
             y += lerp(piece.oldPosition.y - piece.y, 0, tDuck)
         }
 
-        const u = x * this.cellSize + this.boardLeft
-        const v = y * this.cellSize + this.boardTop
+        let size = this.cellSize
+        x = x * size + this.boardLeft
+        y = y * size + this.boardTop
+
+        if (piece.killed) {
+            size = lerp(size, 0, tDuck)
+            const padding = 0.5 * (this.cellSize - size)
+            x += padding
+            y += padding
+        }
 
         switch (piece.type) {
             case PieceType.DUCK:
                 con.fillStyle = duckState.ducksOnGoal.has(piece) ? '#a7f070' : '#ffcd75'
-                con.fillRect(u, v, this.cellSize, this.cellSize)
+                con.fillRect(x, y, size, size)
 
                 if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
-                    const progress = this.cellSize * tDuck
+                    const progress = size * tDuck
 
                     con.fillStyle = '#94b0c2'
-                    con.fillRect(u + progress, v, this.cellSize - progress, this.cellSize)
+                    con.fillRect(x + progress, y, size - progress, size)
                 }
                 break
             case PieceType.DUCKLING:
                 con.fillStyle = '#94b0c2'
-                con.fillRect(u, v, this.cellSize, this.cellSize)
+                con.fillRect(x, y, size, size)
                 break
             case PieceType.BOX:
                 con.fillStyle = '#566c86'
-                con.fillRect(u, v, this.cellSize, this.cellSize)
+                con.fillRect(x, y, size, size)
                 break
             case PieceType.CUTTER:
                 con.fillStyle = '#b13e53'
-                con.fillRect(u, v, this.cellSize, this.cellSize)
+                con.fillRect(x, y, size, size)
                 break
             case PieceType.GOAL:
-                con.strokeStyle = '#a7f070'
+                const step = size / Settings.HATCHING_AMOUNT
+
                 con.beginPath()
-                con.arc(u + 0.5 * this.cellSize, v + 0.5 * this.cellSize, 0.4 * this.cellSize, 0, 2 * Math.PI)
+                for (let n = 0; n < Settings.HATCHING_AMOUNT; ++n) {
+                    const sn = step * (n + 0.5)
+
+                    con.moveTo(x, y + sn)
+                    con.lineTo(x + sn, y)
+                    con.moveTo(x + size, y + size - sn)
+                    con.lineTo(x + size - sn, y + size)
+                }
+                con.strokeStyle = '#a7f070'
                 con.stroke()
         }
     }
