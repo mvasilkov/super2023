@@ -11,7 +11,7 @@ import { updatePhase } from '../node_modules/natlib/state.js'
 import { Level } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { Settings, con, keyboard, pointer } from './setup.js'
-import { DuckPhase, duckPhaseMap, duckState } from './state.js'
+import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
 //#region Move to another file
 const level = new Level(16, 16)
@@ -148,6 +148,8 @@ function update() {
                 updateControls()
             }
     }
+
+    updatePhase(oscillatorState, oscillatorPhaseMap)
 }
 
 function render(t: number) {

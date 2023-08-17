@@ -10,8 +10,8 @@ import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { cascadeMove } from './rules.js'
-import { Settings, con } from './setup.js'
-import { DuckPhase, duckState } from './state.js'
+import { Settings, con, wrapAround } from './setup.js'
+import { DuckPhase, duckState, oscillatorState } from './state.js'
 
 export class Level {
     readonly board: Board
@@ -40,6 +40,11 @@ export class Level {
         for ([piece, Δx, Δy] of plan) {
             this.board.putPiece(piece, piece.x + Δx, piece.y + Δy)
             if (this.board.positions[piece.y]![piece.x]!.some(p => p.type === PieceType.CUTTER)) {
+                if (this.board.pieces[PieceType.DUCK]?.length === 1) {
+                    // Don't kill the last duck
+                    this.board.putPiece(piece, piece.x - Δx, piece.y - Δy)
+                    return ShortBool.TRUE
+                }
                 piece.killed = ShortBool.TRUE
             }
             this.active.add(piece)
@@ -89,16 +94,19 @@ export class Level {
             duckState.phase === DuckPhase.CONNECTING ?
                 easeInOutQuad(interpolatePhase(duckState, Settings.CONNECT_DURATION, t)) : 0
 
+        const tOscillator = interpolatePhase(oscillatorState, Settings.OSCILLATOR_DURATION, t)
+
         for (let y = 0; y < this.board.height; ++y) {
             for (let x = 0; x < this.board.width; ++x) {
                 const pieces = this.board.positions[y]![x]! // .Inline(1)
+                const tVibe = wrapAround(tOscillator + Settings.OSCILLATOR_INCREMENT * (x - 0.85 * y))
 
-                pieces.forEach(piece => this.renderPiece(piece, x, y, tDuck))
+                pieces.forEach(piece => this.renderPiece(piece, x, y, tDuck, tVibe))
             }
         }
     }
 
-    renderPiece(piece: Piece, x: number, y: number, tDuck: number) {
+    renderPiece(piece: Piece, x: number, y: number, tDuck: number, tVibe: number) {
         if (duckState.phase === DuckPhase.MOVING && this.active.has(piece)) {
             x += lerp(piece.oldPosition.x - piece.x, 0, tDuck)
             y += lerp(piece.oldPosition.y - piece.y, 0, tDuck)
@@ -136,8 +144,24 @@ export class Level {
                 con.fillRect(x, y, size, size)
                 break
             case PieceType.CUTTER:
-                con.fillStyle = '#b13e53'
-                con.fillRect(x, y, size, size)
+                const x0 = x + 0.5 * size
+                const y0 = y + 0.5 * size
+                const r = 0.25 * size * (1 - tVibe)
+                const r2 = r + 0.25 * size
+                const r3 = r + 0.5 * size
+                const opacity = Math.floor(lerp(0, 255, tVibe))
+
+                con.beginPath()
+                con.arc(x0, y0, r, 0, 2 * Math.PI)
+                con.moveTo(x0 + r2, y0)
+                con.arc(x0, y0, r2, 0, 2 * Math.PI)
+                con.strokeStyle = '#ea323c'
+                con.stroke()
+
+                con.beginPath()
+                con.arc(x0, y0, r3, 0, 2 * Math.PI)
+                con.strokeStyle = '#ea323c' + opacity.toString(16).padStart(2, '0')
+                con.stroke()
                 break
             case PieceType.GOAL:
                 const step = size / Settings.HATCHING_AMOUNT

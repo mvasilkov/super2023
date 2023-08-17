@@ -6,6 +6,9 @@
 
 import type { IState } from '../node_modules/natlib/state'
 import type { Piece } from './Piece'
+import { Settings } from './setup.js'
+
+// Duck
 
 export const enum DuckPhase {
     INITIAL,
@@ -32,4 +35,25 @@ export const duckState: IDuckState = {
     oldTtl: 0,
     // IDuckState
     ducksOnGoal: new Set,
+}
+
+// Oscillator
+
+export const enum OscillatorPhase {
+    INITIAL,
+    CYCLE,
+}
+
+export const oscillatorPhaseMap = [
+    OscillatorPhase.CYCLE, Settings.OSCILLATOR_DURATION,
+    OscillatorPhase.CYCLE, Settings.OSCILLATOR_DURATION,
+]
+
+export interface IOscillatorState extends IState {
+}
+
+export const oscillatorState: IOscillatorState = {
+    phase: OscillatorPhase.INITIAL,
+    phaseTtl: 0,
+    oldTtl: 0,
 }

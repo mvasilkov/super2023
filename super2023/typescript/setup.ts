@@ -15,6 +15,9 @@ export const enum Settings {
     // Durations (in ticks, 1 second = 50 ticks)
     MOVE_DURATION = 10,
     CONNECT_DURATION = 20,
+    OSCILLATOR_DURATION = 24,
+    // Oscillator
+    OSCILLATOR_INCREMENT = 0.1,
     // Pointer controls dead zone in tiles
     POINTER_DEAD_ZONE = 0.5,
     // Linear hatching
@@ -35,3 +38,13 @@ keyboard.addEventListeners(document)
 
 export const pointer = new Pointer(canvas.canvas)
 pointer.addEventListeners(document)
+
+// Helper functions
+
+export function oscillate(t: number): number {
+    return t < 0.5 ? 2 * t : 2 - 2 * t
+}
+
+export function wrapAround(t: number): number {
+    return t - Math.floor(t)
+}
