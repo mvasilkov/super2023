@@ -129,25 +129,40 @@ export class Level {
             y += padding
         }
 
+        const bh = Settings.BLOCK_HEIGHT * size
+        const bh1 = (1 - Settings.BLOCK_HEIGHT) * size
+
         switch (piece.type) {
             case PieceType.DUCK:
+                con.fillStyle = duckState.ducksOnGoal.has(piece) ? '#38b764' : '#ef7d57'
+                con.fillRect(x, y + bh1, size, bh)
+
                 con.fillStyle = duckState.ducksOnGoal.has(piece) ? '#a7f070' : '#ffcd75'
-                con.fillRect(x, y, size, size)
+                con.fillRect(x, y - bh, size, size)
 
                 if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
                     const progress = size * tDuck
 
+                    con.fillStyle = '#566c86'
+                    con.fillRect(x + progress, y + bh1, size - progress, bh)
+
                     con.fillStyle = '#94b0c2'
-                    con.fillRect(x + progress, y, size - progress, size)
+                    con.fillRect(x + progress, y - bh, size - progress, size)
                 }
                 break
             case PieceType.DUCKLING:
+                con.fillStyle = '#566c86'
+                con.fillRect(x, y + bh1, size, bh)
+
                 con.fillStyle = '#94b0c2'
-                con.fillRect(x, y, size, size)
+                con.fillRect(x, y - bh, size, size)
                 break
             case PieceType.BOX:
+                con.fillStyle = '#333c57'
+                con.fillRect(x, y + bh1, size, bh)
+
                 con.fillStyle = '#566c86'
-                con.fillRect(x, y, size, size)
+                con.fillRect(x, y - bh, size, size)
                 break
             case PieceType.CUTTER:
                 const x0 = x + 0.5 * size
