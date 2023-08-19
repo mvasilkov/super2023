@@ -142,7 +142,7 @@ function update() {
                 }
                 level.active.clear()
 
-                level.updateDucksOnGoal()
+                level.updateDucksOnGoal(duckState.ducksOnGoal)
                 level.connectDucklings(ducks)
             }
             // Could've changed in connectDucklings()

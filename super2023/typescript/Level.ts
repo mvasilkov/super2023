@@ -10,7 +10,7 @@ import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { cascadeMove } from './rules.js'
-import { Settings, con, wrapAround } from './setup.js'
+import { Settings, con, linearToSrgb, srgbToLinear, wrapAround } from './setup.js'
 import { DuckPhase, duckState, oscillatorState } from './state.js'
 
 export class Level {
@@ -55,18 +55,19 @@ export class Level {
             return ShortBool.TRUE
         }
 
+        this.updateDucksOnGoal(duckState.ducksOnGoalNext)
         enterPhase(duckState, DuckPhase.MOVING, Settings.MOVE_DURATION)
         // .DeadCode
         return
         // .EndDeadCode
     }
 
-    updateDucksOnGoal() {
+    updateDucksOnGoal(collection: Set<Piece>) {
         this.board.pieces[PieceType.DUCK]?.forEach(duck => {
             const onGoal = this.board.positions[duck.y]![duck.x]!.some(p => p.type === PieceType.GOAL)
 
-            if (onGoal) duckState.ducksOnGoal.add(duck)
-            else duckState.ducksOnGoal.delete(duck)
+            if (onGoal) collection.add(duck)
+            else collection.delete(duck)
         })
     }
 
@@ -102,17 +103,35 @@ export class Level {
 
         const tOscillator = interpolatePhase(oscillatorState, Settings.OSCILLATOR_DURATION, t)
 
+        const colorDuckEntering = '#' +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0xa7 / 255), srgbToLinear(0xff / 255), tDuck)) * 255).toString(16) +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0xf0 / 255), srgbToLinear(0xcd / 255), tDuck)) * 255).toString(16) +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0x70 / 255), srgbToLinear(0x75 / 255), tDuck)) * 255).toString(16)
+        const secondaryColorDuckEntering = '#' +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0x38 / 255), srgbToLinear(0xef / 255), tDuck)) * 255).toString(16) +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0xb7 / 255), srgbToLinear(0x7d / 255), tDuck)) * 255).toString(16) +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0x64 / 255), srgbToLinear(0x57 / 255), tDuck)) * 255).toString(16)
+
+        const colorDuckLeaving = '#' +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0xff / 255), srgbToLinear(0xa7 / 255), tDuck)) * 255).toString(16) +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0xcd / 255), srgbToLinear(0xf0 / 255), tDuck)) * 255).toString(16) +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0x75 / 255), srgbToLinear(0x70 / 255), tDuck)) * 255).toString(16)
+        const secondaryColorDuckLeaving = '#' +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0xef / 255), srgbToLinear(0x38 / 255), tDuck)) * 255).toString(16) +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0x7d / 255), srgbToLinear(0xb7 / 255), tDuck)) * 255).toString(16) +
+            Math.floor(linearToSrgb(lerp(srgbToLinear(0x57 / 255), srgbToLinear(0x64 / 255), tDuck)) * 255).toString(16)
+
         for (let y = 0; y < this.board.height; ++y) {
             for (let x = 0; x < this.board.width; ++x) {
                 const pieces = this.board.positions[y]![x]! // .Inline(1)
                 const tVibe = wrapAround(tOscillator + Settings.OSCILLATOR_INCREMENT * (x - 0.85 * y))
 
-                pieces.forEach(piece => this.renderPiece(piece, x, y, tDuck, tVibe))
+                pieces.forEach(piece => this.renderPiece(piece, x, y, tDuck, tVibe, colorDuckEntering, secondaryColorDuckEntering, colorDuckLeaving, secondaryColorDuckLeaving))
             }
         }
     }
 
-    renderPiece(piece: Piece, x: number, y: number, tDuck: number, tVibe: number) {
+    renderPiece(piece: Piece, x: number, y: number, tDuck: number, tVibe: number, colorDuckEntering: string, secondaryColorDuckEntering: string, colorDuckLeaving: string, secondaryColorDuckLeaving: string) {
         if (duckState.phase === DuckPhase.MOVING && this.active.has(piece)) {
             x += lerp(piece.oldPosition.x - piece.x, 0, tDuck)
             y += lerp(piece.oldPosition.y - piece.y, 0, tDuck)
@@ -130,21 +149,25 @@ export class Level {
         }
 
         const bh = Settings.BLOCK_HEIGHT * size
-        const bh1 = (1 - Settings.BLOCK_HEIGHT) * size
+
+        const duckColors = ['#ffcd75', colorDuckEntering, colorDuckLeaving, '#a7f070']
+        const duckSecondaryColors = ['#ef7d57', secondaryColorDuckEntering, secondaryColorDuckLeaving, '#38b764']
 
         switch (piece.type) {
             case PieceType.DUCK:
-                con.fillStyle = duckState.ducksOnGoal.has(piece) ? '#38b764' : '#ef7d57'
-                con.fillRect(x, y + bh1, size, bh)
+                const colorIndex = (duckState.ducksOnGoal.has(piece) ? 1 : 0) + (duckState.ducksOnGoalNext.has(piece) ? 2 : 0)
 
-                con.fillStyle = duckState.ducksOnGoal.has(piece) ? '#a7f070' : '#ffcd75'
+                con.fillStyle = duckSecondaryColors[colorIndex]!
+                con.fillRect(x, y - bh + size, size, bh)
+
+                con.fillStyle = duckColors[colorIndex]!
                 con.fillRect(x, y - bh, size, size)
 
                 if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
                     const progress = size * tDuck
 
                     con.fillStyle = '#566c86'
-                    con.fillRect(x + progress, y + bh1, size - progress, bh)
+                    con.fillRect(x + progress, y - bh + size, size - progress, bh)
 
                     con.fillStyle = '#94b0c2'
                     con.fillRect(x + progress, y - bh, size - progress, size)
@@ -152,14 +175,14 @@ export class Level {
                 break
             case PieceType.DUCKLING:
                 con.fillStyle = '#566c86'
-                con.fillRect(x, y + bh1, size, bh)
+                con.fillRect(x, y - bh + size, size, bh)
 
                 con.fillStyle = '#94b0c2'
                 con.fillRect(x, y - bh, size, size)
                 break
             case PieceType.BOX:
                 con.fillStyle = '#333c57'
-                con.fillRect(x, y + bh1, size, bh)
+                con.fillRect(x, y - bh + size, size, bh)
 
                 con.fillStyle = '#566c86'
                 con.fillRect(x, y - bh, size, size)

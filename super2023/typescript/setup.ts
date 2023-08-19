@@ -52,3 +52,11 @@ export function oscillate(t: number): number {
 export function wrapAround(t: number): number {
     return t - Math.floor(t)
 }
+
+export function srgbToLinear(n: number): number {
+    return n <= 0.0404482362771082 ? n / 12.92 : Math.pow((n + 0.055) / 1.055, 2.4)
+}
+
+export function linearToSrgb(n: number): number {
+    return n <= 0.00313066844250063 ? n * 12.92 : 1.055 * Math.pow(n, 1 / 2.4) - 0.055
+}

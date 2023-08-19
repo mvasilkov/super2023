@@ -26,6 +26,7 @@ export const duckPhaseMap = [
 
 export interface IDuckState extends IState {
     ducksOnGoal: Set<Piece>
+    ducksOnGoalNext: Set<Piece>
 }
 
 export const duckState: IDuckState = {
@@ -35,6 +36,7 @@ export const duckState: IDuckState = {
     oldTtl: 0,
     // IDuckState
     ducksOnGoal: new Set,
+    ducksOnGoalNext: new Set,
 }
 
 // Oscillator
