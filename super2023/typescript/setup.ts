@@ -33,6 +33,7 @@ export const enum Settings {
 export const enum Palette {
     NOTHING = '#000',
     BOARD = '#1a1c2c',
+    GRID = '#333c57',
     CUTTER = '#ea323c',
     GOAL = '#a7f070',
     VOID = '#566c86',

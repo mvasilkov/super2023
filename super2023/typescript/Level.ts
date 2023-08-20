@@ -127,6 +127,19 @@ export class Level {
         con.fillStyle = Palette.BOARD
         con.fillRect(this.boardLeft, this.boardTop, this.board.width * this.cellSize, this.board.height * this.cellSize)
 
+        // Paint the grid
+        con.beginPath()
+        const size = Math.max(this.board.width, this.board.height)
+        for (let n = 1; n < size; ++n) {
+            con.moveTo(this.boardLeft + n * this.cellSize, this.boardTop)
+            con.lineTo(this.boardLeft + n * this.cellSize, this.boardTop + this.board.height * this.cellSize)
+
+            con.moveTo(this.boardLeft, this.boardTop + n * this.cellSize)
+            con.lineTo(this.boardLeft + this.board.width * this.cellSize, this.boardTop + n * this.cellSize)
+        }
+        con.strokeStyle = Palette.GRID
+        con.stroke()
+
         for (let y = 0; y < this.board.height; ++y) {
             for (let x = 0; x < this.board.width; ++x) {
                 const pieces = this.board.positions[y]![x]! // .Inline(1)
