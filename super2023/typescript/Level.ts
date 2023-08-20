@@ -10,7 +10,7 @@ import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { cascadeMove } from './rules.js'
-import { Settings, con, linearToSrgb, srgbToLinear, wrapAround } from './setup.js'
+import { COLOR_DUCK_2_B, COLOR_DUCK_2_G, COLOR_DUCK_2_R, COLOR_DUCK_B, COLOR_DUCK_G, COLOR_DUCK_R, COLOR_GOAL_2_B, COLOR_GOAL_2_G, COLOR_GOAL_2_R, COLOR_GOAL_B, COLOR_GOAL_G, COLOR_GOAL_R, Palette, Settings, con, linearToSrgb, wrapAround } from './setup.js'
 import { DuckPhase, duckState, oscillatorState } from './state.js'
 
 export class Level {
@@ -104,34 +104,40 @@ export class Level {
         const tOscillator = interpolatePhase(oscillatorState, Settings.OSCILLATOR_DURATION, t)
 
         const colorDuckEntering = '#' +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0xa7 / 255), srgbToLinear(0xff / 255), tDuck)) * 255).toString(16) +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0xf0 / 255), srgbToLinear(0xcd / 255), tDuck)) * 255).toString(16) +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0x70 / 255), srgbToLinear(0x75 / 255), tDuck)) * 255).toString(16)
+            Math.floor(linearToSrgb(lerp(COLOR_GOAL_R, COLOR_DUCK_R, tDuck))).toString(16) +
+            Math.floor(linearToSrgb(lerp(COLOR_GOAL_G, COLOR_DUCK_G, tDuck))).toString(16) +
+            Math.floor(linearToSrgb(lerp(COLOR_GOAL_B, COLOR_DUCK_B, tDuck))).toString(16)
         const secondaryColorDuckEntering = '#' +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0x38 / 255), srgbToLinear(0xef / 255), tDuck)) * 255).toString(16) +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0xb7 / 255), srgbToLinear(0x7d / 255), tDuck)) * 255).toString(16) +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0x64 / 255), srgbToLinear(0x57 / 255), tDuck)) * 255).toString(16)
+            Math.floor(linearToSrgb(lerp(COLOR_GOAL_2_R, COLOR_DUCK_2_R, tDuck))).toString(16) +
+            Math.floor(linearToSrgb(lerp(COLOR_GOAL_2_G, COLOR_DUCK_2_G, tDuck))).toString(16) +
+            Math.floor(linearToSrgb(lerp(COLOR_GOAL_2_B, COLOR_DUCK_2_B, tDuck))).toString(16)
 
         const colorDuckLeaving = '#' +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0xff / 255), srgbToLinear(0xa7 / 255), tDuck)) * 255).toString(16) +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0xcd / 255), srgbToLinear(0xf0 / 255), tDuck)) * 255).toString(16) +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0x75 / 255), srgbToLinear(0x70 / 255), tDuck)) * 255).toString(16)
+            Math.floor(linearToSrgb(lerp(COLOR_DUCK_R, COLOR_GOAL_R, tDuck))).toString(16) +
+            Math.floor(linearToSrgb(lerp(COLOR_DUCK_G, COLOR_GOAL_G, tDuck))).toString(16) +
+            Math.floor(linearToSrgb(lerp(COLOR_DUCK_B, COLOR_GOAL_B, tDuck))).toString(16)
         const secondaryColorDuckLeaving = '#' +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0xef / 255), srgbToLinear(0x38 / 255), tDuck)) * 255).toString(16) +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0x7d / 255), srgbToLinear(0xb7 / 255), tDuck)) * 255).toString(16) +
-            Math.floor(linearToSrgb(lerp(srgbToLinear(0x57 / 255), srgbToLinear(0x64 / 255), tDuck)) * 255).toString(16)
+            Math.floor(linearToSrgb(lerp(COLOR_DUCK_2_R, COLOR_GOAL_2_R, tDuck))).toString(16) +
+            Math.floor(linearToSrgb(lerp(COLOR_DUCK_2_G, COLOR_GOAL_2_G, tDuck))).toString(16) +
+            Math.floor(linearToSrgb(lerp(COLOR_DUCK_2_B, COLOR_GOAL_2_B, tDuck))).toString(16)
+
+        const duckColors = [Palette.DUCK, colorDuckEntering, colorDuckLeaving, Palette.DUCK_ON_GOAL]
+        const duckSecondaryColors = [Palette.DUCK_2, secondaryColorDuckEntering, secondaryColorDuckLeaving, Palette.DUCK_ON_GOAL_2]
+
+        con.fillStyle = Palette.BOARD
+        con.fillRect(this.boardLeft, this.boardTop, this.board.width * this.cellSize, this.board.height * this.cellSize)
 
         for (let y = 0; y < this.board.height; ++y) {
             for (let x = 0; x < this.board.width; ++x) {
                 const pieces = this.board.positions[y]![x]! // .Inline(1)
                 const tVibe = wrapAround(tOscillator + Settings.OSCILLATOR_INCREMENT * (x - 0.85 * y))
 
-                pieces.forEach(piece => this.renderPiece(piece, x, y, tDuck, tVibe, colorDuckEntering, secondaryColorDuckEntering, colorDuckLeaving, secondaryColorDuckLeaving))
+                pieces.forEach(piece => this.renderPiece(piece, x, y, tDuck, tVibe, duckColors, duckSecondaryColors))
             }
         }
     }
 
-    renderPiece(piece: Piece, x: number, y: number, tDuck: number, tVibe: number, colorDuckEntering: string, secondaryColorDuckEntering: string, colorDuckLeaving: string, secondaryColorDuckLeaving: string) {
+    renderPiece(piece: Piece, x: number, y: number, tDuck: number, tVibe: number, duckColors: string[], duckSecondaryColors: string[]) {
         if (duckState.phase === DuckPhase.MOVING && this.active.has(piece)) {
             x += lerp(piece.oldPosition.x - piece.x, 0, tDuck)
             y += lerp(piece.oldPosition.y - piece.y, 0, tDuck)
@@ -150,10 +156,11 @@ export class Level {
 
         const bh = Settings.BLOCK_HEIGHT * size
 
-        const duckColors = ['#ffcd75', colorDuckEntering, colorDuckLeaving, '#a7f070']
-        const duckSecondaryColors = ['#ef7d57', secondaryColorDuckEntering, secondaryColorDuckLeaving, '#38b764']
-
         switch (piece.type) {
+            case PieceType.VOID:
+                con.fillStyle = '#ff0080'
+                con.fillRect(x, y, size, size)
+                break
             case PieceType.DUCK:
                 const colorIndex = (duckState.ducksOnGoal.has(piece) ? 1 : 0) + (duckState.ducksOnGoalNext.has(piece) ? 2 : 0)
 
@@ -166,25 +173,25 @@ export class Level {
                 if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
                     const progress = size * tDuck
 
-                    con.fillStyle = '#566c86'
+                    con.fillStyle = Palette.DUCKLING_2
                     con.fillRect(x + progress, y - bh + size, size - progress, bh)
 
-                    con.fillStyle = '#94b0c2'
+                    con.fillStyle = Palette.DUCKLING
                     con.fillRect(x + progress, y - bh, size - progress, size)
                 }
                 break
             case PieceType.DUCKLING:
-                con.fillStyle = '#566c86'
+                con.fillStyle = Palette.DUCKLING_2
                 con.fillRect(x, y - bh + size, size, bh)
 
-                con.fillStyle = '#94b0c2'
+                con.fillStyle = Palette.DUCKLING
                 con.fillRect(x, y - bh, size, size)
                 break
             case PieceType.BOX:
-                con.fillStyle = '#333c57'
+                con.fillStyle = Palette.BOX_2
                 con.fillRect(x, y - bh + size, size, bh)
 
-                con.fillStyle = '#566c86'
+                con.fillStyle = Palette.BOX
                 con.fillRect(x, y - bh, size, size)
                 break
             case PieceType.CUTTER:
@@ -199,12 +206,12 @@ export class Level {
                 con.arc(x0, y0, r, 0, 2 * Math.PI)
                 con.moveTo(x0 + r2, y0)
                 con.arc(x0, y0, r2, 0, 2 * Math.PI)
-                con.strokeStyle = '#ea323c'
+                con.strokeStyle = Palette.CUTTER
                 con.stroke()
 
                 con.beginPath()
                 con.arc(x0, y0, r3, 0, 2 * Math.PI)
-                con.strokeStyle = '#ea323c' + opacity.toString(16).padStart(2, '0')
+                con.strokeStyle = Palette.CUTTER + opacity.toString(16).padStart(2, '0')
                 con.stroke()
                 break
             case PieceType.GOAL:
@@ -219,7 +226,7 @@ export class Level {
                     con.moveTo(x + size, y + size - sn)
                     con.lineTo(x + size - sn, y + size)
                 }
-                con.strokeStyle = '#a7f070'
+                con.strokeStyle = Palette.GOAL
                 con.stroke()
         }
     }

@@ -11,7 +11,7 @@ import { updatePhase } from '../node_modules/natlib/state.js'
 import { getGamepadDirection } from './gamepad.js'
 import { Level } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
-import { con, keyboard, pointer, Settings } from './setup.js'
+import { con, keyboard, Palette, pointer, Settings } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
 //#region Move to another file
@@ -36,6 +36,11 @@ new Cluster([
     level.board.createPiece(PieceType.DUCK, 8, 9),
 ])
 
+level.board.createPiece(PieceType.GOAL, 10, 8)
+level.board.createPiece(PieceType.GOAL, 11, 8)
+level.board.createPiece(PieceType.GOAL, 12, 8)
+level.board.createPiece(PieceType.GOAL, 11, 9)
+
 new Cluster([
     level.board.createPiece(PieceType.DUCKLING, 5, 11),
     level.board.createPiece(PieceType.DUCKLING, 4, 12),
@@ -50,10 +55,12 @@ new Cluster([
     level.board.createPiece(PieceType.DUCKLING, 4, 14),
 ])
 
-level.board.createPiece(PieceType.GOAL, 13, 14)
-level.board.createPiece(PieceType.GOAL, 14, 14)
-level.board.createPiece(PieceType.GOAL, 15, 14)
-level.board.createPiece(PieceType.GOAL, 14, 15)
+for (let n = 0; n < 16; ++n) {
+    level.board.createPiece(PieceType.VOID, n, 0)
+    level.board.createPiece(PieceType.VOID, n, 15)
+    level.board.createPiece(PieceType.VOID, 0, n)
+    level.board.createPiece(PieceType.VOID, 15, n)
+}
 //#endregion
 
 type MoveScalar = -1 | 0 | 1
@@ -172,7 +179,7 @@ function update() {
 }
 
 function render(t: number) {
-    con.fillStyle = '#1a1c2c'
+    con.fillStyle = Palette.NOTHING
     con.fillRect(0, 0, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
 
     level.render(t)
