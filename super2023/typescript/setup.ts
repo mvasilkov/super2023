@@ -20,6 +20,8 @@ export const enum Settings {
     OSCILLATOR_INCREMENT = 0.1,
     // Pointer controls dead zone in tiles
     POINTER_DEAD_ZONE = 0.5,
+    // Controller dead zone
+    GAMEPAD_DEAD_ZONE = 0.25,
     // Blocks
     BLOCK_HEIGHT = 0.4,
     // Linear hatching

@@ -8,9 +8,10 @@ import { Input } from '../node_modules/natlib/controls/Keyboard.js'
 import { register0, register1 } from '../node_modules/natlib/runtime.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 import { updatePhase } from '../node_modules/natlib/state.js'
+import { getGamepadDirection } from './gamepad.js'
 import { Level } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
-import { Settings, con, keyboard, pointer } from './setup.js'
+import { con, keyboard, pointer, Settings } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
 //#region Move to another file
@@ -112,6 +113,22 @@ function updateControls() {
             Δx = Δx < 0 ? -1 : 1
             ducks.sort((a, b) => Δx * (b.x - a.x))
             level.tryMove(ducks[0]!, Δx as MoveScalarNonzero, 0)
+        }
+    }
+
+    const direction = getGamepadDirection()
+    if (direction) {
+        const ducks = level.board.pieces[PieceType.DUCK] ?? []
+        if (!ducks.length) return
+
+        if (direction.x) {
+            ducks.sort((a, b) => direction.x * (b.x - a.x))
+            if (!level.tryMove(ducks[0]!, direction.x as MoveScalarNonzero, 0)) return
+        }
+
+        if (direction.y) {
+            ducks.sort((a, b) => direction.y * (b.y - a.y))
+            if (!level.tryMove(ducks[0]!, 0, direction.y as MoveScalarNonzero)) return
         }
     }
 }
