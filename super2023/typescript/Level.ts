@@ -10,7 +10,7 @@ import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { cascadeMove } from './rules.js'
-import { COLOR_DUCK_2_B, COLOR_DUCK_2_G, COLOR_DUCK_2_R, COLOR_DUCK_B, COLOR_DUCK_G, COLOR_DUCK_R, COLOR_GOAL_2_B, COLOR_GOAL_2_G, COLOR_GOAL_2_R, COLOR_GOAL_B, COLOR_GOAL_G, COLOR_GOAL_R, Palette, Settings, con, linearToSrgb, wrapAround } from './setup.js'
+import { COLOR_DUCK_2_B, COLOR_DUCK_2_G, COLOR_DUCK_2_R, COLOR_DUCK_B, COLOR_DUCK_G, COLOR_DUCK_R, COLOR_GOAL_2_B, COLOR_GOAL_2_G, COLOR_GOAL_2_R, COLOR_GOAL_B, COLOR_GOAL_G, COLOR_GOAL_R, Palette, Settings, con, linearToSrgb, oscillate, wrapAround } from './setup.js'
 import { DuckPhase, duckState, oscillatorState } from './state.js'
 
 export class Level {
@@ -142,6 +142,9 @@ export class Level {
             x += lerp(piece.oldPosition.x - piece.x, 0, tDuck)
             y += lerp(piece.oldPosition.y - piece.y, 0, tDuck)
         }
+        // else if (piece.type === PieceType.VOID) {
+        //     y -= 0.1 * easeInOutQuad(oscillate(tVibe))
+        // }
 
         let size = this.cellSize
         x = x * size + this.boardLeft
@@ -158,8 +161,31 @@ export class Level {
 
         switch (piece.type) {
             case PieceType.VOID:
-                con.fillStyle = '#ff0080'
+                con.fillStyle = Palette.NOTHING
                 con.fillRect(x, y, size, size)
+
+                /*
+                con.beginPath()
+                for (let n = 0; n < 8; ++n) {
+                    con.lineTo(
+                        x + 0.5 * size + 0.4 * size * Math.cos((0.25 * n + 0.125) * Math.PI),
+                        y + 0.5 * size + 0.4 * size * Math.sin((0.25 * n + 0.125) * Math.PI)
+                    )
+                }
+                con.closePath()
+                con.strokeStyle = Palette.VOID
+                con.stroke()
+                */
+
+                y += (0.1 * easeInOutQuad(oscillate(tVibe)) - 0.05) * size
+
+                con.beginPath()
+                con.moveTo(x + 0.2 * size, y + 0.2 * size)
+                con.lineTo(x + 0.8 * size, y + 0.8 * size)
+                con.moveTo(x + 0.2 * size, y + 0.8 * size)
+                con.lineTo(x + 0.8 * size, y + 0.2 * size)
+                con.strokeStyle = Palette.VOID
+                con.stroke()
                 break
             case PieceType.DUCK:
                 const colorIndex = (duckState.ducksOnGoal.has(piece) ? 1 : 0) + (duckState.ducksOnGoalNext.has(piece) ? 2 : 0)
