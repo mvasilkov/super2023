@@ -8,21 +8,24 @@ import { Input } from '../node_modules/natlib/controls/Keyboard.js'
 import { register0, register1 } from '../node_modules/natlib/runtime.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 import { updatePhase } from '../node_modules/natlib/state.js'
-import { getGamepadDirection } from './gamepad.js'
 import { Level } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
-import { con, keyboard, Palette, pointer, Settings } from './setup.js'
+import { getGamepadDirection } from './gamepad.js'
+import { buildClusters } from './rules.js'
+import { Palette, Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
 //#region Move to another file
 const level = new Level(16, 16)
 
-new Cluster([
-    level.board.createPiece(PieceType.BOX, 3, 3),
-    level.board.createPiece(PieceType.BOX, 4, 3),
-    level.board.createPiece(PieceType.BOX, 3, 4),
-    level.board.createPiece(PieceType.BOX, 4, 4),
-])
+level.board.createPiece(PieceType.BOX, 3, 3)
+level.board.createPiece(PieceType.BOX, 4, 3)
+level.board.createPiece(PieceType.BOX, 3, 4)
+level.board.createPiece(PieceType.BOX, 4, 4)
+level.board.createPiece(PieceType.BOX, 3, 5)
+level.board.createPiece(PieceType.BOX, 4, 5)
+level.board.createPiece(PieceType.BOX, 3, 6)
+level.board.createPiece(PieceType.BOX, 4, 6)
 
 level.board.createPiece(PieceType.CUTTER, 5, 6)
 level.board.createPiece(PieceType.CUTTER, 6, 6)
@@ -61,6 +64,8 @@ for (let n = 0; n < 16; ++n) {
     level.board.createPiece(PieceType.VOID, 0, n)
     level.board.createPiece(PieceType.VOID, 15, n)
 }
+
+buildClusters(level.board, PieceType.BOX)
 //#endregion
 
 type MoveScalar = -1 | 0 | 1

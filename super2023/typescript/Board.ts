@@ -57,4 +57,23 @@ export class Board {
     hasBorderingPieces(piece: Readonly<Piece>, type: PieceType): boolean | undefined {
         return this.pieces[type]?.some(p => p.distanceSquared(piece) === 1)
     }
+
+    /** Get a group of adjacent pieces of identical type. */
+    getGroup(piece: Piece): Set<Piece> {
+        const group = new Set<Piece>([piece])
+        const stack = [piece]
+
+        while (stack.length) {
+            const piece = stack.pop()!
+
+            this.getBorderingPieces(piece, piece.type)!.forEach(other => {
+                if (group.has(other)) return
+
+                group.add(other)
+                stack.push(other)
+            })
+        }
+
+        return group
+    }
 }
