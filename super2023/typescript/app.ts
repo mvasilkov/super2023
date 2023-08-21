@@ -11,7 +11,6 @@ import { updatePhase } from '../node_modules/natlib/state.js'
 import { Level } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { getGamepadDirection } from './gamepad.js'
-import { buildClusters } from './rules.js'
 import { Palette, Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
@@ -65,7 +64,7 @@ for (let n = 0; n < 16; ++n) {
     level.board.createPiece(PieceType.VOID, 15, n)
 }
 
-buildClusters(level.board, PieceType.BOX)
+level.board.buildClusters(PieceType.BOX)
 //#endregion
 
 type MoveScalar = -1 | 0 | 1
@@ -152,12 +151,14 @@ function update() {
         case DuckPhase.INTERACTIVE:
             if (oldPhase === DuckPhase.MOVING || oldPhase === DuckPhase.CONNECTING) {
                 const ducks: Piece[] = []
+                const updateClusters: Set<Cluster> = new Set
 
                 for (const piece of level.active) {
                     if (piece.killed) {
                         level.board.discardPiece(piece)
                         if (piece.cluster) {
-                            new Cluster(piece.cluster.pieces.filter(p => p !== piece))
+                            // new Cluster(piece.cluster.pieces.filter(p => p !== piece))
+                            updateClusters.add(piece.cluster)
                         }
                         continue
                     }
@@ -171,8 +172,13 @@ function update() {
                 }
                 level.active.clear()
 
+                // Update clusters
+                updateClusters.forEach(cluster => {
+                    level.board.splitCluster(cluster)
+                })
+
                 level.updateDucksOnGoal(duckState.ducksOnGoal)
-                level.connectDucklings(ducks)
+                level.connectDucklings(ducks.filter(duck => !duck.killed))
             }
             // Could've changed in connectDucklings()
             if (duckState.phase === DuckPhase.INTERACTIVE) {

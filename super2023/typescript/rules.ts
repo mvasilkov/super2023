@@ -6,7 +6,7 @@
 
 import { ShortBool } from '../node_modules/natlib/prelude.js'
 import type { Board } from './Board'
-import { Cluster, PieceType, type Piece } from './Piece.js'
+import { PieceType, type Piece } from './Piece.js'
 
 const collide: Set<PieceType> = new Set([PieceType.VOID])
 const push: Set<PieceType> = new Set([PieceType.DUCKLING, PieceType.BOX])
@@ -66,13 +66,4 @@ export function cascadeMove(board: Board, piece: Piece, Δx: number, Δy: number
     const dedup: Set<Piece> = new Set
     return cascade.filter(([piece, ,]) =>
         dedup.has(piece) ? ShortBool.FALSE : dedup.add(piece))
-}
-
-export function buildClusters(board: Board, type: PieceType) {
-    const pieces: Set<Piece> = new Set(board.pieces[type])
-
-    for (const piece of pieces) {
-        const cluster = new Cluster([...board.getGroup(piece)])
-        cluster.pieces.forEach(p => pieces.delete(p))
-    }
 }
