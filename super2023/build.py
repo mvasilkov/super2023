@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from itertools import chain, permutations
 from pathlib import Path
+import sys
 
 from PIL import Image
 
@@ -21,6 +22,13 @@ export const height = %d
 export const cardinality = %d
 export const palette = %s
 '''.lstrip()
+
+BUILD_DIR = OUR_ROOT / 'build'
+
+HTML_LINK_CSS = '<link rel=stylesheet href=./app.css>'
+HTML_INLINE_CSS = '<style>%s</style>'
+HTML_LINK_JS = '<script type=module src=./app.js></script>'
+HTML_INLINE_JS = '<script>%s</script>'
 
 
 def get_color(png: Image, x: int, y: int) -> tuple[int, int, int] | None:
@@ -145,5 +153,33 @@ def build_pictures():
         out_file.write_text(contents, encoding='utf-8', newline='\n')
 
 
+def build_inline():
+    index = (BUILD_DIR / 'index.html').read_text(encoding='utf-8')
+    app_css = (BUILD_DIR / 'app.opt.css').read_text(encoding='utf-8')
+    app_js = (BUILD_DIR / 'app.opt.js').read_text(encoding='utf-8')
+
+    # https://html.spec.whatwg.org/multipage/parsing.html#rawtext-state
+    assert '</' not in app_css
+    # https://html.spec.whatwg.org/multipage/parsing.html#script-data-state
+    assert '</' not in app_js
+    assert '<!' not in app_js
+
+    assert HTML_LINK_CSS in index
+    index = index.replace(HTML_LINK_CSS, HTML_INLINE_CSS % app_css, 1)
+    assert HTML_LINK_JS in index
+    index = index.replace(HTML_LINK_JS, HTML_INLINE_JS % app_js, 1)
+
+    (BUILD_DIR / 'index.html').write_text(index, encoding='utf-8', newline='\n')
+
+
 if __name__ == '__main__':
-    build_pictures()
+    if len(sys.argv) != 2 or sys.argv[1] not in ('pictures', 'inline'):
+        print('Usage: build.py <pictures | inline>')
+        print('To rebuild the entire thing, run `build.sh` instead.')
+        sys.exit(-1)
+
+    match sys.argv[1]:
+        case 'pictures':
+            build_pictures()
+        case 'inline':
+            build_inline()
