@@ -136,22 +136,22 @@ export class Level {
         const tOscillator = interpolatePhase(oscillatorState, Settings.OSCILLATOR_DURATION, t)
 
         const colorDuckEntering = '#' +
-            Math.floor(linearToSrgb(lerp(COLOR_GOAL_R, COLOR_DUCK_R, tDuck))).toString(16) +
-            Math.floor(linearToSrgb(lerp(COLOR_GOAL_G, COLOR_DUCK_G, tDuck))).toString(16) +
-            Math.floor(linearToSrgb(lerp(COLOR_GOAL_B, COLOR_DUCK_B, tDuck))).toString(16)
+            linearToSrgb(lerp(COLOR_GOAL_R, COLOR_DUCK_R, tDuck)) +
+            linearToSrgb(lerp(COLOR_GOAL_G, COLOR_DUCK_G, tDuck)) +
+            linearToSrgb(lerp(COLOR_GOAL_B, COLOR_DUCK_B, tDuck))
         const secondaryColorDuckEntering = '#' +
-            Math.floor(linearToSrgb(lerp(COLOR_GOAL_2_R, COLOR_DUCK_2_R, tDuck))).toString(16) +
-            Math.floor(linearToSrgb(lerp(COLOR_GOAL_2_G, COLOR_DUCK_2_G, tDuck))).toString(16) +
-            Math.floor(linearToSrgb(lerp(COLOR_GOAL_2_B, COLOR_DUCK_2_B, tDuck))).toString(16)
+            linearToSrgb(lerp(COLOR_GOAL_2_R, COLOR_DUCK_2_R, tDuck)) +
+            linearToSrgb(lerp(COLOR_GOAL_2_G, COLOR_DUCK_2_G, tDuck)) +
+            linearToSrgb(lerp(COLOR_GOAL_2_B, COLOR_DUCK_2_B, tDuck))
 
         const colorDuckLeaving = '#' +
-            Math.floor(linearToSrgb(lerp(COLOR_DUCK_R, COLOR_GOAL_R, tDuck))).toString(16) +
-            Math.floor(linearToSrgb(lerp(COLOR_DUCK_G, COLOR_GOAL_G, tDuck))).toString(16) +
-            Math.floor(linearToSrgb(lerp(COLOR_DUCK_B, COLOR_GOAL_B, tDuck))).toString(16)
+            linearToSrgb(lerp(COLOR_DUCK_R, COLOR_GOAL_R, tDuck)) +
+            linearToSrgb(lerp(COLOR_DUCK_G, COLOR_GOAL_G, tDuck)) +
+            linearToSrgb(lerp(COLOR_DUCK_B, COLOR_GOAL_B, tDuck))
         const secondaryColorDuckLeaving = '#' +
-            Math.floor(linearToSrgb(lerp(COLOR_DUCK_2_R, COLOR_GOAL_2_R, tDuck))).toString(16) +
-            Math.floor(linearToSrgb(lerp(COLOR_DUCK_2_G, COLOR_GOAL_2_G, tDuck))).toString(16) +
-            Math.floor(linearToSrgb(lerp(COLOR_DUCK_2_B, COLOR_GOAL_2_B, tDuck))).toString(16)
+            linearToSrgb(lerp(COLOR_DUCK_2_R, COLOR_GOAL_2_R, tDuck)) +
+            linearToSrgb(lerp(COLOR_DUCK_2_G, COLOR_GOAL_2_G, tDuck)) +
+            linearToSrgb(lerp(COLOR_DUCK_2_B, COLOR_GOAL_2_B, tDuck))
 
         const duckColors = [Palette.DUCK, colorDuckEntering, colorDuckLeaving, Palette.DUCK_ON_GOAL]
         const duckSecondaryColors = [Palette.DUCK_2, secondaryColorDuckEntering, secondaryColorDuckLeaving, Palette.DUCK_ON_GOAL_2]
@@ -241,6 +241,24 @@ export class Level {
                 con.fillStyle = duckColors[colorIndex]!
                 con.fillRect(x, y - bh, size, size)
 
+                if (colorIndex === 3) {
+                    con.beginPath()
+                    con.moveTo(x + 0.2 * size, y - bh + 0.5 * size)
+                    con.lineTo(x + 0.4 * size, y - bh + 0.7 * size)
+                    con.lineTo(x + 0.8 * size, y - bh + 0.3 * size)
+                    con.strokeStyle = Palette.DUCK_ON_GOAL_2
+                    con.stroke()
+                }
+                else if (colorIndex === 0 && duckState.ducksOnGoal.size && duckState.ducksOnGoalNext.size) {
+                    con.beginPath()
+                    con.moveTo(x + 0.2 * size, y - bh + 0.2 * size)
+                    con.lineTo(x + 0.8 * size, y - bh + 0.8 * size)
+                    con.moveTo(x + 0.2 * size, y - bh + 0.8 * size)
+                    con.lineTo(x + 0.8 * size, y - bh + 0.2 * size)
+                    con.strokeStyle = Palette.DUCK_2
+                    con.stroke()
+                }
+
                 if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
                     const progress = size * tDuck
 
@@ -274,6 +292,11 @@ export class Level {
 
                 con.fillStyle = Palette.BOX
                 con.fillRect(x, y - bh, size, size)
+
+                con.beginPath()
+                con.arc(x + 0.5 * size, y - bh + 0.5 * size, 0.3 * size, 0, 2 * Math.PI)
+                con.strokeStyle = Palette.BOX_2
+                con.stroke()
                 break
             case PieceType.CUTTER:
                 const x0 = x + 0.5 * size
