@@ -15,12 +15,16 @@ export const enum DuckPhase {
     INTERACTIVE,
     MOVING,
     CONNECTING,
+    LEAVING,
+    ENTERING,
 }
 
 export const duckPhaseMap = [
     DuckPhase.INTERACTIVE, ,
     , ,
     DuckPhase.INTERACTIVE, ,
+    DuckPhase.INTERACTIVE, ,
+    DuckPhase.ENTERING, ,
     DuckPhase.INTERACTIVE, ,
 ]
 

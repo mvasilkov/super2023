@@ -16,6 +16,8 @@ export const enum Settings {
     MOVE_DURATION = 10,
     CONNECT_DURATION = 20,
     OSCILLATOR_DURATION = 48,
+    LEAVE_DURATION = 100,
+    ENTER_DURATION = 100,
     // Oscillator
     OSCILLATOR_INCREMENT = 0.1,
     // Pointer controls dead zone in tiles
@@ -26,6 +28,8 @@ export const enum Settings {
     BLOCK_HEIGHT = 0.4,
     // Linear hatching
     HATCHING_AMOUNT = 3,
+    // Baghdad overlap
+    BAGHDAD_OVERLAP = 0.05,
 }
 
 // Palette: https://lospec.com/palette-list/sweetie-16
@@ -115,29 +119,3 @@ export const COLOR_GOAL_B = srgbToLinear(0x70)
 export const COLOR_GOAL_2_R = srgbToLinear(0x38)
 export const COLOR_GOAL_2_G = srgbToLinear(0xb7)
 export const COLOR_GOAL_2_B = srgbToLinear(0x64)
-
-// More functions
-
-/** Joukowsky airfoil */
-export function airfoil(x0: number, y0: number, xs: number, ys: number, q: number, t: number) {
-    const qcos = q * Math.cos(t)
-    const qsin = q * Math.sin(t)
-    const a = 1 - q + qcos
-    const b = a ** 2 + qsin ** 2
-    const x = qsin - qsin / b
-    const y = qcos + a / b
-
-    oCon.lineTo(x0 - xs * x, y0 - ys * y)
-}
-
-/** Map [0...1] to [104...200] | [0...96] */
-export function qubba(t: number) {
-    if (t < 0.5) {
-        // Map to the range [104, 200]
-        return 104 + t * (200 - 104) * 2
-    }
-    else {
-        // Map to the range [0, 96]
-        return 0 + (t - 0.5) * (96 - 0) * 2
-    }
-}

@@ -7,11 +7,11 @@
 import { Input } from '../node_modules/natlib/controls/Keyboard.js'
 import { register0, register1 } from '../node_modules/natlib/runtime.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
-import { updatePhase } from '../node_modules/natlib/state.js'
+import { enterPhase, updatePhase } from '../node_modules/natlib/state.js'
 import { Level } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
-import { paintBaghdad } from './baghdad.js'
 import { getGamepadDirection } from './gamepad.js'
+import { renderIntro } from './intro.js'
 import { Palette, Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
@@ -199,9 +199,16 @@ function render(t: number) {
     con.fillRect(0, 0, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
 
     level.render(t)
+
+    switch (duckState.phase) {
+        case DuckPhase.LEAVING:
+            renderIntro(t)
+    }
 }
 
 startMainloop(update, render)
 
 // TODO delete
-!((window as any)['paintBaghdad'] = paintBaghdad)
+!((window as any)['leave'] = () => {
+    enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
+})
