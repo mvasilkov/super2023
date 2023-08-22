@@ -26,6 +26,10 @@ level.board.createPiece(PieceType.BOX, 4, 5)
 level.board.createPiece(PieceType.BOX, 3, 6)
 level.board.createPiece(PieceType.BOX, 4, 6)
 
+new Cluster([
+    level.board.createPiece(PieceType.DUCKLING, 6, 5),
+])
+
 level.board.createPiece(PieceType.CUTTER, 5, 6)
 level.board.createPiece(PieceType.CUTTER, 6, 6)
 level.board.createPiece(PieceType.CUTTER, 7, 6)
@@ -172,15 +176,15 @@ function update() {
                 }
                 level.active.clear()
 
-                // Update clusters
+                // Split clusters
                 updateClusters.forEach(cluster => {
-                    level.board.splitCluster(cluster)
+                    level.splitCluster(cluster)
                 })
 
                 level.updateDucksOnGoal(duckState.ducksOnGoal)
                 level.connectDucklings(ducks.filter(duck => !duck.killed))
             }
-            // Could've changed in connectDucklings()
+            // Could've changed in connectDucklings() or splitCluster()
             if (duckState.phase === DuckPhase.INTERACTIVE) {
                 updateControls()
             }

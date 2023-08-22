@@ -95,6 +95,38 @@ export class Level {
         enterPhase(duckState, DuckPhase.CONNECTING, Settings.CONNECT_DURATION)
     }
 
+    splitCluster(cluster: Cluster) {
+        const type = cluster.pieces[0]!.type
+        const pieces = new Set(cluster.pieces.filter(p => !p.killed))
+        const clusters: Cluster[] = []
+
+        for (const piece of pieces) {
+            const group = [...this.board.getGroup(piece)]
+            if (!group.length) continue
+
+            group.forEach(p => pieces.delete(p))
+            clusters.push(new Cluster(group))
+        }
+
+        if (type === PieceType.DUCK && clusters.length > 1) {
+            clusters.sort((a, b) => b.pieces.length - a.pieces.length)
+
+            for (let n = 1; n < clusters.length; ++n) {
+                const ducklings: Piece<PieceType.DUCKLING>[] = []
+                clusters[n]!.pieces.forEach(duck => {
+                    duck.killed = ShortBool.TRUE
+                    this.board.discardPiece(duck)
+                    const duckling = this.board.createPiece(PieceType.DUCKLING, duck.x, duck.y)
+                    this.active.add(duckling)
+                    ducklings.push(duckling)
+                })
+                new Cluster(ducklings)
+            }
+
+            enterPhase(duckState, DuckPhase.CONNECTING, Settings.CONNECT_DURATION)
+        }
+    }
+
     render(t: number) {
         const tDuck = duckState.phase === DuckPhase.MOVING ?
             easeInOutQuad(interpolatePhase(duckState, Settings.MOVE_DURATION, t)) :
@@ -225,6 +257,16 @@ export class Level {
 
                 con.fillStyle = Palette.DUCKLING
                 con.fillRect(x, y - bh, size, size)
+
+                if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
+                    const progress = size * tDuck
+
+                    con.fillStyle = Palette.DUCK_2
+                    con.fillRect(x + progress, y - bh + size, size - progress, bh)
+
+                    con.fillStyle = Palette.DUCK
+                    con.fillRect(x + progress, y - bh, size - progress, size)
+                }
                 break
             case PieceType.BOX:
                 con.fillStyle = Palette.BOX_2

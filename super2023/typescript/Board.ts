@@ -4,7 +4,6 @@
  */
 'use strict'
 
-import { ShortBool } from '../node_modules/natlib/prelude.js'
 import { Cluster, Piece, PieceType } from './Piece.js'
 
 export class Board {
@@ -84,33 +83,6 @@ export class Board {
         for (const piece of pieces) {
             const cluster = new Cluster([...this.getGroup(piece)])
             cluster.pieces.forEach(p => pieces.delete(p))
-        }
-    }
-
-    splitCluster(cluster: Cluster) {
-        const type = cluster.pieces[0]!.type
-        const pieces = new Set(cluster.pieces.filter(p => !p.killed))
-        const clusters: Cluster[] = []
-
-        for (const piece of pieces) {
-            cluster = new Cluster([...this.getGroup(piece)])
-            cluster.pieces.forEach(p => pieces.delete(p))
-            clusters.push(cluster)
-        }
-
-        if (type === PieceType.DUCK && clusters.length > 1) {
-            clusters.sort((a, b) => b.pieces.length - a.pieces.length)
-
-            for (let n = 1; n < clusters.length; ++n) {
-                const ducklings: Piece<PieceType.DUCKLING>[] = []
-                clusters[n]!.pieces.forEach(duck => {
-                    duck.killed = ShortBool.TRUE
-                    this.discardPiece(duck)
-                    const duckling = this.createPiece(PieceType.DUCKLING, duck.x, duck.y)
-                    ducklings.push(duckling)
-                })
-                new Cluster(ducklings)
-            }
         }
     }
 }
