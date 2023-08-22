@@ -58,11 +58,14 @@ export const { con } = canvas
 con.lineWidth = 1.5
 
 /** Overlay canvas */
-export const ocanvas = new CanvasHandle(document.querySelector('#o'),
+export const oCanvas = new CanvasHandle(document.querySelector('#o'),
     Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
 
 /** Overlay context */
-export const ocon = ocanvas.con
+export const oCon = oCanvas.con
+
+oCon.lineWidth = 2
+oCon.lineCap = 'round'
 
 // Input
 
@@ -124,7 +127,7 @@ export function airfoil(x0: number, y0: number, xs: number, ys: number, q: numbe
     const x = qsin - qsin / b
     const y = qcos + a / b
 
-    ocon.lineTo(x0 - xs * x, y0 - ys * y)
+    oCon.lineTo(x0 - xs * x, y0 - ys * y)
 }
 
 /** Map [0...1] to [104...200] | [0...96] */

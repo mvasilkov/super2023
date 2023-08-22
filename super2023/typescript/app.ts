@@ -10,6 +10,7 @@ import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 import { updatePhase } from '../node_modules/natlib/state.js'
 import { Level } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
+import { paintBaghdad } from './baghdad.js'
 import { getGamepadDirection } from './gamepad.js'
 import { Palette, Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
@@ -201,3 +202,6 @@ function render(t: number) {
 }
 
 startMainloop(update, render)
+
+// TODO delete
+!((window as any)['paintBaghdad'] = paintBaghdad)
