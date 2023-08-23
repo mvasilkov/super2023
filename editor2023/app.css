@@ -1,0 +1,37 @@
+/* https://mvasilkov.animuchan.net/system-font-stacks */
+
+html,
+button,
+input {
+  font-family: -apple-system, 'Segoe UI', 'DejaVu Sans',
+    system-ui, sans-serif;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: 'SF Mono', SFMono-Regular, ui-monospace,
+    'DejaVu Sans Mono', Menlo, 'Cascadia Mono', monospace;
+}
+
+html {
+  background: #000;
+  color: #f4f4f4;
+  text-align: center;
+}
+
+body {
+  margin: 1vw 0;
+}
+
+input[type='number'] {
+  width: 4em;
+}
+
+canvas {
+  display: block;
+  height: 540px;
+  margin: 1vw auto;
+  width: 960px;
+}
