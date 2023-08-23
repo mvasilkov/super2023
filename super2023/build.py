@@ -9,12 +9,16 @@ OUR_ROOT = Path(__file__).resolve().parent
 
 OUT_DIR = OUR_ROOT / 'typescript' / 'pictures'
 
-OUT_FILE = '''
+FILE_LICENSE = '''
 /** This file is part of Super Holy Chalice.
  * https://github.com/mvasilkov/super2023
  * @license GPLv3 | Copyright (c) 2023 Mark Vasilkov
  */
 'use strict'
+'''.strip()
+
+OUT_FILE = f'''
+{FILE_LICENSE}
 
 export const value = %s
 export const width = %d
@@ -172,9 +176,19 @@ def build_inline():
     (BUILD_DIR / 'index.html').write_text(index, encoding='utf-8', newline='\n')
 
 
+def build_validate():
+    for file in list(OUR_ROOT.glob('out/**/*.js')):
+        content = file.read_text(encoding='utf-8')
+        if not content.startswith(FILE_LICENSE):
+            raise RuntimeError(f'Invalid file header: {file.relative_to(OUR_ROOT)}')
+
+        if '// .' in content:
+            raise RuntimeError(f'Leftover Michikoid syntax: {file.relative_to(OUR_ROOT)}')
+
+
 if __name__ == '__main__':
-    if len(sys.argv) != 2 or sys.argv[1] not in ('pictures', 'inline'):
-        print('Usage: build.py <pictures | inline>')
+    if len(sys.argv) != 2 or sys.argv[1] not in ('pictures', 'inline', 'validate'):
+        print('Usage: build.py <pictures | inline | validate>')
         print('To rebuild the entire thing, run `build.sh` instead.')
         sys.exit(-1)
 
@@ -183,3 +197,5 @@ if __name__ == '__main__':
             build_pictures()
         case 'inline':
             build_inline()
+        case 'validate':
+            build_validate()

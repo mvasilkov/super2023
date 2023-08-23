@@ -16,6 +16,9 @@ node_modules/.bin/tsc
 # Michikoid
 node_modules/.bin/michikoid $(find $out_dir -type f -name '*.js')
 
+# Validate
+virtual/bin/python build.py validate
+
 # Bundle
 node_modules/.bin/rollup -f iife -o build/app.js --no-freeze $out_dir/app.js
 

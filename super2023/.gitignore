@@ -3,3 +3,4 @@ yarn.lock
 out/**/*.js
 virtual/
 build/
+__pycache__/
