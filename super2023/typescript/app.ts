@@ -11,8 +11,8 @@ import { enterPhase, updatePhase } from '../node_modules/natlib/state.js'
 import { Level } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { getGamepadDirection } from './gamepad.js'
-import { renderIntro } from './intro.js'
-import { Palette, Settings, con, keyboard, pointer } from './setup.js'
+import { renderIntro, renderIntroEnd } from './intro.js'
+import { Palette, Settings, con, keyboard, oCon, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
 //#region Move to another file
@@ -154,7 +154,10 @@ function update() {
 
     switch (duckState.phase) {
         case DuckPhase.INTERACTIVE:
-            if (oldPhase === DuckPhase.MOVING || oldPhase === DuckPhase.CONNECTING) {
+            if (oldPhase === DuckPhase.ENTERING) {
+                oCon.clearRect(0, 0, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
+            }
+            else if (oldPhase === DuckPhase.MOVING || oldPhase === DuckPhase.CONNECTING) {
                 const ducks: Piece[] = []
                 const updateClusters: Set<Cluster> = new Set
 
@@ -203,6 +206,9 @@ function render(t: number) {
     switch (duckState.phase) {
         case DuckPhase.LEAVING:
             renderIntro(t)
+            break
+        case DuckPhase.ENTERING:
+            renderIntroEnd(t)
     }
 }
 

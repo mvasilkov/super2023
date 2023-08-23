@@ -16,8 +16,8 @@ export const enum Settings {
     MOVE_DURATION = 10,
     CONNECT_DURATION = 20,
     OSCILLATOR_DURATION = 48,
-    LEAVE_DURATION = 100,
-    ENTER_DURATION = 100,
+    LEAVE_DURATION = 64,
+    ENTER_DURATION = 64,
     // Oscillator
     OSCILLATOR_INCREMENT = 0.1,
     // Pointer controls dead zone in tiles
@@ -41,6 +41,8 @@ export const enum Palette {
     CUTTER = '#ea323c',
     GOAL = '#a7f070',
     VOID = '#566c86',
+    INTRO = '#ffcd75',
+    INTRO_2 = '#29366f',
     // Blocks
     DUCK = '#ffcd75',
     DUCK_2 = '#ef7d57',

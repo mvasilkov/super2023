@@ -24,7 +24,7 @@ export const duckPhaseMap = [
     , ,
     DuckPhase.INTERACTIVE, ,
     DuckPhase.INTERACTIVE, ,
-    DuckPhase.ENTERING, ,
+    DuckPhase.ENTERING, Settings.ENTER_DURATION,
     DuckPhase.INTERACTIVE, ,
 ]
 

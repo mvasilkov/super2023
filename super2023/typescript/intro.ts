@@ -6,7 +6,7 @@
 
 import { easeInOutQuad } from '../node_modules/natlib/interpolation.js'
 import { interpolatePhase } from '../node_modules/natlib/state.js'
-import { Palette, Settings, oCon } from './setup.js'
+import { Palette, Settings, con, oCon } from './setup.js'
 import { duckState } from './state.js'
 
 export function renderIntro(t: number) {
@@ -14,11 +14,17 @@ export function renderIntro(t: number) {
     let t0 = Math.max(0, t1 - Settings.BAGHDAD_OVERLAP)
     let t2 = Math.min(1, t1 + Settings.BAGHDAD_OVERLAP)
 
+    t = easeInOutQuad(t1)
+
+    con.fillStyle = Palette.INTRO_2
+    con.fillRect(0, 0.5 * (1 - t) * Settings.SCREEN_HEIGHT,
+        Settings.SCREEN_WIDTH, t * Settings.SCREEN_HEIGHT)
+
     t0 = angular(easeInOutQuad(t0))
     t1 = angular(easeInOutQuad(t1))
     t2 = angular(easeInOutQuad(t2))
 
-    oCon.strokeStyle = Palette.DUCK
+    oCon.strokeStyle = Palette.INTRO
 
     oCon.beginPath()
     airfoil(0.5 * Settings.SCREEN_WIDTH, 0.5 * Settings.SCREEN_HEIGHT, 32, 20, 0.6, t0)
@@ -45,8 +51,8 @@ function airfoil(x0: number, y0: number, xs: number, ys: number, q: number, t: n
     const qsin = q * Math.sin(t)
     const a = 1 - q + qcos
     const b = a ** 2 + qsin ** 2
-    const x = qsin - qsin / b
-    const y = qcos + a / b
+    const x = qsin - qsin / b // .Inline
+    const y = qcos + a / b // .Inline
 
     oCon.lineTo(x0 - xs * x, y0 - ys * y)
 }
@@ -58,4 +64,16 @@ function angular(t: number): number {
         104 + t * (200 - 104) * 2 :
         // Map to the range [0, 96]
         0 + (t - 0.5) * (96 - 0) * 2)
+}
+
+export function renderIntroEnd(t: number) {
+    t = easeInOutQuad(interpolatePhase(duckState, Settings.ENTER_DURATION, t))
+
+    con.fillStyle = Palette.INTRO_2
+    con.fillRect(0.5 * t * Settings.SCREEN_WIDTH, 0,
+        (1 - t) * Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
+
+    const eraseSize = 0.5 * t * Settings.SCREEN_WIDTH
+    oCon.clearRect(0, 0, eraseSize, Settings.SCREEN_HEIGHT)
+    oCon.clearRect(Settings.SCREEN_WIDTH - eraseSize, 0, eraseSize, Settings.SCREEN_HEIGHT)
 }
