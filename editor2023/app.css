@@ -29,6 +29,16 @@ input[type='number'] {
   width: 4em;
 }
 
+button {
+  padding: 1px;
+}
+
+svg {
+  height: 16px;
+  vertical-align: top;
+  width: 16px;
+}
+
 canvas {
   display: block;
   height: 540px;
