@@ -1,5 +1,6 @@
 'use strict'
 
+import { decodeBitmapBigInt } from './node_modules/natlib/bitmap/bitmap.js'
 import { CanvasHandle } from './node_modules/natlib/canvas/CanvasHandle.js'
 import { Pointer } from './node_modules/natlib/controls/Pointer.js'
 import { startMainloop } from './node_modules/natlib/scheduling/mainloop.js'
@@ -26,6 +27,8 @@ function resizeBoard() {
     }
 
     board = resizedBoard
+
+    encodeBoard()
 }
 
 widthInput.addEventListener('change', resizeBoard)
@@ -44,12 +47,62 @@ const palette = {
     '#a7f070': 3,
 }
 
+const cardinality = BigInt(Object.keys(palette).filter(a => a.length === 1).length)
+
 let colorIndex = 1
 
 addEventListener('click', event => {
     const changeColor = event.target.dataset?.color ?? event.target.getAttribute('fill')
     if (changeColor) colorIndex = palette[changeColor]
 })
+
+// Code
+
+const codeInput = document.querySelector('#code')
+
+function encodeBoard() {
+    let bigint = 0n
+
+    for (let y = board.length - 1; y >= 0; --y) {
+        for (let x = board[y].length - 1; x >= 0; --x) {
+            bigint *= cardinality
+            bigint += BigInt(board[y][x])
+        }
+    }
+
+    codeInput.value = `${board[0].length.toString(16)}.${board.length.toString(16)}.${bigint.toString(16)}`
+}
+
+function decodeBoard() {
+    try {
+        const parts = codeInput.value.split('.')
+        if (parts.length !== 3) {
+            console.error('Invalid code')
+            return
+        }
+        const width = parseInt(parts[0], 16)
+        const height = parseInt(parts[1], 16)
+        const bigint = BigInt(`0x${parts[2]}`)
+
+        widthInput.value = width
+        heightInput.value = height
+
+        board = Array.from({ length: height },
+            () => Array.from({ length: width }, () => 0))
+
+        decodeBitmapBigInt(bigint, width, height, cardinality, (x, y, value) => {
+            board[y][x] = value
+        })
+    }
+    catch (err) {
+        console.error(err)
+        return
+    }
+}
+
+encodeBoard()
+
+codeInput.addEventListener('input', () => decodeBoard())
 
 // Setup
 
@@ -77,6 +130,8 @@ function update() {
 
         if (x >= 0 && x < width && y >= 0 && y < height) {
             board[y][x] = colorIndex
+
+            encodeBoard()
         }
     }
 }

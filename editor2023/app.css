@@ -10,9 +10,11 @@ input {
 code,
 kbd,
 pre,
-samp {
+samp,
+textarea {
   font-family: 'SF Mono', SFMono-Regular, ui-monospace,
     'DejaVu Sans Mono', Menlo, 'Cascadia Mono', monospace;
+  font-feature-settings: 'calt' 0, 'zero' 1;
 }
 
 html {
@@ -21,7 +23,8 @@ html {
   text-align: center;
 }
 
-body {
+body,
+p {
   margin: 1vw 0;
 }
 
@@ -44,4 +47,14 @@ canvas {
   height: 540px;
   margin: 1vw auto;
   width: 960px;
+}
+
+textarea {
+  background: #1a1c2c;
+  border: 1px solid #333c57;
+  color: #73eff7;
+  font-weight: 300;
+  outline: 0;
+  padding: 4px;
+  resize: none;
 }
