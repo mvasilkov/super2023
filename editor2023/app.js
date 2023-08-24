@@ -84,19 +84,21 @@ function encodeBoard() {
         }
     }
 
-    codeInput.value = `${board[0].length.toString(16)}.${board.length.toString(16)}.${bigint.toString(16)}`
+    codeInput.value = board[0].length.toString(16).padStart(2, '0') +
+        board.length.toString(16).padStart(2, '0') + bigint.toString(16)
 }
 
 function decodeBoard() {
+    const string = codeInput.value
     try {
-        const parts = codeInput.value.split('.')
-        if (parts.length !== 3) {
+        // Nil level is 01010
+        if (string.length < 5) {
             console.error('Invalid code')
             return
         }
-        const width = parseInt(parts[0], 16)
-        const height = parseInt(parts[1], 16)
-        const bigint = BigInt(`0x${parts[2]}`)
+        const width = parseInt(string.slice(0, 2), 16)
+        const height = parseInt(string.slice(2, 4), 16)
+        const bigint = BigInt('0x' + string.slice(4))
 
         widthInput.value = width
         heightInput.value = height

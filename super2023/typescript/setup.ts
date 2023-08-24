@@ -28,8 +28,10 @@ export const enum Settings {
     BLOCK_HEIGHT = 0.4,
     // Linear hatching
     HATCHING_AMOUNT = 3,
-    // Baghdad overlap
-    BAGHDAD_OVERLAP = 0.05,
+    // Intro properties
+    INTRO_OVERLAP = 0.05,
+    // Level loading
+    LEVEL_CARDINALITY = 7,
 }
 
 // Palette: https://lospec.com/palette-list/sweetie-16
@@ -59,7 +61,7 @@ export const enum Palette {
 export const canvas = new CanvasHandle(document.querySelector('#c'),
     Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
 
-export const { con } = canvas
+export const con = canvas.con
 
 con.lineWidth = 1.5
 

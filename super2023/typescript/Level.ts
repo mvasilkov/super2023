@@ -196,7 +196,7 @@ export class Level {
         y = y * size + this.boardTop
 
         if (piece.killed) {
-            size = lerp(size, 0, tDuck)
+            size = lerp(size, 0, tDuck) // .InlineExp
             const padding = 0.5 * (this.cellSize - size)
             x += padding
             y += padding
@@ -208,19 +208,6 @@ export class Level {
             case PieceType.VOID:
                 con.fillStyle = Palette.NOTHING
                 con.fillRect(x, y, size, size)
-
-                /*
-                con.beginPath()
-                for (let n = 0; n < 8; ++n) {
-                    con.lineTo(
-                        x + 0.5 * size + 0.4 * size * Math.cos((0.25 * n + 0.125) * Math.PI),
-                        y + 0.5 * size + 0.4 * size * Math.sin((0.25 * n + 0.125) * Math.PI)
-                    )
-                }
-                con.closePath()
-                con.strokeStyle = Palette.VOID
-                con.stroke()
-                */
 
                 y += (0.1 * easeInOutQuad(oscillate(tVibe)) - 0.05) * size
 
@@ -304,7 +291,7 @@ export class Level {
                 const r = 0.25 * size * (1 - tVibe)
                 const r2 = r + 0.25 * size
                 const r3 = r + 0.5 * size
-                const opacity = Math.floor(lerp(0, 255, tVibe))
+                const opacity = Math.floor(lerp(0, 255, tVibe)) // .Inline(1)
 
                 con.beginPath()
                 con.arc(x0, y0, r, 0, 2 * Math.PI)
@@ -334,4 +321,17 @@ export class Level {
                 con.stroke()
         }
     }
+}
+
+export function loadLevel(): Level {
+    const string = location.hash.slice(1)
+    const width = parseInt(string.slice(0, 2), 16)
+    const height = parseInt(string.slice(2, 4), 16)
+    const bigint = BigInt('0x' + string.slice(4))
+    const level = new Level(width, height)
+    level.board.load(bigint)
+    level.board.buildClusters(PieceType.DUCK)
+    level.board.buildClusters(PieceType.DUCKLING)
+    level.board.buildClusters(PieceType.BOX)
+    return level
 }

@@ -4,7 +4,9 @@
  */
 'use strict'
 
+import { decodeBitmapBigInt } from '../node_modules/natlib/bitmap/bitmap.js'
 import { Cluster, Piece, PieceType } from './Piece.js'
+import { Settings } from './setup.js'
 
 export class Board {
     readonly width: number
@@ -84,5 +86,13 @@ export class Board {
             const cluster = new Cluster([...this.getGroup(piece)])
             cluster.pieces.forEach(p => pieces.delete(p))
         }
+    }
+
+    load(value: bigint) {
+        decodeBitmapBigInt(value, this.width, this.height, Settings.LEVEL_CARDINALITY, (x, y, type) => {
+            if (type === 1) return
+            if (type !== 0) --type
+            this.createPiece(type, x, y)
+        })
     }
 }

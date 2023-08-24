@@ -8,69 +8,76 @@ import { Input } from '../node_modules/natlib/controls/Keyboard.js'
 import { register0, register1 } from '../node_modules/natlib/runtime.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 import { enterPhase, updatePhase } from '../node_modules/natlib/state.js'
-import { Level } from './Level.js'
+import { Level, loadLevel } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { getGamepadDirection } from './gamepad.js'
 import { renderIntro, renderIntroEnd } from './intro.js'
 import { Palette, Settings, con, keyboard, oCon, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
-//#region Move to another file
-const level = new Level(16, 16)
+let level: Level
 
-level.board.createPiece(PieceType.BOX, 3, 3)
-level.board.createPiece(PieceType.BOX, 4, 3)
-level.board.createPiece(PieceType.BOX, 3, 4)
-level.board.createPiece(PieceType.BOX, 4, 4)
-level.board.createPiece(PieceType.BOX, 3, 5)
-level.board.createPiece(PieceType.BOX, 4, 5)
-level.board.createPiece(PieceType.BOX, 3, 6)
-level.board.createPiece(PieceType.BOX, 4, 6)
-
-new Cluster([
-    level.board.createPiece(PieceType.DUCKLING, 6, 5),
-])
-
-level.board.createPiece(PieceType.CUTTER, 5, 6)
-level.board.createPiece(PieceType.CUTTER, 6, 6)
-level.board.createPiece(PieceType.CUTTER, 7, 6)
-
-new Cluster([
-    level.board.createPiece(PieceType.DUCK, 8, 7),
-    level.board.createPiece(PieceType.DUCK, 7, 8),
-    level.board.createPiece(PieceType.DUCK, 8, 8),
-    level.board.createPiece(PieceType.DUCK, 9, 8),
-    level.board.createPiece(PieceType.DUCK, 8, 9),
-])
-
-level.board.createPiece(PieceType.GOAL, 10, 8)
-level.board.createPiece(PieceType.GOAL, 11, 8)
-level.board.createPiece(PieceType.GOAL, 12, 8)
-level.board.createPiece(PieceType.GOAL, 11, 9)
-
-new Cluster([
-    level.board.createPiece(PieceType.DUCKLING, 5, 11),
-    level.board.createPiece(PieceType.DUCKLING, 4, 12),
-    level.board.createPiece(PieceType.DUCKLING, 5, 12),
-    level.board.createPiece(PieceType.DUCKLING, 6, 12),
-])
-
-new Cluster([
-    level.board.createPiece(PieceType.DUCKLING, 3, 13),
-    level.board.createPiece(PieceType.DUCKLING, 4, 13),
-    level.board.createPiece(PieceType.DUCKLING, 5, 13),
-    level.board.createPiece(PieceType.DUCKLING, 4, 14),
-])
-
-for (let n = 0; n < 16; ++n) {
-    level.board.createPiece(PieceType.VOID, n, 0)
-    level.board.createPiece(PieceType.VOID, n, 15)
-    level.board.createPiece(PieceType.VOID, 0, n)
-    level.board.createPiece(PieceType.VOID, 15, n)
+try {
+    level = loadLevel()
 }
+catch (err) {
+    //#region TODO delete
+    const level = new Level(16, 16)
 
-level.board.buildClusters(PieceType.BOX)
-//#endregion
+    level.board.createPiece(PieceType.BOX, 3, 3)
+    level.board.createPiece(PieceType.BOX, 4, 3)
+    level.board.createPiece(PieceType.BOX, 3, 4)
+    level.board.createPiece(PieceType.BOX, 4, 4)
+    level.board.createPiece(PieceType.BOX, 3, 5)
+    level.board.createPiece(PieceType.BOX, 4, 5)
+    level.board.createPiece(PieceType.BOX, 3, 6)
+    level.board.createPiece(PieceType.BOX, 4, 6)
+
+    new Cluster([
+        level.board.createPiece(PieceType.DUCKLING, 6, 5),
+    ])
+
+    level.board.createPiece(PieceType.CUTTER, 5, 6)
+    level.board.createPiece(PieceType.CUTTER, 6, 6)
+    level.board.createPiece(PieceType.CUTTER, 7, 6)
+
+    new Cluster([
+        level.board.createPiece(PieceType.DUCK, 8, 7),
+        level.board.createPiece(PieceType.DUCK, 7, 8),
+        level.board.createPiece(PieceType.DUCK, 8, 8),
+        level.board.createPiece(PieceType.DUCK, 9, 8),
+        level.board.createPiece(PieceType.DUCK, 8, 9),
+    ])
+
+    level.board.createPiece(PieceType.GOAL, 10, 8)
+    level.board.createPiece(PieceType.GOAL, 11, 8)
+    level.board.createPiece(PieceType.GOAL, 12, 8)
+    level.board.createPiece(PieceType.GOAL, 11, 9)
+
+    new Cluster([
+        level.board.createPiece(PieceType.DUCKLING, 5, 11),
+        level.board.createPiece(PieceType.DUCKLING, 4, 12),
+        level.board.createPiece(PieceType.DUCKLING, 5, 12),
+        level.board.createPiece(PieceType.DUCKLING, 6, 12),
+    ])
+
+    new Cluster([
+        level.board.createPiece(PieceType.DUCKLING, 3, 13),
+        level.board.createPiece(PieceType.DUCKLING, 4, 13),
+        level.board.createPiece(PieceType.DUCKLING, 5, 13),
+        level.board.createPiece(PieceType.DUCKLING, 4, 14),
+    ])
+
+    for (let n = 0; n < 16; ++n) {
+        level.board.createPiece(PieceType.VOID, n, 0)
+        level.board.createPiece(PieceType.VOID, n, 15)
+        level.board.createPiece(PieceType.VOID, 0, n)
+        level.board.createPiece(PieceType.VOID, 15, n)
+    }
+
+    level.board.buildClusters(PieceType.BOX)
+    //#endregion
+}
 
 type MoveScalar = -1 | 0 | 1
 type MoveScalarNonzero = -1 | 1

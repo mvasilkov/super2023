@@ -11,8 +11,8 @@ import { duckState } from './state.js'
 
 export function renderIntro(t: number) {
     let t1 = interpolatePhase(duckState, Settings.LEAVE_DURATION, t)
-    let t0 = Math.max(0, t1 - Settings.BAGHDAD_OVERLAP)
-    let t2 = Math.min(1, t1 + Settings.BAGHDAD_OVERLAP)
+    let t0 = Math.max(0, t1 - Settings.INTRO_OVERLAP)
+    let t2 = Math.min(1, t1 + Settings.INTRO_OVERLAP)
 
     t = easeInOutQuad(t1)
 
@@ -51,8 +51,8 @@ function airfoil(x0: number, y0: number, xs: number, ys: number, q: number, t: n
     const qsin = q * Math.sin(t)
     const a = 1 - q + qcos
     const b = a ** 2 + qsin ** 2
-    const x = qsin - qsin / b // .Inline
-    const y = qcos + a / b // .Inline
+    const x = qsin - qsin / b // .Inline(1)
+    const y = qcos + a / b // .Inline(1)
 
     oCon.lineTo(x0 - xs * x, y0 - ys * y)
 }
