@@ -8,9 +8,14 @@
   </head>
   <body>
     <label for="width">Width</label>
-    <input type="number" id="width" value="16">
+    <input type="number" id="width" value="16" min="1" max="255">
     <label for="height">Height</label>
-    <input type="number" id="height" value="16">
+    <input type="number" id="height" value="16" min="1" max="255">
+    <button type="button" data-color="#29366f">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+        <rect width="20" height="20" fill="#29366f" />
+      </svg>
+    </button>
     <button type="button" data-color="#1a1c2c">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
         <rect width="20" height="20" fill="#1a1c2c" />
@@ -29,6 +34,16 @@
     <button type="button" data-color="#a7f070">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
         <rect width="20" height="20" fill="#a7f070" />
+      </svg>
+    </button>
+    <button type="button" data-color="#566c86">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+        <rect width="20" height="20" fill="#566c86" />
+      </svg>
+    </button>
+    <button type="button" data-color="#b13e53">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+        <rect width="20" height="20" fill="#b13e53" />
       </svg>
     </button>
     <canvas id="c"></canvas>

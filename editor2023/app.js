@@ -7,15 +7,23 @@ import { startMainloop } from './node_modules/natlib/scheduling/mainloop.js'
 
 // Board
 
+const I_VOID = 0
+const I_BOARD = 1
+const I_DUCK = 2
+const I_DUCKLING = 3
+const I_GOAL = 4
+const I_BOX = 5
+const I_CUTTER = 6
+
 const widthInput = document.querySelector('#width')
 const heightInput = document.querySelector('#height')
 
 let board = Array.from({ length: heightInput.value },
-    () => Array.from({ length: widthInput.value }, () => 0))
+    () => Array.from({ length: widthInput.value }, () => I_BOARD))
 
 function resizeBoard() {
     const resizedBoard = Array.from({ length: heightInput.value },
-        () => Array.from({ length: widthInput.value }, () => 0))
+        () => Array.from({ length: widthInput.value }, () => I_BOARD))
 
     const height = Math.min(board.length, resizedBoard.length)
     const width = Math.min(board[0].length, resizedBoard[0].length)
@@ -37,14 +45,20 @@ heightInput.addEventListener('change', resizeBoard)
 // Color palette
 
 const palette = {
-    0: '#1a1c2c',
-    1: '#ffcd75',
-    2: '#94b0c2',
-    3: '#a7f070',
-    '#1a1c2c': 0,
-    '#ffcd75': 1,
-    '#94b0c2': 2,
-    '#a7f070': 3,
+    [I_VOID]: '#29366f',
+    [I_BOARD]: '#1a1c2c',
+    [I_DUCK]: '#ffcd75',
+    [I_DUCKLING]: '#94b0c2',
+    [I_GOAL]: '#a7f070',
+    [I_BOX]: '#566c86',
+    [I_CUTTER]: '#b13e53',
+    '#29366f': I_VOID,
+    '#1a1c2c': I_BOARD,
+    '#ffcd75': I_DUCK,
+    '#94b0c2': I_DUCKLING,
+    '#a7f070': I_GOAL,
+    '#566c86': I_BOX,
+    '#b13e53': I_CUTTER,
 }
 
 const cardinality = BigInt(Object.keys(palette).filter(a => a.length === 1).length)
@@ -88,7 +102,7 @@ function decodeBoard() {
         heightInput.value = height
 
         board = Array.from({ length: height },
-            () => Array.from({ length: width }, () => 0))
+            () => Array.from({ length: width }, () => I_BOARD))
 
         decodeBitmapBigInt(bigint, width, height, cardinality, (x, y, value) => {
             board[y][x] = value
@@ -147,19 +161,19 @@ function render() {
     const boardLeft = 0.5 * (SCREEN_WIDTH - width * cellSize)
     const boardTop = 0.5 * (SCREEN_HEIGHT - height * cellSize)
 
-    con.fillStyle = palette[0]
+    con.fillStyle = palette[I_BOARD]
     con.fillRect(boardLeft, boardTop, width * cellSize, height * cellSize)
 
     // Grid
     con.beginPath()
     const size = Math.max(width, height)
-    for (let n = 1; n < size; ++n) {
-        if (n < width) {
+    for (let n = 0; n <= size; ++n) {
+        if (n <= width) {
             con.moveTo(boardLeft + n * cellSize, boardTop)
             con.lineTo(boardLeft + n * cellSize, boardTop + height * cellSize)
         }
 
-        if (n < height) {
+        if (n <= height) {
             con.moveTo(boardLeft, boardTop + n * cellSize)
             con.lineTo(boardLeft + width * cellSize, boardTop + n * cellSize)
         }
@@ -171,7 +185,7 @@ function render() {
     for (let y = 0; y < height; ++y) {
         for (let x = 0; x < width; ++x) {
             const index = board[y][x]
-            if (index === 0) continue
+            if (index === I_BOARD) continue
             con.fillStyle = palette[index]
             con.fillRect(boardLeft + x * cellSize, boardTop + y * cellSize, cellSize, cellSize)
         }
