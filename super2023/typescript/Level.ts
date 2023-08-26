@@ -186,6 +186,9 @@ export class Level {
         if (duckState.phase === DuckPhase.MOVING && this.active.has(piece)) {
             x += lerp(piece.oldPosition.x - piece.x, 0, tDuck)
             y += lerp(piece.oldPosition.y - piece.y, 0, tDuck)
+            // if (piece.type === PieceType.DUCK) {
+            //     y -= 0.2 * easeOutQuad(oscillate(tDuck))
+            // }
         }
         // else if (piece.type === PieceType.VOID) {
         //     y -= 0.1 * easeInOutQuad(oscillate(tVibe))
@@ -222,14 +225,7 @@ export class Level {
             case PieceType.DUCK:
                 const colorIndex = (duckState.ducksOnGoal.has(piece) ? 1 : 0) + (duckState.ducksOnGoalNext.has(piece) ? 2 : 0)
 
-                con.fillStyle = duckSecondaryColors[colorIndex]! + '20'
-                con.fillRect(x, y + size, size, bh)
-
-                con.fillStyle = duckSecondaryColors[colorIndex]!
-                con.fillRect(x, y - bh + size, size, bh)
-
-                con.fillStyle = duckColors[colorIndex]!
-                con.fillRect(x, y - bh, size, size)
+                paintBlock(x, y, size, bh, 0, duckColors[colorIndex]!, duckSecondaryColors[colorIndex]!, 20)
 
                 if (colorIndex === 3) {
                     con.beginPath()
@@ -250,44 +246,22 @@ export class Level {
                 }
 
                 if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
-                    const progress = size * tDuck
+                    const progress = size * tDuck // .Inline(1)
 
-                    con.fillStyle = Palette.DUCKLING_2
-                    con.fillRect(x + progress, y - bh + size, size - progress, bh)
-
-                    con.fillStyle = Palette.DUCKLING
-                    con.fillRect(x + progress, y - bh, size - progress, size)
+                    paintBlock(x, y, size, bh, progress, Palette.DUCKLING, Palette.DUCKLING_2)
                 }
                 break
             case PieceType.DUCKLING:
-                con.fillStyle = Palette.DUCKLING_2 + '20'
-                con.fillRect(x, y + size, size, bh)
-
-                con.fillStyle = Palette.DUCKLING_2
-                con.fillRect(x, y - bh + size, size, bh)
-
-                con.fillStyle = Palette.DUCKLING
-                con.fillRect(x, y - bh, size, size)
+                paintBlock(x, y, size, bh, 0, Palette.DUCKLING, Palette.DUCKLING_2, 20)
 
                 if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
-                    const progress = size * tDuck
+                    const progress = size * tDuck // .Inline(1)
 
-                    con.fillStyle = Palette.DUCK_2
-                    con.fillRect(x + progress, y - bh + size, size - progress, bh)
-
-                    con.fillStyle = Palette.DUCK
-                    con.fillRect(x + progress, y - bh, size - progress, size)
+                    paintBlock(x, y, size, bh, progress, Palette.DUCK, Palette.DUCK_2)
                 }
                 break
             case PieceType.BOX:
-                con.fillStyle = Palette.BOX_2 + '30'
-                con.fillRect(x, y + size, size, bh)
-
-                con.fillStyle = Palette.BOX_2
-                con.fillRect(x, y - bh + size, size, bh)
-
-                con.fillStyle = Palette.BOX
-                con.fillRect(x, y - bh, size, size)
+                paintBlock(x, y, size, bh, 0, Palette.BOX, Palette.BOX_2, 30)
 
                 con.beginPath()
                 con.arc(x + 0.5 * size, y - bh + 0.5 * size, 0.3 * size, 0, 2 * Math.PI)
@@ -330,6 +304,28 @@ export class Level {
                 con.stroke()
         }
     }
+}
+
+function paintBlock(
+    x: number,
+    y: number,
+    size: number,
+    height: number,
+    progress: number,
+    color: string,
+    color2: string,
+    reflectionOpacity?: number) {
+
+    if (reflectionOpacity) {
+        con.fillStyle = color2 + reflectionOpacity
+        con.fillRect(x, y + size, size, height)
+    }
+
+    con.fillStyle = color2
+    con.fillRect(x + progress, y - height + size, size - progress, height)
+
+    con.fillStyle = color
+    con.fillRect(x + progress, y - height, size - progress, size)
 }
 
 export function loadLevel(): Level {
