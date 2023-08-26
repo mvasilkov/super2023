@@ -8,9 +8,28 @@ import { easeInOutQuad, lerp } from '../node_modules/natlib/interpolation.js'
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
-import { Cluster, PieceType, type Piece } from './Piece.js'
+import { Cluster, PieceType, blockTypes, type Piece } from './Piece.js'
 import { cascadeMove } from './rules.js'
-import { COLOR_DUCK_2_B, COLOR_DUCK_2_G, COLOR_DUCK_2_R, COLOR_DUCK_B, COLOR_DUCK_G, COLOR_DUCK_R, COLOR_GOAL_2_B, COLOR_GOAL_2_G, COLOR_GOAL_2_R, COLOR_GOAL_B, COLOR_GOAL_G, COLOR_GOAL_R, Palette, Settings, con, linearToSrgb, oscillate, wrapAround } from './setup.js'
+import {
+    COLOR_DUCK_2_B,
+    COLOR_DUCK_2_G,
+    COLOR_DUCK_2_R,
+    COLOR_DUCK_B,
+    COLOR_DUCK_G,
+    COLOR_DUCK_R,
+    COLOR_GOAL_2_B,
+    COLOR_GOAL_2_G,
+    COLOR_GOAL_2_R,
+    COLOR_GOAL_B,
+    COLOR_GOAL_G,
+    COLOR_GOAL_R,
+    Palette,
+    Settings,
+    con,
+    linearToSrgb,
+    oscillate,
+    wrapAround,
+} from './setup.js'
 import { DuckPhase, duckState, oscillatorState } from './state.js'
 
 export class Level {
@@ -138,20 +157,20 @@ export class Level {
         const colorDuckEntering = '#' +
             linearToSrgb(lerp(COLOR_GOAL_R, COLOR_DUCK_R, tDuck)) +
             linearToSrgb(lerp(COLOR_GOAL_G, COLOR_DUCK_G, tDuck)) +
-            linearToSrgb(lerp(COLOR_GOAL_B, COLOR_DUCK_B, tDuck))
+            linearToSrgb(lerp(COLOR_GOAL_B, COLOR_DUCK_B, tDuck)) // .Inline(1)
         const secondaryColorDuckEntering = '#' +
             linearToSrgb(lerp(COLOR_GOAL_2_R, COLOR_DUCK_2_R, tDuck)) +
             linearToSrgb(lerp(COLOR_GOAL_2_G, COLOR_DUCK_2_G, tDuck)) +
-            linearToSrgb(lerp(COLOR_GOAL_2_B, COLOR_DUCK_2_B, tDuck))
+            linearToSrgb(lerp(COLOR_GOAL_2_B, COLOR_DUCK_2_B, tDuck)) // .Inline(1)
 
         const colorDuckLeaving = '#' +
             linearToSrgb(lerp(COLOR_DUCK_R, COLOR_GOAL_R, tDuck)) +
             linearToSrgb(lerp(COLOR_DUCK_G, COLOR_GOAL_G, tDuck)) +
-            linearToSrgb(lerp(COLOR_DUCK_B, COLOR_GOAL_B, tDuck))
+            linearToSrgb(lerp(COLOR_DUCK_B, COLOR_GOAL_B, tDuck)) // .Inline(1)
         const secondaryColorDuckLeaving = '#' +
             linearToSrgb(lerp(COLOR_DUCK_2_R, COLOR_GOAL_2_R, tDuck)) +
             linearToSrgb(lerp(COLOR_DUCK_2_G, COLOR_GOAL_2_G, tDuck)) +
-            linearToSrgb(lerp(COLOR_DUCK_2_B, COLOR_GOAL_2_B, tDuck))
+            linearToSrgb(lerp(COLOR_DUCK_2_B, COLOR_GOAL_2_B, tDuck)) // .Inline(1)
 
         const duckColors = [Palette.DUCK, colorDuckEntering, colorDuckLeaving, Palette.DUCK_ON_GOAL]
         const duckSecondaryColors = [Palette.DUCK_2, secondaryColorDuckEntering, secondaryColorDuckLeaving, Palette.DUCK_ON_GOAL_2]
@@ -159,7 +178,7 @@ export class Level {
         con.fillStyle = Palette.BOARD
         con.fillRect(this.boardLeft, this.boardTop, this.board.width * this.cellSize, this.board.height * this.cellSize)
 
-        // Paint the grid
+        // Grid
         con.beginPath()
         const size = Math.max(this.board.width, this.board.height)
         for (let n = 1; n < size; ++n) {
@@ -172,12 +191,19 @@ export class Level {
         con.strokeStyle = Palette.GRID
         con.stroke()
 
+        // Flat pieces
+        const pieces: (Piece | undefined)[] = [] // .Inline(1)
+
+        pieces.concat(this.board.pieces[PieceType.VOID], this.board.pieces[PieceType.GOAL], this.board.pieces[PieceType.CUTTER])
+            .forEach(piece => piece && this.renderPiece(piece, piece.x, piece.y, tDuck,
+                wrapAround(tOscillator + Settings.OSCILLATOR_INCREMENT * (piece.x - 0.85 * piece.y)), duckColors, duckSecondaryColors))
+
+        // Blocks
         for (let y = 0; y < this.board.height; ++y) {
             for (let x = 0; x < this.board.width; ++x) {
                 const pieces = this.board.positions[y]![x]! // .Inline(1)
-                const tVibe = wrapAround(tOscillator + Settings.OSCILLATOR_INCREMENT * (x - 0.85 * y))
 
-                pieces.forEach(piece => this.renderPiece(piece, x, y, tDuck, tVibe, duckColors, duckSecondaryColors))
+                pieces.forEach(piece => blockTypes.has(piece.type) && this.renderPiece(piece, x, y, tDuck, 0, duckColors, duckSecondaryColors))
             }
         }
     }
@@ -190,9 +216,6 @@ export class Level {
             //     y -= 0.2 * easeOutQuad(oscillate(tDuck))
             // }
         }
-        // else if (piece.type === PieceType.VOID) {
-        //     y -= 0.1 * easeInOutQuad(oscillate(tVibe))
-        // }
 
         let size = this.cellSize
         x = x * size + this.boardLeft
@@ -276,6 +299,9 @@ export class Level {
                 const r3 = r + 0.5 * size
                 const opacity = Math.floor(lerp(0, 255, tVibe)) // .Inline(1)
 
+                con.fillStyle = Palette.NOTHING
+                con.fillRect(x, y, size, size)
+
                 con.beginPath()
                 con.arc(x0, y0, r, 0, 2 * Math.PI)
                 con.moveTo(x0 + r2, y0)
@@ -335,8 +361,6 @@ export function loadLevel(): Level {
     const bigint = BigInt('0x' + string.slice(4))
     const level = new Level(width, height)
     level.board.load(bigint)
-    level.board.buildClusters(PieceType.DUCK)
-    level.board.buildClusters(PieceType.DUCKLING)
-    level.board.buildClusters(PieceType.BOX)
+    blockTypes.forEach(type => level.board.buildClusters(type))
     return level
 }
