@@ -50,14 +50,14 @@ const palette = {
     [I_DUCK]: '#ffcd75',
     [I_DUCKLING]: '#94b0c2',
     [I_GOAL]: '#a7f070',
-    [I_BOX]: '#566c86',
+    [I_BOX]: '#41a6f6',
     [I_CUTTER]: '#b13e53',
     '#29366f': I_VOID,
     '#1a1c2c': I_BOARD,
     '#ffcd75': I_DUCK,
     '#94b0c2': I_DUCKLING,
     '#a7f070': I_GOAL,
-    '#566c86': I_BOX,
+    '#41a6f6': I_BOX,
     '#b13e53': I_CUTTER,
 }
 

@@ -26,6 +26,7 @@ export const enum Settings {
     GAMEPAD_DEAD_ZONE = 0.25,
     // Blocks
     BLOCK_HEIGHT = 0.4,
+    BLOCK_REFLECTION_OPACITY = 20,
     // Linear hatching
     HATCHING_AMOUNT = 3,
     // Intro properties
@@ -52,8 +53,8 @@ export const enum Palette {
     DUCK_ON_GOAL_2 = '#38b764',
     DUCKLING = '#94b0c2',
     DUCKLING_2 = '#566c86',
-    BOX = '#566c86',
-    BOX_2 = '#333c57',
+    BOX = '#41a6f6',
+    BOX_2 = '#3b5dc9',
 }
 
 // Output

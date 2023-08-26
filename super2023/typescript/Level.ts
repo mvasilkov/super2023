@@ -225,7 +225,7 @@ export class Level {
             case PieceType.DUCK:
                 const colorIndex = (duckState.ducksOnGoal.has(piece) ? 1 : 0) + (duckState.ducksOnGoalNext.has(piece) ? 2 : 0)
 
-                paintBlock(x, y, size, bh, 0, duckColors[colorIndex]!, duckSecondaryColors[colorIndex]!, 20)
+                paintBlock(x, y, size, bh, duckColors[colorIndex]!, duckSecondaryColors[colorIndex]!, 0, Settings.BLOCK_REFLECTION_OPACITY)
 
                 if (colorIndex === 3) {
                     con.beginPath()
@@ -248,20 +248,20 @@ export class Level {
                 if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
                     const progress = size * tDuck // .Inline(1)
 
-                    paintBlock(x, y, size, bh, progress, Palette.DUCKLING, Palette.DUCKLING_2)
+                    paintBlock(x, y, size, bh, Palette.DUCKLING, Palette.DUCKLING_2, progress)
                 }
                 break
             case PieceType.DUCKLING:
-                paintBlock(x, y, size, bh, 0, Palette.DUCKLING, Palette.DUCKLING_2, 20)
+                paintBlock(x, y, size, bh, Palette.DUCKLING, Palette.DUCKLING_2, 0, Settings.BLOCK_REFLECTION_OPACITY)
 
                 if (duckState.phase === DuckPhase.CONNECTING && this.active.has(piece)) {
                     const progress = size * tDuck // .Inline(1)
 
-                    paintBlock(x, y, size, bh, progress, Palette.DUCK, Palette.DUCK_2)
+                    paintBlock(x, y, size, bh, Palette.DUCK, Palette.DUCK_2, progress)
                 }
                 break
             case PieceType.BOX:
-                paintBlock(x, y, size, bh, 0, Palette.BOX, Palette.BOX_2, 30)
+                paintBlock(x, y, size, bh, Palette.BOX, Palette.BOX_2, 0, Settings.BLOCK_REFLECTION_OPACITY)
 
                 con.beginPath()
                 con.arc(x + 0.5 * size, y - bh + 0.5 * size, 0.3 * size, 0, 2 * Math.PI)
@@ -311,9 +311,9 @@ function paintBlock(
     y: number,
     size: number,
     height: number,
-    progress: number,
     color: string,
     color2: string,
+    progress: number,
     reflectionOpacity?: number) {
 
     if (reflectionOpacity) {
