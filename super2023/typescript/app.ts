@@ -22,7 +22,7 @@ try {
 }
 catch (err) {
     //#region TODO delete
-    const level = new Level(16, 16)
+    level = new Level(16, 16)
 
     level.board.createPiece(PieceType.BOX, 3, 3)
     level.board.createPiece(PieceType.BOX, 4, 3)

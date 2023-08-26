@@ -222,6 +222,9 @@ export class Level {
             case PieceType.DUCK:
                 const colorIndex = (duckState.ducksOnGoal.has(piece) ? 1 : 0) + (duckState.ducksOnGoalNext.has(piece) ? 2 : 0)
 
+                con.fillStyle = duckSecondaryColors[colorIndex]! + '20'
+                con.fillRect(x, y + size, size, bh)
+
                 con.fillStyle = duckSecondaryColors[colorIndex]!
                 con.fillRect(x, y - bh + size, size, bh)
 
@@ -257,6 +260,9 @@ export class Level {
                 }
                 break
             case PieceType.DUCKLING:
+                con.fillStyle = Palette.DUCKLING_2 + '20'
+                con.fillRect(x, y + size, size, bh)
+
                 con.fillStyle = Palette.DUCKLING_2
                 con.fillRect(x, y - bh + size, size, bh)
 
@@ -274,6 +280,9 @@ export class Level {
                 }
                 break
             case PieceType.BOX:
+                con.fillStyle = Palette.BOX_2 + '30'
+                con.fillRect(x, y + size, size, bh)
+
                 con.fillStyle = Palette.BOX_2
                 con.fillRect(x, y - bh + size, size, bh)
 
