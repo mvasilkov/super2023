@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
+# outDir
 # brew install jq
 out_dir=$(jq -r .compilerOptions.outDir tsconfig.json)
 
