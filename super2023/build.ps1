@@ -59,6 +59,18 @@ node_modules/.bin/cleancss -O1 -o build/app.opt.css $outDir/app.css
 '@ | Set-Content build/options.json
 node_modules/.bin/html-minifier-terser -c build/options.json -o build/index.html $outDir/index.html
 
+# Roadroller
+if ($args[0] -eq 'R1' -or $args[0] -eq 'R2') {
+  if ($args[0] -eq 'R1') {
+    $road_opt = '-O1'
+  }
+  else {
+    $road_opt = '-O2'
+  }
+  Move-Item build/app.opt.js build/app.opt1.js
+  node_modules/.bin/roadroller $road_opt -o build/app.opt.js -M256 -v build/app.opt1.js
+}
+
 # Package
 & $python build.py inline
 zip -jX9 build/app.zip build/index.html
