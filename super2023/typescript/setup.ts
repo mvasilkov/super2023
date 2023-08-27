@@ -27,6 +27,7 @@ export const enum Settings {
     // Blocks
     BLOCK_HEIGHT = 0.4,
     BLOCK_REFLECTION_OPACITY = 20,
+    BLOCK_GROW = 0.25,
     // Linear hatching
     HATCHING_AMOUNT = 3,
     // Intro properties

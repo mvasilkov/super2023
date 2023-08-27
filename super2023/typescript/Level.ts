@@ -218,8 +218,9 @@ export class Level {
         }
 
         let size = this.cellSize
-        x = x * size + this.boardLeft
-        y = y * size + this.boardTop
+        x = x * size + this.boardLeft - Settings.BLOCK_GROW
+        y = y * size + this.boardTop - Settings.BLOCK_GROW
+        size += 2 * Settings.BLOCK_GROW
 
         if (piece.killed) {
             size = lerp(size, 0, tDuck) // .InlineExp
@@ -344,11 +345,11 @@ function paintBlock(
 
     if (reflectionOpacity) {
         con.fillStyle = color2 + reflectionOpacity
-        con.fillRect(x, y + size, size, height)
+        con.fillRect(x, y + size - Settings.BLOCK_GROW, size, height + Settings.BLOCK_GROW)
     }
 
     con.fillStyle = color2
-    con.fillRect(x + progress, y - height + size, size - progress, height)
+    con.fillRect(x + progress, y - height + size - Settings.BLOCK_GROW, size - progress, height + Settings.BLOCK_GROW)
 
     con.fillStyle = color
     con.fillRect(x + progress, y - height, size - progress, size)
