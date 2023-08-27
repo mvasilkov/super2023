@@ -1,9 +1,13 @@
+/** This file is part of Super Holy Chalice.
+ * https://github.com/mvasilkov/super2023
+ * @license GPLv3 | Copyright (c) 2023 Mark Vasilkov
+ */
 'use strict'
 
-import { decodeBitmapBigInt } from './node_modules/natlib/bitmap/bitmap.js'
-import { CanvasHandle } from './node_modules/natlib/canvas/CanvasHandle.js'
-import { Pointer } from './node_modules/natlib/controls/Pointer.js'
-import { startMainloop } from './node_modules/natlib/scheduling/mainloop.js'
+import { decodeBitmapBigInt } from '../node_modules/natlib/bitmap/bitmap.js'
+import { CanvasHandle } from '../node_modules/natlib/canvas/CanvasHandle.js'
+import { Pointer } from '../node_modules/natlib/controls/Pointer.js'
+import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 
 // Board
 

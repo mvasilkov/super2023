@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 from itertools import chain, permutations
+from os.path import abspath
 from pathlib import Path
 import sys
 
 from PIL import Image
 
-OUR_ROOT = Path(__file__).resolve().parent
+OUR_ROOT = Path(abspath(__file__)).parent
 
 OUT_DIR = OUR_ROOT / 'typescript' / 'pictures'
 
