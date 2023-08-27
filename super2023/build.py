@@ -11,7 +11,7 @@ OUR_ROOT = Path(abspath(__file__)).parent
 OUT_DIR = OUR_ROOT / 'typescript' / 'pictures'
 
 FILE_LICENSE = '''
-/** This file is part of Super Holy Chalice.
+/** This file is part of Super Siege of Baghdad.
  * https://github.com/mvasilkov/super2023
  * @license GPLv3 | Copyright (c) 2023 Mark Vasilkov
  */
