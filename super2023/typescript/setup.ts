@@ -31,7 +31,7 @@ export const enum Settings {
     // Linear hatching
     HATCHING_AMOUNT = 3,
     // Intro properties
-    INTRO_OVERLAP = 0.05,
+    INTRO_OVERLAP = 0.04,
     // Level loading
     LEVEL_CARDINALITY = 7,
 }
