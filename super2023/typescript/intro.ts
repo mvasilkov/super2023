@@ -9,7 +9,7 @@ import { interpolatePhase } from '../node_modules/natlib/state.js'
 import { Palette, Settings, con, oCon } from './setup.js'
 import { duckState } from './state.js'
 
-export function renderIntro(t: number) {
+export function renderIntro(t: number, tOscillator: number) {
     let t1 = interpolatePhase(duckState, Settings.LEAVE_DURATION, t)
     let t0 = Math.max(0, t1 - Settings.INTRO_OVERLAP)
     let t2 = Math.min(1, t1 + Settings.INTRO_OVERLAP)
@@ -66,7 +66,7 @@ function angular(t: number): number {
         0 + (t - 0.5) * (96 - 0) * 2)
 }
 
-export function renderIntroEnd(t: number) {
+export function renderIntroEnd(t: number, tOscillator: number) {
     t = easeInOutQuad(interpolatePhase(duckState, Settings.ENTER_DURATION, t))
 
     con.fillStyle = Palette.INTRO_2

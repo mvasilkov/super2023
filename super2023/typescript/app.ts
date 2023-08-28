@@ -11,7 +11,6 @@ import { enterPhase, updatePhase } from '../node_modules/natlib/state.js'
 import { Level, loadLevel } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { getGamepadDirection } from './gamepad.js'
-import { renderIntro, renderIntroEnd } from './intro.js'
 import { Palette, Settings, con, keyboard, oCon, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
@@ -209,14 +208,6 @@ function render(t: number) {
     con.fillRect(0, 0, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
 
     level.render(t)
-
-    switch (duckState.phase) {
-        case DuckPhase.LEAVING:
-            renderIntro(t)
-            break
-        case DuckPhase.ENTERING:
-            renderIntroEnd(t)
-    }
 }
 
 startMainloop(update, render)

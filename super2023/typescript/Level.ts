@@ -9,6 +9,7 @@ import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, blockTypes, type Piece } from './Piece.js'
+import { renderIntro, renderIntroEnd } from './intro.js'
 import { cascadeMove } from './rules.js'
 import {
     COLOR_DUCK_2_B,
@@ -205,6 +206,15 @@ export class Level {
 
                 pieces.forEach(piece => blockTypes.has(piece.type) && this.renderPiece(piece, x, y, tDuck, 0, duckColors, duckSecondaryColors))
             }
+        }
+
+        // Intro
+        switch (duckState.phase) {
+            case DuckPhase.LEAVING:
+                renderIntro(t, tOscillator)
+                break
+            case DuckPhase.ENTERING:
+                renderIntroEnd(t, tOscillator)
         }
     }
 
