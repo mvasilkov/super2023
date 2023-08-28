@@ -4,8 +4,9 @@
  */
 'use strict'
 
-import { easeInOutQuad } from '../node_modules/natlib/interpolation.js'
+import { easeInOutQuad, easeOutQuad, lerp } from '../node_modules/natlib/interpolation.js'
 import { interpolatePhase } from '../node_modules/natlib/state.js'
+import { printCenter } from './print.js'
 import { Palette, Settings, con, oCon } from './setup.js'
 import { duckState } from './state.js'
 
@@ -19,6 +20,12 @@ export function renderIntro(t: number, tOscillator: number) {
     con.fillStyle = Palette.INTRO_2
     con.fillRect(0, 0.5 * (1 - t) * Settings.SCREEN_HEIGHT,
         Settings.SCREEN_WIDTH, t * Settings.SCREEN_HEIGHT)
+
+    oCon.clearRect(0, 0, Settings.SCREEN_WIDTH, 0.35 * Settings.SCREEN_HEIGHT)
+    oCon.beginPath()
+    printCenter(0.5 * Settings.SCREEN_WIDTH, lerp(-20, 0.25 * Settings.SCREEN_HEIGHT, easeOutQuad(t1)), 5, 'SUPER SIEGE of BAGHDAD', 1, tOscillator)
+    oCon.fillStyle = Palette.INTRO
+    oCon.fill()
 
     t0 = angular(easeInOutQuad(t0))
     t1 = angular(easeInOutQuad(t1))
@@ -72,6 +79,12 @@ export function renderIntroEnd(t: number, tOscillator: number) {
     con.fillStyle = Palette.INTRO_2
     con.fillRect(0.5 * t * Settings.SCREEN_WIDTH, 0,
         (1 - t) * Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
+
+    oCon.clearRect(0, 0, Settings.SCREEN_WIDTH, 0.35 * Settings.SCREEN_HEIGHT)
+    oCon.beginPath()
+    printCenter(0.5 * Settings.SCREEN_WIDTH, 0.25 * Settings.SCREEN_HEIGHT, 5, 'SUPER SIEGE of BAGHDAD', 1, tOscillator)
+    oCon.fillStyle = Palette.INTRO
+    oCon.fill()
 
     const eraseSize = 0.5 * t * Settings.SCREEN_WIDTH
     oCon.clearRect(0, 0, eraseSize, Settings.SCREEN_HEIGHT)
