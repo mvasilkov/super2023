@@ -195,7 +195,7 @@ export class Level {
         // Flat pieces
         const pieces: (Piece | undefined)[] = [] // .Inline(1)
 
-        pieces.concat(this.board.pieces[PieceType.VOID], this.board.pieces[PieceType.GOAL], this.board.pieces[PieceType.CUTTER])
+        pieces.concat(this.board.pieces[PieceType.GOAL], this.board.pieces[PieceType.CUTTER])
             .forEach(piece => piece && this.renderPiece(piece, piece.x, piece.y, tDuck,
                 wrapAround(tOscillator + Settings.OSCILLATOR_INCREMENT * (piece.x - 0.85 * piece.y)), duckColors, duckSecondaryColors))
 
@@ -203,8 +203,9 @@ export class Level {
         for (let y = 0; y < this.board.height; ++y) {
             for (let x = 0; x < this.board.width; ++x) {
                 const pieces = this.board.positions[y]![x]! // .Inline(1)
+                const tVibe = wrapAround(tOscillator + Settings.OSCILLATOR_INCREMENT * (x - 0.85 * y))
 
-                pieces.forEach(piece => blockTypes.has(piece.type) && this.renderPiece(piece, x, y, tDuck, 0, duckColors, duckSecondaryColors))
+                pieces.forEach(piece => blockTypes.has(piece.type) && this.renderPiece(piece, x, y, tDuck, tVibe, duckColors, duckSecondaryColors))
             }
         }
 

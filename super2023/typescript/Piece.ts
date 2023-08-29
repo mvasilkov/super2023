@@ -16,7 +16,7 @@ export const enum PieceType {
     CUTTER,
 }
 
-export const blockTypes = new Set([PieceType.DUCK, PieceType.DUCKLING, PieceType.BOX])
+export const blockTypes = new Set([PieceType.VOID, PieceType.DUCK, PieceType.DUCKLING, PieceType.BOX])
 
 export class Piece<T extends PieceType = PieceType> extends Vec2 {
     readonly type: PieceType
