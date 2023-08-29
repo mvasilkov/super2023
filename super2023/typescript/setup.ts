@@ -42,7 +42,6 @@ export const enum Palette {
     NOTHING = '#000',
     BOARD = '#1a1c2c',
     GRID = '#333c57',
-    CUTTER = '#ea323c',
     GOAL = '#a7f070',
     VOID = '#566c86',
     INTRO = '#ffcd75',
@@ -56,6 +55,8 @@ export const enum Palette {
     DUCKLING_2 = '#566c86',
     BOX = '#41a6f6',
     BOX_2 = '#3b5dc9',
+    CUTTER = '#f5555d',
+    CUTTER_2 = '#c42430',
 }
 
 // Output

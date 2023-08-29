@@ -4,11 +4,11 @@
  */
 'use strict'
 
-import { easeInOutQuad, lerp } from '../node_modules/natlib/interpolation.js'
+import { easeInOutQuad, easeOutQuad, lerp } from '../node_modules/natlib/interpolation.js'
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
-import { Cluster, PieceType, blockTypes, type Piece } from './Piece.js'
+import { Cluster, PieceType, type Piece } from './Piece.js'
 import { renderIntro, renderIntroEnd } from './intro.js'
 import { cascadeMove } from './rules.js'
 import {
@@ -183,21 +183,22 @@ export class Level {
         con.beginPath()
         const size = Math.max(this.board.width, this.board.height)
         for (let n = 1; n < size; ++n) {
-            con.moveTo(this.boardLeft + n * this.cellSize, this.boardTop)
-            con.lineTo(this.boardLeft + n * this.cellSize, this.boardTop + this.board.height * this.cellSize)
+            if (n < this.board.width) {
+                con.moveTo(this.boardLeft + n * this.cellSize, this.boardTop)
+                con.lineTo(this.boardLeft + n * this.cellSize, this.boardTop + this.board.height * this.cellSize)
+            }
 
-            con.moveTo(this.boardLeft, this.boardTop + n * this.cellSize)
-            con.lineTo(this.boardLeft + this.board.width * this.cellSize, this.boardTop + n * this.cellSize)
+            if (n < this.board.height) {
+                con.moveTo(this.boardLeft, this.boardTop + n * this.cellSize)
+                con.lineTo(this.boardLeft + this.board.width * this.cellSize, this.boardTop + n * this.cellSize)
+            }
         }
         con.strokeStyle = Palette.GRID
         con.stroke()
 
-        // Flat pieces
-        const pieces: (Piece | undefined)[] = [] // .Inline(1)
-
-        pieces.concat(this.board.pieces[PieceType.GOAL], this.board.pieces[PieceType.CUTTER])
-            .forEach(piece => piece && this.renderPiece(piece, piece.x, piece.y, tDuck,
-                wrapAround(tOscillator + Settings.OSCILLATOR_INCREMENT * (piece.x - 0.85 * piece.y)), duckColors, duckSecondaryColors))
+        // Floor tiles
+        this.board.pieces[PieceType.GOAL]?.forEach(piece =>
+            this.renderPiece(piece, piece.x, piece.y, tDuck, 0, duckColors, duckSecondaryColors))
 
         // Blocks
         for (let y = 0; y < this.board.height; ++y) {
@@ -205,7 +206,7 @@ export class Level {
                 const pieces = this.board.positions[y]![x]! // .Inline(1)
                 const tVibe = wrapAround(tOscillator + Settings.OSCILLATOR_INCREMENT * (x - 0.85 * y))
 
-                pieces.forEach(piece => blockTypes.has(piece.type) && this.renderPiece(piece, x, y, tDuck, tVibe, duckColors, duckSecondaryColors))
+                pieces.forEach(piece => piece.type !== PieceType.GOAL && this.renderPiece(piece, x, y, tDuck, tVibe, duckColors, duckSecondaryColors))
             }
         }
 
@@ -304,27 +305,26 @@ export class Level {
                 con.stroke()
                 break
             case PieceType.CUTTER:
-                const x0 = x + 0.5 * size
-                const y0 = y + 0.5 * size
-                const r = 0.25 * size * (1 - tVibe)
-                const r2 = r + 0.25 * size
-                const r3 = r + 0.5 * size
-                const opacity = Math.floor(lerp(0, 255, tVibe)) // .Inline(1)
-
-                con.fillStyle = Palette.NOTHING
-                con.fillRect(x, y, size, size)
+                const height = (0.9 * easeOutQuad(oscillate(tVibe)) + 0.1) * bh
 
                 con.beginPath()
-                con.arc(x0, y0, r, 0, 2 * Math.PI)
-                con.moveTo(x0 + r2, y0)
-                con.arc(x0, y0, r2, 0, 2 * Math.PI)
-                con.strokeStyle = Palette.CUTTER
-                con.stroke()
+                con.lineTo(x + 0.8 * size, y + 0.5 * size)
+                con.arc(x + 0.5 * size, y + height + 0.5 * size, 0.3 * size, 0, Math.PI)
+                con.lineTo(x + 0.2 * size, y + 0.5 * size)
+                con.fillStyle = Palette.CUTTER_2 + Settings.BLOCK_REFLECTION_OPACITY
+                con.fill()
 
                 con.beginPath()
-                con.arc(x0, y0, r3, 0, 2 * Math.PI)
-                con.strokeStyle = Palette.CUTTER + opacity.toString(16).padStart(2, '0')
-                con.stroke()
+                con.lineTo(x + 0.8 * size, y - height + 0.5 * size)
+                con.arc(x + 0.5 * size, y + 0.5 * size, 0.3 * size, 0, Math.PI)
+                con.lineTo(x + 0.2 * size, y - height + 0.5 * size)
+                con.fillStyle = Palette.CUTTER_2
+                con.fill()
+
+                con.beginPath()
+                con.arc(x + 0.5 * size, y - height + 0.5 * size, 0.3 * size, 0, 2 * Math.PI)
+                con.fillStyle = Palette.CUTTER
+                con.fill()
                 break
             case PieceType.GOAL:
                 const step = size / Settings.HATCHING_AMOUNT
@@ -373,6 +373,7 @@ export function loadLevel(): Level {
     const bigint = BigInt('0x' + string.slice(4))
     const level = new Level(width, height)
     level.board.load(bigint)
-    blockTypes.forEach(type => level.board.buildClusters(type))
+    const clusterTypes = [PieceType.DUCK, PieceType.DUCKLING, PieceType.BOX]
+    clusterTypes.forEach(type => level.board.buildClusters(type))
     return level
 }
