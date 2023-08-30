@@ -1,4 +1,4 @@
-/** This file is part of Super Siege of Baghdad.
+/** This file is part of Super Castle Game.
  * https://github.com/mvasilkov/super2023
  * @license GPLv3 | Copyright (c) 2023 Mark Vasilkov
  */
@@ -23,7 +23,7 @@ export function renderIntro(t: number, tOscillator: number) {
 
     oCon.clearRect(0, 0, Settings.SCREEN_WIDTH, 0.35 * Settings.SCREEN_HEIGHT)
     oCon.beginPath()
-    printCenter(0.5 * Settings.SCREEN_WIDTH, lerp(-20, 0.25 * Settings.SCREEN_HEIGHT, easeOutQuad(t1)), 5, 'SUPER SIEGE of BAGHDAD', 1, tOscillator)
+    printCenter(0.5 * Settings.SCREEN_WIDTH, lerp(-20, 0.25 * Settings.SCREEN_HEIGHT, easeOutQuad(t1)), 5, 'SUPER CASTLE GAME', 1, tOscillator)
     oCon.fillStyle = Palette.INTRO
     oCon.fill()
 
@@ -82,7 +82,7 @@ export function renderIntroEnd(t: number, tOscillator: number) {
 
     oCon.clearRect(0, 0, Settings.SCREEN_WIDTH, 0.35 * Settings.SCREEN_HEIGHT)
     oCon.beginPath()
-    printCenter(0.5 * Settings.SCREEN_WIDTH, 0.25 * Settings.SCREEN_HEIGHT, 5, 'SUPER SIEGE of BAGHDAD', 1, tOscillator)
+    printCenter(0.5 * Settings.SCREEN_WIDTH, 0.25 * Settings.SCREEN_HEIGHT, 5, 'SUPER CASTLE GAME', 1, tOscillator)
     oCon.fillStyle = Palette.INTRO
     oCon.fill()
 

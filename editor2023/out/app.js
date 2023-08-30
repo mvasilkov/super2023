@@ -1,4 +1,4 @@
-/** This file is part of Super Siege of Baghdad.
+/** This file is part of Super Castle Game.
  * https://github.com/mvasilkov/super2023
  * @license GPLv3 | Copyright (c) 2023 Mark Vasilkov
  */
