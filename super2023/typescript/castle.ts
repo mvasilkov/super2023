@@ -19,17 +19,33 @@ class Block {
     }
 }
 
-const CASTLE_WIDTH = 8
-const CASTLE_HEIGHT = 8
-const CASTLE_DEPTH = 8
+const CASTLE_WIDTH = 7
+const CASTLE_HEIGHT = 7
+const CASTLE_DEPTH = 7
 
 function buildCastle(): Block[] {
     const castle: Block[] = []
 
-    for (let x = 0; x < CASTLE_WIDTH; ++x) {
-        for (let y = 0; y < CASTLE_HEIGHT; ++y) {
-            for (let z = 0; z < CASTLE_DEPTH; ++z) {
+    for (let z = 0; z < CASTLE_DEPTH; ++z) {
+        for (let x = 0; x < CASTLE_WIDTH; ++x) {
+            for (let y = 0; y < CASTLE_HEIGHT; ++y) {
+                // Walls
                 if (x > 0 && x < CASTLE_WIDTH - 1 && y > 0 && y < CASTLE_HEIGHT - 1) {
+                    continue
+                }
+
+                // Gate
+                if (Math.hypot(x - 7, y - 3, z - 1) < 2) {
+                    continue
+                }
+
+                // Windows
+                if (z > 2 && z < 5 && (x === 2 || x === 4)) {
+                    continue
+                }
+
+                // Crenellations
+                if (z > 5 && ((x & 1) | (y & 1))) {
                     continue
                 }
 
@@ -52,7 +68,7 @@ export function paintCastle() {
     con.translate(x0, y0)
 
     castle.forEach(block => {
-        drawIsoBlock(block.x * size, block.y * size, block.z * size, size)
+        drawIsoBlock(block.x * size, block.y * size, block.z * size, 0.95 * size)
     })
 
     con.restore()
@@ -81,23 +97,26 @@ function drawIsoBlock(x0: number, y0: number, z0: number, size: number) {
         // [vertices[0], vertices[1], vertices[2], vertices[3]], // Front face
         [vertices[4], vertices[5], vertices[6], vertices[7]], // Back face
         // [vertices[0], vertices[1], vertices[5], vertices[4]], // Bottom face
-        [vertices[2], vertices[3], vertices[7], vertices[6]], // Top face
         [vertices[1], vertices[2], vertices[6], vertices[5]], // Right face
+        [vertices[2], vertices[3], vertices[7], vertices[6]], // Top face
         // [vertices[0], vertices[3], vertices[7], vertices[4]]  // Left face
     ]
 
-    con.fillStyle = 'rgba(0, 150, 255, 0.5)'
-    con.strokeStyle = '#ff0080'
+    const colors = [
+        '#94b0c2',
+        '#566c86',
+        '#333c57',
+    ]
 
     // Draw each face of the cube
-    for (const face of faces) {
+    faces.forEach((face, index) => {
         con.beginPath()
         for (let i = 0; i < face.length; i++) {
             const projectedVertex = projectIsoVertex(face[i]!.x, face[i]!.y, face[i]!.z)
             con.lineTo(projectedVertex.x, projectedVertex.y)
         }
-        con.closePath()
+        // con.closePath()
+        con.fillStyle = colors[index]!
         con.fill()
-        con.stroke()
-    }
+    })
 }
