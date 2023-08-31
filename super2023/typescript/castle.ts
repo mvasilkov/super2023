@@ -4,7 +4,6 @@
  */
 'use strict'
 
-// import { paintBlock } from './Level.js'
 import { Settings, con } from './setup.js'
 
 class Block {
@@ -59,7 +58,7 @@ function buildCastle(): Block[] {
 
 const castle = buildCastle()
 
-export function paintCastle() {
+export function paintCastle(t: number) {
     const size = 30
     const x0 = 0.5 * Settings.SCREEN_WIDTH
     const y0 = 0.5 * Settings.SCREEN_HEIGHT
@@ -68,7 +67,7 @@ export function paintCastle() {
     con.translate(x0, y0)
 
     castle.forEach(block => {
-        drawIsoBlock(block.x * size, block.y * size, block.z * size, 0.95 * size)
+        drawIsoBlock(block.x * size, block.y * size, block.z * size, t * 0.47 * size)
     })
 
     con.restore()
@@ -80,16 +79,16 @@ function projectIsoVertex(x: number, y: number, z: number) {
     return { x: isoX, y: isoY }
 }
 
-function drawIsoBlock(x0: number, y0: number, z0: number, size: number) {
+function drawIsoBlock(x: number, y: number, z: number, size: number) {
     const vertices = [
-        { x: x0 - size / 2, y: y0 - size / 2, z: z0 - size / 2 }, // Front bottom left
-        { x: x0 + size / 2, y: y0 - size / 2, z: z0 - size / 2 }, // Front bottom right
-        { x: x0 + size / 2, y: y0 + size / 2, z: z0 - size / 2 }, // Front top right
-        { x: x0 - size / 2, y: y0 + size / 2, z: z0 - size / 2 }, // Front top left
-        { x: x0 - size / 2, y: y0 - size / 2, z: z0 + size / 2 }, // Back bottom left
-        { x: x0 + size / 2, y: y0 - size / 2, z: z0 + size / 2 }, // Back bottom right
-        { x: x0 + size / 2, y: y0 + size / 2, z: z0 + size / 2 }, // Back top right
-        { x: x0 - size / 2, y: y0 + size / 2, z: z0 + size / 2 }  // Back top left
+        { x: x - size, y: y - size, z: z - size }, // Front bottom left
+        { x: x + size, y: y - size, z: z - size }, // Front bottom right
+        { x: x + size, y: y + size, z: z - size }, // Front top right
+        { x: x - size, y: y + size, z: z - size }, // Front top left
+        { x: x - size, y: y - size, z: z + size }, // Back bottom left
+        { x: x + size, y: y - size, z: z + size }, // Back bottom right
+        { x: x + size, y: y + size, z: z + size }, // Back top right
+        { x: x - size, y: y + size, z: z + size }  // Back top left
     ]
 
     // Define the cube's faces using vertex indices
@@ -111,8 +110,8 @@ function drawIsoBlock(x0: number, y0: number, z0: number, size: number) {
     // Draw each face of the cube
     faces.forEach((face, index) => {
         con.beginPath()
-        for (let i = 0; i < face.length; i++) {
-            const projectedVertex = projectIsoVertex(face[i]!.x, face[i]!.y, face[i]!.z)
+        for (let n = 0; n < face.length; ++n) {
+            const projectedVertex = projectIsoVertex(face[n]!.x, face[n]!.y, face[n]!.z)
             con.lineTo(projectedVertex.x, projectedVertex.y)
         }
         // con.closePath()

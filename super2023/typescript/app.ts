@@ -11,7 +11,7 @@ import { enterPhase, updatePhase } from '../node_modules/natlib/state.js'
 import { Level, loadLevel } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { getGamepadDirection } from './gamepad.js'
-import { Palette, Settings, con, keyboard, oCon, pointer } from './setup.js'
+import { Palette, Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
 let level: Level
@@ -160,10 +160,7 @@ function update() {
 
     switch (duckState.phase) {
         case DuckPhase.INTERACTIVE:
-            if (oldPhase === DuckPhase.ENTERING) {
-                oCon.clearRect(0, 0, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
-            }
-            else if (oldPhase === DuckPhase.MOVING || oldPhase === DuckPhase.CONNECTING) {
+            if (oldPhase === DuckPhase.MOVING || oldPhase === DuckPhase.CONNECTING) {
                 const ducks: Piece[] = []
                 const updateClusters: Set<Cluster> = new Set
 

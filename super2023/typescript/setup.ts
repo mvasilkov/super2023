@@ -45,7 +45,7 @@ export const enum Palette {
     GOAL = '#a7f070',
     VOID = '#566c86',
     INTRO = '#ffcd75',
-    INTRO_2 = '#333c57',
+    INTRO_2 = '#ef7d57',
     // Blocks
     DUCK = '#ffcd75',
     DUCK_2 = '#ef7d57',
@@ -71,12 +71,6 @@ con.lineWidth = 1.5
 /** Overlay canvas */
 export const oCanvas = new CanvasHandle(document.querySelector('#o'),
     Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
-
-/** Overlay context */
-export const oCon = oCanvas.con
-
-oCon.lineWidth = 2
-oCon.lineCap = 'round'
 
 // Input
 
