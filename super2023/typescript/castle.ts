@@ -4,118 +4,86 @@
  */
 'use strict'
 
-import { Settings, con } from './setup.js'
+import { Palette, Settings, con } from './setup.js'
 
-class Block {
-    x: number
-    y: number
-    z: number
+const COS_30 = Math.cos(Math.PI / 6)
+const SIN_30 = Math.sin(Math.PI / 6)
 
-    constructor(x: number, y: number, z: number) {
-        this.x = x
-        this.y = y
-        this.z = z
-    }
+function projectIsoVertex(x: number, y: number, z: number): [x: number, y: number] {
+    const xp = (x - y) * COS_30 + 0.5 * Settings.SCREEN_WIDTH
+    const yp = -z + (x + y) * SIN_30 + 0.5 * Settings.SCREEN_HEIGHT
+    return [xp, yp]
 }
 
-const CASTLE_WIDTH = 7
-const CASTLE_HEIGHT = 7
-const CASTLE_DEPTH = 7
+type Vertex3 = Parameters<typeof projectIsoVertex>
 
-function buildCastle(): Block[] {
-    const castle: Block[] = []
+function renderFace(face: readonly Vertex3[], color: string) {
+    con.beginPath()
+    for (let n = 0; n < 4; ++n) {
+        con.lineTo(...projectIsoVertex(...face[n]!))
+    }
+    con.fillStyle = color
+    con.fill()
+}
 
-    for (let z = 0; z < CASTLE_DEPTH; ++z) {
-        for (let x = 0; x < CASTLE_WIDTH; ++x) {
-            for (let y = 0; y < CASTLE_HEIGHT; ++y) {
+function renderIsoBlock(x: number, y: number, z: number, size: number) {
+    // Vertices
+    const v1: Vertex3 = [x + size, y - size, z - size]
+    const v2: Vertex3 = [x + size, y + size, z - size]
+    const v3: Vertex3 = [x - size, y + size, z - size]
+    const v4: Vertex3 = [x - size, y - size, z + size]
+    const v5: Vertex3 = [x + size, y - size, z + size]
+    const v6: Vertex3 = [x + size, y + size, z + size]
+    const v7: Vertex3 = [x - size, y + size, z + size]
+    // Faces
+    renderFace([v4, v5, v6, v7], Palette.CASTLE)
+    renderFace([v1, v2, v6, v5], Palette.CASTLE_2)
+    renderFace([v2, v3, v7, v6], Palette.CASTLE_3)
+}
+
+const xs: number[] = []
+const ys: number[] = []
+const zs: number[] = []
+
+function buildCastle() {
+    for (let z = 0; z < Settings.CASTLE_HEIGHT; ++z) {
+        for (let y = 0; y < Settings.CASTLE_LENGTH; ++y) {
+            for (let x = 0; x < Settings.CASTLE_WIDTH; ++x) {
                 // Walls
-                if (x > 0 && x < CASTLE_WIDTH - 1 && y > 0 && y < CASTLE_HEIGHT - 1) {
+                if (x > 0 && x < Settings.CASTLE_WIDTH - 1 && y > 0 && y < Settings.CASTLE_LENGTH - 1) {
                     continue
                 }
-
                 // Gate
                 if (Math.hypot(x - 7, y - 3, z - 1) < 2) {
                     continue
                 }
-
                 // Windows
                 if (z > 2 && z < 5 && (x === 2 || x === 4)) {
                     continue
                 }
-
                 // Crenellations
                 if (z > 5 && ((x & 1) | (y & 1))) {
                     continue
                 }
 
-                castle.push(new Block(x, y, z))
+                xs.push(x)
+                ys.push(y)
+                zs.push(z)
             }
         }
     }
-
-    return castle
 }
 
-const castle = buildCastle()
+buildCastle()
 
-export function paintCastle(t: number) {
-    const size = 30
-    const x0 = 0.5 * Settings.SCREEN_WIDTH
-    const y0 = 0.5 * Settings.SCREEN_HEIGHT
+export function renderCastle(t: number, done: number) {
+    const N = done * xs.length // done ∈ [0, 1]
+    const size = t * Settings.CASTLE_BLK_SIZE * Settings.CASTLE_BLK_SCALE
 
-    con.save()
-    con.translate(x0, y0)
-
-    castle.forEach(block => {
-        drawIsoBlock(block.x * size, block.y * size, block.z * size, t * 0.47 * size)
-    })
-
-    con.restore()
-}
-
-function projectIsoVertex(x: number, y: number, z: number) {
-    const isoX = (x - y) * Math.cos(Math.PI / 6)
-    const isoY = -z + (x + y) * Math.sin(Math.PI / 6)
-    return { x: isoX, y: isoY }
-}
-
-function drawIsoBlock(x: number, y: number, z: number, size: number) {
-    const vertices = [
-        { x: x - size, y: y - size, z: z - size }, // Front bottom left
-        { x: x + size, y: y - size, z: z - size }, // Front bottom right
-        { x: x + size, y: y + size, z: z - size }, // Front top right
-        { x: x - size, y: y + size, z: z - size }, // Front top left
-        { x: x - size, y: y - size, z: z + size }, // Back bottom left
-        { x: x + size, y: y - size, z: z + size }, // Back bottom right
-        { x: x + size, y: y + size, z: z + size }, // Back top right
-        { x: x - size, y: y + size, z: z + size }  // Back top left
-    ]
-
-    // Define the cube's faces using vertex indices
-    const faces = [
-        // [vertices[0], vertices[1], vertices[2], vertices[3]], // Front face
-        [vertices[4], vertices[5], vertices[6], vertices[7]], // Back face
-        // [vertices[0], vertices[1], vertices[5], vertices[4]], // Bottom face
-        [vertices[1], vertices[2], vertices[6], vertices[5]], // Right face
-        [vertices[2], vertices[3], vertices[7], vertices[6]], // Top face
-        // [vertices[0], vertices[3], vertices[7], vertices[4]]  // Left face
-    ]
-
-    const colors = [
-        '#94b0c2',
-        '#566c86',
-        '#333c57',
-    ]
-
-    // Draw each face of the cube
-    faces.forEach((face, index) => {
-        con.beginPath()
-        for (let n = 0; n < face.length; ++n) {
-            const projectedVertex = projectIsoVertex(face[n]!.x, face[n]!.y, face[n]!.z)
-            con.lineTo(projectedVertex.x, projectedVertex.y)
-        }
-        // con.closePath()
-        con.fillStyle = colors[index]!
-        con.fill()
-    })
+    for (let n = 0; n < N; ++n) {
+        renderIsoBlock(
+            xs[n]! * Settings.CASTLE_BLK_SIZE,
+            ys[n]! * Settings.CASTLE_BLK_SIZE,
+            zs[n]! * Settings.CASTLE_BLK_SIZE, size)
+    }
 }

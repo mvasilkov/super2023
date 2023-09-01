@@ -30,10 +30,14 @@ export const enum Settings {
     BLOCK_GROW = 0.25,
     // Linear hatching
     HATCHING_AMOUNT = 3,
-    // Intro properties
-    INTRO_OVERLAP = 0.04,
     // Level loading
     LEVEL_CARDINALITY = 7,
+    // Castle properties
+    CASTLE_BLK_SIZE = 30,
+    CASTLE_BLK_SCALE = 0.47,
+    CASTLE_WIDTH = 7, // Size(X)
+    CASTLE_LENGTH = 7, // Size(Y)
+    CASTLE_HEIGHT = 7, // Size(Z)
 }
 
 // Palette: https://lospec.com/palette-list/sweetie-16
@@ -57,6 +61,10 @@ export const enum Palette {
     BOX_2 = '#3b5dc9',
     CUTTER = '#f5555d',
     CUTTER_2 = '#c42430',
+    // IsoBlocks
+    CASTLE = '#94b0c2',
+    CASTLE_2 = '#566c86',
+    CASTLE_3 = '#333c57',
 }
 
 // Output
