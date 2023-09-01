@@ -5,12 +5,12 @@
 'use strict'
 
 import { decodeBitmapBigInt } from '../node_modules/natlib/bitmap/bitmap.js'
-import { height, startCodePoint, value, width } from '../node_modules/natlib/bitmap/fonts/TIC-80/ascii.js'
 import { easeInOutQuad } from '../node_modules/natlib/interpolation.js'
+import { height, startCodePoint, value, width } from './ascii_upper.js'
 import { con, oscillate, wrapAround } from './setup.js'
 
-export function printCenter(x0: number, y0: number, scale: number, text: string, effectStrength = 0, t = 0, letterSpacing = 1) {
-    x0 -= 0.5 * scale * (text.length * (width + letterSpacing) - letterSpacing)
+export function printCenter(x0: number, y0: number, scale: number, text: string, effectStrength = 0, t = 0) {
+    x0 -= 0.5 * scale * (text.length * (width + 1) - 1)
     y0 -= 0.5 * scale * height
 
     for (let caret = 0, n = 0; n < text.length; ++n) {
@@ -21,6 +21,6 @@ export function printCenter(x0: number, y0: number, scale: number, text: string,
             decodeBitmapBigInt(glyph, width, height, 2n, (x, y, value) =>
                 value && con.rect(x0 + caret + scale * x, y0 + Δy + scale * y, scale, scale))
         }
-        caret += scale * (width + letterSpacing)
+        caret += scale * (width + 1)
     }
 }
