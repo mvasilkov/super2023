@@ -10,6 +10,14 @@ OUR_ROOT = Path(abspath(__file__)).parent
 
 OUT_DIR = OUR_ROOT / 'typescript' / 'pictures'
 
+NATLIB_LICENSE = '''
+/** This file is part of natlib.
+ * https://github.com/mvasilkov/natlib
+ * @license MIT | Copyright (c) 2022, 2023 Mark Vasilkov
+ */
+'use strict'
+'''.strip()
+
 FILE_LICENSE = '''
 /** This file is part of Super Castle Game.
  * https://github.com/mvasilkov/super2023
@@ -180,7 +188,7 @@ def build_inline():
 def build_validate():
     for file in list(OUR_ROOT.glob('out/**/*.js')):
         content = file.read_text(encoding='utf-8')
-        if not content.startswith(FILE_LICENSE):
+        if not content.startswith(FILE_LICENSE) and not content.startswith(NATLIB_LICENSE):
             raise RuntimeError(f'Invalid file header: {file.relative_to(OUR_ROOT)}')
 
         if '// .' in content:

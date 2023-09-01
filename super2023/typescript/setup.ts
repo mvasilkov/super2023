@@ -73,7 +73,6 @@ export const canvas = new CanvasHandle(document.querySelector('#c'),
     Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
 
 export const con = canvas.con
-
 con.lineWidth = 1.5
 
 /** Overlay canvas */

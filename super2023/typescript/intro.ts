@@ -24,9 +24,9 @@ export function renderIntro(t: number, tOscillator: number) {
 
     con.beginPath()
     printCenter(0.5 * Settings.SCREEN_WIDTH, lerp(-20, 0.25 * Settings.SCREEN_HEIGHT, easeOutQuad(t0)), 5, 'SUPER CASTLE GAME', 1.5, tOscillator)
-    con.lineWidth = 3
-    con.strokeStyle = Palette.NOTHING
-    con.stroke()
+    // con.lineWidth = 3
+    // con.strokeStyle = Palette.NOTHING
+    // con.stroke()
     con.fillStyle = Palette.INTRO
     con.fill()
 }
@@ -46,9 +46,9 @@ export function renderIntroEnd(t: number, tOscillator: number) {
 
     con.beginPath()
     printCenter(0.5 * Settings.SCREEN_WIDTH, 0.25 * Settings.SCREEN_HEIGHT, 5, 'SUPER CASTLE GAME', 1.5, tOscillator)
-    con.lineWidth = 3
-    con.strokeStyle = Palette.NOTHING
-    con.stroke()
+    // con.lineWidth = 3
+    // con.strokeStyle = Palette.NOTHING
+    // con.stroke()
     con.fillStyle = Palette.INTRO
     con.fill()
 

@@ -4,8 +4,8 @@
  */
 'use strict'
 
-import { Vec2 } from '../node_modules/natlib/Vec2.js'
 import type { ExtendedBool } from '../node_modules/natlib/prelude'
+import { Vec2 } from './Vec2.js'
 
 export const enum PieceType {
     VOID,

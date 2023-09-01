@@ -4,8 +4,7 @@
  */
 'use strict'
 
-import { register0 } from '../node_modules/natlib/runtime.js'
-import type { Vec2 } from '../node_modules/natlib/Vec2'
+import { register0, type Vec2 } from './Vec2.js'
 import { Settings } from './setup.js'
 
 export function getGamepadDirection(): Vec2 | undefined {
