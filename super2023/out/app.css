@@ -14,14 +14,12 @@ canvas {
 }
 
 #a,
-#c,
-#o {
+#c {
   height: 540px;
   width: 960px;
 }
 
-#c,
-#o {
+#c {
   left: 0;
   position: absolute;
   top: 0;

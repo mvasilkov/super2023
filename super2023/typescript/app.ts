@@ -11,6 +11,7 @@ import { Level, loadLevel } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { register0, register1 } from './Vec2.js'
 import { getGamepadDirection } from './gamepad.js'
+import { renderIcons } from './icons.js'
 import { Palette, Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
@@ -205,6 +206,8 @@ function render(t: number) {
     con.fillRect(0, 0, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
 
     level.render(t)
+
+    renderIcons()
 }
 
 startMainloop(update, render)
