@@ -1,14 +1,13 @@
-/** This file is part of The Neatness (js13kGames–2022)
- * GitHub https://github.com/mvasilkov/neatness2022
- * Copyright (c) 2022, 2023 Mark Vasilkov
- * @license GNU General Public License version 3
- * See https://www.gnu.org/licenses/gpl-3.0.en.html
+/** This file is part of Super Castle Game.
+ * https://github.com/mvasilkov/super2023
+ * @license GPLv3 | Copyright (c) 2023 Mark Vasilkov
  */
+'use strict'
+
 import { convertMidiToFrequency } from '../../node_modules/natlib/audio/audio.js'
 import { AudioHandle } from '../../node_modules/natlib/audio/AudioHandle.js'
 import { Mulberry32 } from '../../node_modules/natlib/prng/Mulberry32.js'
-
-import { Settings } from '../prelude.js'
+import { Settings } from '../setup.js'
 import { ImpulseResponse } from './ImpulseResponse.js'
 import { play } from './song.js'
 
@@ -92,8 +91,8 @@ function enqueue() {
 
 export const enum SoundEffect {
     BUTTON_CLICK,
-    CONNECTION,
-    BAD_CONNECTION,
+    CONNECT,
+    DISCONNECT,
 }
 
 export function sound(effect: SoundEffect) {
@@ -104,19 +103,21 @@ export function sound(effect: SoundEffect) {
             playNote2(91, 0, 0.04) // G6
             break
 
-        case SoundEffect.CONNECTION:
+        case SoundEffect.CONNECT:
             playNote2(79, 0, 0.05) // G5
             playNote2(83, 0.05, 0.05) // B5
             playNote2(88, 0.1, 0.05) // E6
             break
 
-        case SoundEffect.BAD_CONNECTION:
-            playNote2(43, 0, 0.2) // G2
+        case SoundEffect.DISCONNECT:
+            playNote2(88, 0, 0.05) // E6
+            playNote2(83, 0.05, 0.05) // B5
+            playNote2(79, 0.1, 0.05) // G5
             break
     }
 }
 
-// This is `playNote()` but for sound effects
+// playNote() but for sound effects
 function playNote2(n: number, start: number, duration: number) {
     start += audioHandle.con!.currentTime
 

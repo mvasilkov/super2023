@@ -1,9 +1,9 @@
-/** This file is part of The Neatness (js13kGames–2022)
- * GitHub https://github.com/mvasilkov/neatness2022
- * Copyright (c) 2022, 2023 Mark Vasilkov
- * @license GNU General Public License version 3
- * See https://www.gnu.org/licenses/gpl-3.0.en.html
+/** This file is part of Super Castle Game.
+ * https://github.com/mvasilkov/super2023
+ * @license GPLv3 | Copyright (c) 2023 Mark Vasilkov
  */
+'use strict'
+
 type PlayNoteFunction = (index: number, start: number, end: number) => void
 
 /* Magical Power of the Mallet by ZUN

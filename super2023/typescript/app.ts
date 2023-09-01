@@ -10,6 +10,7 @@ import { enterPhase, updatePhase } from '../node_modules/natlib/state.js'
 import { Level, loadLevel } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { register0, register1 } from './Vec2.js'
+import { audioHandle, initializeAudio, sound } from './audio/audio.js'
 import { getGamepadDirection } from './gamepad.js'
 import { Palette, Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
@@ -212,4 +213,12 @@ startMainloop(update, render)
 // TODO delete
 !((window as any)['leave'] = () => {
     enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
+})
+
+// TODO delete
+!((window as any)['sound'] = sound)
+
+// TODO delete
+document.body.addEventListener('click', () => {
+    if (!audioHandle.initialized) audioHandle.initialize(initializeAudio)
 })
