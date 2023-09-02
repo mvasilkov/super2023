@@ -23,8 +23,8 @@ export function initializeAudio(con: AudioContext) {
 
     // Reverb
     const convolver = new ConvolverNode(con)
-    const reverbDry = new GainNode(con, { gain: 2 / 3 })
-    const reverbWet = new GainNode(con, { gain: 1 / 3 })
+    const reverbDry = new GainNode(con, { gain: 0.5 })
+    const reverbWet = new GainNode(con, { gain: 0.3333 })
 
     audioOut.connect(convolver)
     audioOut.connect(reverbDry)
@@ -106,14 +106,23 @@ export function sound(effect: SoundEffect) {
         case SoundEffect.CONNECT:
             playNote2(79, 0, 0.05) // G5
             playNote2(83, 0.05, 0.05) // B5
-            playNote2(88, 0.1, 0.05) // E6
+            playNote2(88, 0.1, 0.1) // E6
             break
 
         case SoundEffect.DISCONNECT:
             playNote2(88, 0, 0.05) // E6
             playNote2(83, 0.05, 0.05) // B5
-            playNote2(79, 0.1, 0.05) // G5
+            playNote2(79, 0.1, 0.1) // G5
             break
+
+        /*
+        case SoundEffect.LEVEL_END:
+            playNote2(92, 0, 0.1) // Ab6
+            playNote2(87, 0.1, 0.1) // Eb6
+            playNote2(80, 0.2, 0.1) // Ab5
+            playNote2(82, 0.3, 0.1) // Bb5
+            break
+        */
     }
 }
 
