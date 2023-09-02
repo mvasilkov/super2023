@@ -19,65 +19,10 @@ import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState
 let level: Level
 
 try {
-    level = loadLevel()
+    level = loadLevel(0)
 }
 catch (err) {
-    //#region TODO delete
-    level = new Level(16, 16)
-
-    level.board.createPiece(PieceType.BOX, 3, 3)
-    level.board.createPiece(PieceType.BOX, 4, 3)
-    level.board.createPiece(PieceType.BOX, 3, 4)
-    level.board.createPiece(PieceType.BOX, 4, 4)
-    level.board.createPiece(PieceType.BOX, 3, 5)
-    level.board.createPiece(PieceType.BOX, 4, 5)
-    level.board.createPiece(PieceType.BOX, 3, 6)
-    level.board.createPiece(PieceType.BOX, 4, 6)
-
-    new Cluster([
-        level.board.createPiece(PieceType.DUCKLING, 6, 5),
-    ])
-
-    level.board.createPiece(PieceType.CUTTER, 5, 6)
-    level.board.createPiece(PieceType.CUTTER, 6, 6)
-    level.board.createPiece(PieceType.CUTTER, 7, 6)
-
-    new Cluster([
-        level.board.createPiece(PieceType.DUCK, 8, 7),
-        level.board.createPiece(PieceType.DUCK, 7, 8),
-        level.board.createPiece(PieceType.DUCK, 8, 8),
-        level.board.createPiece(PieceType.DUCK, 9, 8),
-        level.board.createPiece(PieceType.DUCK, 8, 9),
-    ])
-
-    level.board.createPiece(PieceType.GOAL, 10, 8)
-    level.board.createPiece(PieceType.GOAL, 11, 8)
-    level.board.createPiece(PieceType.GOAL, 12, 8)
-    level.board.createPiece(PieceType.GOAL, 11, 9)
-
-    new Cluster([
-        level.board.createPiece(PieceType.DUCKLING, 5, 11),
-        level.board.createPiece(PieceType.DUCKLING, 4, 12),
-        level.board.createPiece(PieceType.DUCKLING, 5, 12),
-        level.board.createPiece(PieceType.DUCKLING, 6, 12),
-    ])
-
-    new Cluster([
-        level.board.createPiece(PieceType.DUCKLING, 3, 13),
-        level.board.createPiece(PieceType.DUCKLING, 4, 13),
-        level.board.createPiece(PieceType.DUCKLING, 5, 13),
-        level.board.createPiece(PieceType.DUCKLING, 4, 14),
-    ])
-
-    for (let n = 0; n < 16; ++n) {
-        level.board.createPiece(PieceType.VOID, n, 0)
-        level.board.createPiece(PieceType.VOID, n, 15)
-        level.board.createPiece(PieceType.VOID, 0, n)
-        level.board.createPiece(PieceType.VOID, 15, n)
-    }
-
-    level.board.buildClusters(PieceType.BOX)
-    //#endregion
+    level = loadLevel(1)
 }
 
 type MoveScalar = -1 | 0 | 1

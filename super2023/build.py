@@ -36,6 +36,16 @@ export const cardinality = %d
 export const palette = %s
 '''.lstrip()
 
+GAME_PALETTE = [
+    (0x29, 0x36, 0x6F),
+    (0x1A, 0x1C, 0x2C),
+    (0xFF, 0xCD, 0x75),
+    (0x94, 0xB0, 0xC2),
+    (0xA7, 0xF0, 0x70),
+    (0x41, 0xA6, 0xF6),
+    (0xB1, 0x3E, 0x53),
+]
+
 BUILD_DIR = OUR_ROOT / 'build'
 
 HTML_LINK_CSS = '<link rel=stylesheet href=./app.css>'
@@ -146,20 +156,34 @@ def build_pictures():
         width, height = crop_to_content(picture, width, height)
         palette = set(color for line in picture for color in line)
 
-        cardinality = len(palette)
-        print(f'  {width} by {height}, {cardinality} colors')
+        assert palette.issubset(GAME_PALETTE)
 
-        short_literal = None
-        short_pal = None
-        for pal in permutations(sorted(palette, key=palette_sort_key)):
-            pal_obj = {color: index for index, color in enumerate(pal)}
+        if False:
+            cardinality = len(palette)
+            print(f'  {width} by {height}, {cardinality} colors')
+
+            short_literal = None
+            short_pal = None
+            for pal in permutations(sorted(palette, key=palette_sort_key)):
+                pal_obj = {color: index for index, color in enumerate(pal)}
+                picture_pal = [[pal_obj[color] for color in line] for line in picture]
+                picture_int = picture_to_int(picture_pal, width, cardinality)
+
+                literal = js_literal(picture_int)
+                if short_literal is None or len(literal) < len(short_literal):
+                    short_literal = literal
+                    short_pal = pal
+
+        else:
+            cardinality = len(GAME_PALETTE)
+            print(f'  {width} by {height}, {cardinality} colors')
+
+            pal_obj = {color: index for index, color in enumerate(GAME_PALETTE)}
             picture_pal = [[pal_obj[color] for color in line] for line in picture]
             picture_int = picture_to_int(picture_pal, width, cardinality)
 
-            literal = js_literal(picture_int)
-            if short_literal is None or len(literal) < len(short_literal):
-                short_literal = literal
-                short_pal = pal
+            short_literal = js_literal(picture_int)
+            short_pal = GAME_PALETTE
 
         contents = OUT_FILE % (short_literal, width, height, cardinality, js_palette(short_pal))
         out_file = OUT_DIR / (png_file.stem + '.ts')
