@@ -12,7 +12,7 @@ import { Palette, Settings, con } from './setup.js'
 import { duckState } from './state.js'
 
 export function renderIntro(t: number, tOscillator: number) {
-    let t0 = interpolatePhase(duckState, Settings.LEAVE_DURATION, t)
+    const t0 = interpolatePhase(duckState, Settings.LEAVE_DURATION, t)
 
     t = easeInOutQuad(t0)
 

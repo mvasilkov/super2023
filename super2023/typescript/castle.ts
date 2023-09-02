@@ -66,9 +66,9 @@ function buildCastle() {
                     continue
                 }
 
-                xs.push(x)
-                ys.push(y)
-                zs.push(z)
+                xs.push(x * Settings.CASTLE_BLK_SIZE)
+                ys.push(y * Settings.CASTLE_BLK_SIZE)
+                zs.push(z * Settings.CASTLE_BLK_SIZE)
             }
         }
     }
@@ -81,9 +81,6 @@ export function renderCastle(t: number, done: number) {
     const size = t * Settings.CASTLE_BLK_SIZE * Settings.CASTLE_BLK_SCALE
 
     for (let n = 0; n < N; ++n) {
-        renderIsoBlock(
-            xs[n]! * Settings.CASTLE_BLK_SIZE,
-            ys[n]! * Settings.CASTLE_BLK_SIZE,
-            zs[n]! * Settings.CASTLE_BLK_SIZE, size)
+        renderIsoBlock(xs[n]!, ys[n]!, zs[n]!, size)
     }
 }
