@@ -27,8 +27,12 @@ export function renderIntro(t: number, tOscillator: number) {
     // con.lineWidth = 3
     // con.strokeStyle = Palette.NOTHING
     // con.stroke()
+    con.shadowColor = Palette.NOTHING
+    con.shadowOffsetX = con.shadowOffsetY = 3
     con.fillStyle = Palette.INTRO
     con.fill()
+    con.shadowColor = 'transparent'
+    con.shadowOffsetX = con.shadowOffsetY = 0
 }
 
 export function renderIntroEnd(t: number, tOscillator: number) {
@@ -49,6 +53,8 @@ export function renderIntroEnd(t: number, tOscillator: number) {
     // con.lineWidth = 3
     // con.strokeStyle = Palette.NOTHING
     // con.stroke()
+    con.shadowColor = Palette.NOTHING
+    con.shadowOffsetX = con.shadowOffsetY = 3
     con.fillStyle = Palette.INTRO
     con.fill()
 
