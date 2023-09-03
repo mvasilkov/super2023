@@ -9,7 +9,6 @@ import { ShortBool, type ExtendedBool, type NonnegativeInteger } from '../node_m
 import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
-import { renderIntro, renderIntroEnd } from './intro.js'
 import { levels } from './levels.js'
 import { cascadeMove } from './rules.js'
 import {
@@ -32,7 +31,7 @@ import {
     oscillate,
     wrapAround,
 } from './setup.js'
-import { DuckPhase, duckState, oscillatorState } from './state.js'
+import { DuckPhase, duckState } from './state.js'
 
 export class Level {
     readonly board: Board
@@ -148,13 +147,11 @@ export class Level {
         }
     }
 
-    render(t: number) {
+    render(t: number, tOscillator: number) {
         const tDuck = duckState.phase === DuckPhase.MOVING ?
             easeInOutQuad(interpolatePhase(duckState, Settings.MOVE_DURATION, t)) :
             duckState.phase === DuckPhase.CONNECTING ?
                 easeInOutQuad(interpolatePhase(duckState, Settings.CONNECT_DURATION, t)) : 0
-
-        const tOscillator = interpolatePhase(oscillatorState, Settings.OSCILLATOR_DURATION, t)
 
         const colorDuckEntering = '#' +
             linearToSrgb(lerp(COLOR_GOAL_R, COLOR_DUCK_R, tDuck)) +
@@ -209,15 +206,6 @@ export class Level {
 
                 pieces.forEach(piece => piece.type !== PieceType.GOAL && this.renderPiece(piece, x, y, tDuck, tVibe, duckColors, duckSecondaryColors))
             }
-        }
-
-        // Intro
-        switch (duckState.phase) {
-            case DuckPhase.LEAVING:
-                renderIntro(t, tOscillator)
-                break
-            case DuckPhase.ENTERING:
-                renderIntroEnd(t, tOscillator)
         }
     }
 

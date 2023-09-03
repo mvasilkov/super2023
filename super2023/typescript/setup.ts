@@ -18,6 +18,7 @@ export const enum Settings {
     OSCILLATOR_DURATION = 48,
     LEAVE_DURATION = 64,
     ENTER_DURATION = 64,
+    TITLE_ENTER_DURATION = 96,
     // Oscillator
     OSCILLATOR_INCREMENT = 0.1,
     // Pointer controls dead zone in tiles

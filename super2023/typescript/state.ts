@@ -12,6 +12,7 @@ import { Settings } from './setup.js'
 
 export const enum DuckPhase {
     INITIAL,
+    TITLE_SCREEN,
     INTERACTIVE,
     MOVING,
     CONNECTING,
@@ -20,7 +21,8 @@ export const enum DuckPhase {
 }
 
 export const duckPhaseMap = [
-    DuckPhase.INTERACTIVE, ,
+    DuckPhase.TITLE_SCREEN, Settings.TITLE_ENTER_DURATION,
+    , ,
     , ,
     DuckPhase.INTERACTIVE, ,
     DuckPhase.INTERACTIVE, ,

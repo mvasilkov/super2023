@@ -9,10 +9,10 @@ import { interpolatePhase } from '../node_modules/natlib/state.js'
 import { renderCastle } from './castle.js'
 import { printCenter } from './print.js'
 import { Palette, Settings, con } from './setup.js'
-import { duckState } from './state.js'
+import { DuckPhase, duckState } from './state.js'
 
 export function renderIntro(t: number, tOscillator: number) {
-    const t0 = interpolatePhase(duckState, Settings.LEAVE_DURATION, t)
+    const t0 = interpolatePhase(duckState, duckState.phase === DuckPhase.TITLE_SCREEN ? Settings.TITLE_ENTER_DURATION : Settings.LEAVE_DURATION, t)
 
     t = easeInOutQuad(t0)
 
@@ -31,7 +31,7 @@ export function renderIntro(t: number, tOscillator: number) {
     con.shadowOffsetX = con.shadowOffsetY = 3
     con.fillStyle = Palette.INTRO
     con.fill()
-    con.shadowColor = 'transparent'
+    con.shadowColor = '#0000'
     con.shadowOffsetX = con.shadowOffsetY = 0
 }
 

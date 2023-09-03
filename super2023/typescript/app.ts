@@ -6,13 +6,14 @@
 
 import { Input } from '../node_modules/natlib/controls/Keyboard.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
-import { enterPhase, updatePhase } from '../node_modules/natlib/state.js'
+import { enterPhase, interpolatePhase, updatePhase } from '../node_modules/natlib/state.js'
 import { Level, loadLevel } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { register0, register1 } from './Vec2.js'
 import { audioHandle, initializeAudio, sound } from './audio/audio.js'
 import { getGamepadDirection } from './gamepad.js'
 import { renderIcons } from './icons.js'
+import { renderIntro, renderIntroEnd } from './intro.js'
 import { Palette, Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
@@ -148,15 +149,36 @@ function update() {
 }
 
 function render(t: number) {
+    const tOscillator = interpolatePhase(oscillatorState, Settings.OSCILLATOR_DURATION, t)
+
     con.fillStyle = Palette.NOTHING
     con.fillRect(0, 0, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
 
-    level.render(t)
+    if (duckState.phase === DuckPhase.TITLE_SCREEN) {
+        renderIntro(t, tOscillator)
+        return
+    }
+
+    level.render(t, tOscillator)
 
     renderIcons()
+
+    if (duckState.phase === DuckPhase.LEAVING) {
+        renderIntro(t, tOscillator)
+    }
+    else if (duckState.phase === DuckPhase.ENTERING) {
+        renderIntroEnd(t, tOscillator)
+    }
 }
 
 startMainloop(update, render)
+
+document.addEventListener('click', () => {
+    if (duckState.phase !== DuckPhase.TITLE_SCREEN) return
+
+    audioHandle.initialize(initializeAudio)
+    enterPhase(duckState, DuckPhase.ENTERING, Settings.ENTER_DURATION)
+})
 
 // TODO delete
 !((window as any)['leave'] = () => {
@@ -165,8 +187,3 @@ startMainloop(update, render)
 
 // TODO delete
 !((window as any)['sound'] = sound)
-
-// TODO delete
-document.body.addEventListener('click', () => {
-    if (!audioHandle.initialized) audioHandle.initialize(initializeAudio)
-})
