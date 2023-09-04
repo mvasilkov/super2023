@@ -174,11 +174,9 @@ function render(t: number) {
 startMainloop(update, render)
 
 document.addEventListener('click', () => {
-    if (duckState.phase !== DuckPhase.TITLE_SCREEN) return
-
     audioHandle.initialize(initializeAudio)
     enterPhase(duckState, DuckPhase.ENTERING, Settings.ENTER_DURATION)
-})
+}, { once: true })
 
 // TODO delete
 !((window as any)['leave'] = () => {
