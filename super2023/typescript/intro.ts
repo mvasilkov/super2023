@@ -68,7 +68,7 @@ export function renderIntroEnd(t: number, tOscillator: number) {
     con.fill()
     con.clip()
 
-    renderCastle(t, 1)
+    renderCastle(1, 1)
 
     con.beginPath()
     printCenter(0.5 * Settings.SCREEN_WIDTH, 0.25 * Settings.SCREEN_HEIGHT, 6, 'SUPER CASTLE GAME', 1.5, tOscillator)
