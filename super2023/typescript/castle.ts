@@ -9,19 +9,23 @@ import { Palette, Settings, con } from './setup.js'
 const COS_30 = Math.cos(Math.PI / 6)
 const SIN_30 = Math.sin(Math.PI / 6)
 
-function projectIsoVertex(x: number, y: number, z: number): [x: number, y: number] {
-    const xp = (x - y) * COS_30 + 0.5 * Settings.SCREEN_WIDTH
-    const yp = -z + (x + y) * SIN_30 + 0.5 * Settings.SCREEN_HEIGHT
-    return [xp, yp]
+function projectIsoVertex(x: number, y: number, z: number) {
+    const xp = (x - y) * COS_30 + 0.5 * Settings.SCREEN_WIDTH // .Inline(1)
+    const yp = -z + (x + y) * SIN_30 + 0.5 * Settings.SCREEN_HEIGHT // .Inline(1)
+    con.lineTo(xp, yp)
 }
 
 type Vertex3 = Parameters<typeof projectIsoVertex>
 
-function renderFace(face: readonly Vertex3[], color: string) {
+function renderFace(v0: Vertex3, v1: Vertex3, v2: Vertex3, v3: Vertex3, color: string) {
     con.beginPath()
-    for (let n = 0; n < 4; ++n) {
-        con.lineTo(...projectIsoVertex(...face[n]!))
-    }
+    // for (let n = 0; n < 4; ++n) {
+    //     projectIsoVertex(...face[n]!)
+    // }
+    projectIsoVertex(...v0)
+    projectIsoVertex(...v1)
+    projectIsoVertex(...v2)
+    projectIsoVertex(...v3)
     con.fillStyle = color
     con.fill()
 }
@@ -36,9 +40,9 @@ function renderIsoBlock(x: number, y: number, z: number, size: number) {
     const v6: Vertex3 = [x + size, y + size, z + size]
     const v7: Vertex3 = [x - size, y + size, z + size]
     // Faces
-    renderFace([v4, v5, v6, v7], Palette.CASTLE)
-    renderFace([v1, v2, v6, v5], Palette.CASTLE_2)
-    renderFace([v2, v3, v7, v6], Palette.CASTLE_3)
+    renderFace(v4, v5, v6, v7, Palette.CASTLE)
+    renderFace(v1, v2, v6, v5, Palette.CASTLE_2)
+    renderFace(v2, v3, v7, v6, Palette.CASTLE_3)
 }
 
 const xs: number[] = []
