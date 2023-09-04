@@ -174,7 +174,7 @@ function render(t: number) {
 startMainloop(update, render)
 
 document.addEventListener('click', () => {
-    audioHandle.initialize(initializeAudio)
+    audioHandle.initialize(initializeAudio(pointer.x < 0.5 * Settings.SCREEN_WIDTH))
     enterPhase(duckState, DuckPhase.ENTERING, Settings.ENTER_DURATION)
 }, { once: true })
 

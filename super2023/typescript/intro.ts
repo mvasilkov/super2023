@@ -33,19 +33,21 @@ export function renderIntro(t: number, tOscillator: number) {
     con.fill()
 
     if (duckState.phase === DuckPhase.TITLE_SCREEN) {
-        const y = lerp(Settings.SCREEN_HEIGHT + 90, 0.75 * Settings.SCREEN_HEIGHT, easeOutQuad(t0))
+        const top = lerp(Settings.SCREEN_HEIGHT + 90, 0.75 * Settings.SCREEN_HEIGHT, easeOutQuad(t0))
+        const left = 210 // .Inline(2)
+        const right = Settings.SCREEN_WIDTH - 210 // .Inline(3)
 
         con.beginPath()
-        con.rect(0.22 * Settings.SCREEN_WIDTH - 150, y - 80, 300, 160)
-        con.rect(0.78 * Settings.SCREEN_WIDTH - 150, y - 80, 300, 160)
+        con.rect(left - 150, top - 80, 300, 160)
+        con.rect(right - 150, top - 80, 300, 160)
         con.fillStyle = Palette.BUTTON
         con.fill()
 
         con.beginPath()
-        printCenter(0.22 * Settings.SCREEN_WIDTH, y, 6, 'START', 1, tOscillator)
+        printCenter(left, top, 6, 'START', 1, tOscillator)
 
-        printCenter(0.78 * Settings.SCREEN_WIDTH, y - 0.05 * Settings.SCREEN_HEIGHT, 6, 'START', 1, tOscillator)
-        printCenter(0.78 * Settings.SCREEN_WIDTH, y + 0.05 * Settings.SCREEN_HEIGHT, 4, 'MUSIC OFF', 1, tOscillator)
+        printCenter(right, top - 0.05 * Settings.SCREEN_HEIGHT, 6, 'START', 1, tOscillator)
+        printCenter(right, top + 0.05 * Settings.SCREEN_HEIGHT, 4, 'MUSIC OFF', 1, tOscillator)
         con.shadowColor = Palette.BUTTON_3
         con.fillStyle = Palette.BUTTON_2
         con.fill()
@@ -69,7 +71,7 @@ export function renderIntroEnd(t: number, tOscillator: number) {
     renderCastle(1, 1)
 
     con.beginPath()
-    printCenter(0.5 * Settings.SCREEN_WIDTH, 0.25 * Settings.SCREEN_HEIGHT, 5, 'SUPER CASTLE GAME', 1.5, tOscillator)
+    printCenter(0.5 * Settings.SCREEN_WIDTH, 0.25 * Settings.SCREEN_HEIGHT, 6, 'SUPER CASTLE GAME', 1.5, tOscillator)
     // con.lineWidth = 3
     // con.strokeStyle = Palette.NOTHING
     // con.stroke()

@@ -6,6 +6,7 @@
 
 import { convertMidiToFrequency } from '../../node_modules/natlib/audio/audio.js'
 import { AudioHandle } from '../../node_modules/natlib/audio/AudioHandle.js'
+import type { ExtendedBool } from '../../node_modules/natlib/prelude'
 import { Mulberry32 } from '../../node_modules/natlib/prng/Mulberry32.js'
 import { Settings } from '../setup.js'
 import { ImpulseResponse } from './ImpulseResponse.js'
@@ -18,7 +19,7 @@ export const audioHandle = new AudioHandle
 let audioOut: GainNode
 let songStart: number
 
-export function initializeAudio(con: AudioContext) {
+export const initializeAudio = (startMusic: ExtendedBool) => (con: AudioContext) => {
     audioOut = new GainNode(con, { gain: 0.3333 })
 
     // Reverb
@@ -35,6 +36,8 @@ export function initializeAudio(con: AudioContext) {
     const ir = new ImpulseResponse(2, con.sampleRate, new Mulberry32(Settings.SCREEN_WIDTH))
     ir.generateReverb(buf => {
         convolver.buffer = buf
+
+        if (!startMusic) return
 
         songStart = con.currentTime + 0.05
 

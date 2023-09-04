@@ -67,9 +67,9 @@ export const enum Palette {
     CASTLE_2 = '#566c86',
     CASTLE_3 = '#333c57',
     // Buttons
-    BUTTON = '#a7f070',
-    BUTTON_2 = '#41a6f6',
-    BUTTON_3 = '#3b5dc9',
+    BUTTON = '#ffcd75',
+    BUTTON_2 = '#f5555d',
+    BUTTON_3 = '#c42430',
 }
 
 // Output
