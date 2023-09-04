@@ -6,7 +6,7 @@
 
 import { easeInOutQuad, easeOutQuad, lerp } from '../node_modules/natlib/interpolation.js'
 import { interpolatePhase } from '../node_modules/natlib/state.js'
-import { renderCastle2 } from './castle.js'
+import { renderCastle } from './castle.js'
 import { printCenter } from './print.js'
 import { Palette, Settings, con } from './setup.js'
 import { DuckPhase, duckState } from './state.js'
@@ -20,7 +20,7 @@ export function renderIntro(t: number, tOscillator: number) {
     con.fillRect(0, 0.5 * (1 - t) * Settings.SCREEN_HEIGHT,
         Settings.SCREEN_WIDTH, t * Settings.SCREEN_HEIGHT)
 
-    renderCastle2(t, 1)
+    renderCastle(t, 1)
 
     con.beginPath()
     printCenter(0.5 * Settings.SCREEN_WIDTH, lerp(-20, 0.25 * Settings.SCREEN_HEIGHT, easeOutQuad(t0)), 6, 'SUPER CASTLE GAME', 1.5, tOscillator)
@@ -68,7 +68,7 @@ export function renderIntroEnd(t: number, tOscillator: number) {
     con.fill()
     con.clip()
 
-    renderCastle2(t, 1)
+    renderCastle(t, 1)
 
     con.beginPath()
     printCenter(0.5 * Settings.SCREEN_WIDTH, 0.25 * Settings.SCREEN_HEIGHT, 6, 'SUPER CASTLE GAME', 1.5, tOscillator)

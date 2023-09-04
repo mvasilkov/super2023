@@ -16,39 +16,9 @@ function projectIsoVertex(x: number, y: number, z: number, subpath: ShortBool = 
     subpath === ShortBool.FALSE ? con.lineTo(xp, yp) : con.moveTo(xp, yp)
 }
 
-function isoHash(x: number, y: number, z: number): number {
-    return (x - y) * Settings.SCREEN_WIDTH + (x + y - z - z)
-}
-
-type Vertex3 = Parameters<typeof projectIsoVertex>
-
-function renderFace(v0: Vertex3, v1: Vertex3, v2: Vertex3, v3: Vertex3, color: string) {
-    con.beginPath()
-    // for (let n = 0; n < 4; ++n) {
-    //     projectIsoVertex(...face[n]!)
-    // }
-    projectIsoVertex(...v0)
-    projectIsoVertex(...v1)
-    projectIsoVertex(...v2)
-    projectIsoVertex(...v3)
-    con.fillStyle = color
-    con.fill()
-}
-
-function renderIsoBlock(x: number, y: number, z: number, size: number) {
-    // Vertices
-    const v1: Vertex3 = [x + size, y - size, z - size]
-    const v2: Vertex3 = [x + size, y + size, z - size]
-    const v3: Vertex3 = [x - size, y + size, z - size]
-    const v4: Vertex3 = [x - size, y - size, z + size]
-    const v5: Vertex3 = [x + size, y - size, z + size]
-    const v6: Vertex3 = [x + size, y + size, z + size]
-    const v7: Vertex3 = [x - size, y + size, z + size]
-    // Faces
-    renderFace(v4, v5, v6, v7, Palette.CASTLE)
-    renderFace(v1, v2, v6, v5, Palette.CASTLE_2)
-    renderFace(v2, v3, v7, v6, Palette.CASTLE_3)
-}
+// function isoHash(x: number, y: number, z: number): number {
+//     return (x - y) * Settings.SCREEN_WIDTH + (x + y - z - z)
+// }
 
 function renderIsoBlockTop(x: number, y: number, z: number, size: number) {
     projectIsoVertex(x - size, y - size, z + size, ShortBool.TRUE)
@@ -101,7 +71,8 @@ function buildCastle() {
                     continue
                 }
 
-                const hash = isoHash(x, y, z)
+                // const hash = /*@__INLINE__*/ isoHash(x, y, z)
+                const hash = (x - y) * Settings.SCREEN_WIDTH + (x + y - z - z)
                 if (hashes.has(hash)) continue
                 hashes.add(hash)
 
@@ -120,15 +91,6 @@ function buildCastle() {
 buildCastle()
 
 export function renderCastle(t: number, done: number) {
-    const N = done * xs.length // done ∈ [0, 1]
-    const size = t * Settings.CASTLE_BLK_SIZE * Settings.CASTLE_BLK_SCALE
-
-    for (let n = 0; n < N; ++n) {
-        renderIsoBlock(xs[n]!, ys[n]!, zs[n]!, size)
-    }
-}
-
-export function renderCastle2(t: number, done: number) {
     const N = done * zstrides.length // done ∈ [0, 1]
     const size = t * Settings.CASTLE_BLK_SIZE * Settings.CASTLE_BLK_SCALE
 
