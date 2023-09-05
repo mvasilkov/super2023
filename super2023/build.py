@@ -53,6 +53,27 @@ HTML_INLINE_CSS = '<style>%s</style>'
 HTML_LINK_JS = '<script type=module src=./app.js></script>'
 HTML_INLINE_JS = '<script>%s</script>'
 
+LEVELS_PATH = OUR_ROOT / 'typescript' / 'levels.ts'
+
+LEVEL_IMPORT = '''
+import { height as lv%(n)dheight, value as lv%(n)dvalue, width as lv%(n)dwidth } from './pictures/%(level_name)s.js'
+'''.lstrip()
+
+LEVEL_PROPS = '''
+    [lv%(n)dwidth, lv%(n)dheight, lv%(n)dvalue],
+'''.rstrip()
+
+LEVELS_FILE = f'''
+{FILE_LICENSE}
+
+%(imports)s
+type Level = [width: number, height: number, bigint: bigint]
+
+export const levels: readonly (Level | undefined)[] = [
+    ,%(levels)s
+]
+'''.lstrip()
+
 
 def get_color(png: Image, x: int, y: int) -> tuple[int, int, int] | None:
     r, g, b, a = png.getpixel((x, y))
@@ -140,6 +161,9 @@ def js_palette(palette: list[tuple[int, int, int] | None]) -> str:
 
 
 def build_pictures():
+    for out_file in OUT_DIR.glob('*.ts'):
+        out_file.unlink()
+
     for png_file in (OUR_ROOT / 'pictures').glob('*.png'):
         print(png_file.name)
         png = Image.open(png_file)
@@ -219,9 +243,21 @@ def build_validate():
             raise RuntimeError(f'Leftover Michikoid syntax: {file.relative_to(OUR_ROOT)}')
 
 
+def build_levels():
+    level_names = sorted(
+        [(int(level_file.stem.split('_', 1)[0]), level_file.stem) for level_file in OUT_DIR.glob('*.ts')]
+    )
+
+    imports = [LEVEL_IMPORT % {'n': n, 'level_name': level_name} for n, level_name in level_names]
+    levels = [LEVEL_PROPS % {'n': n} for n, _ in level_names]
+
+    contents = LEVELS_FILE % {'imports': ''.join(imports), 'levels': ''.join(levels)}
+    LEVELS_PATH.write_text(contents, encoding='utf-8', newline='\n')
+
+
 if __name__ == '__main__':
-    if len(sys.argv) != 2 or sys.argv[1] not in ('pictures', 'inline', 'validate'):
-        print('Usage: build.py <pictures | inline | validate>')
+    if len(sys.argv) != 2 or sys.argv[1] not in ('pictures', 'inline', 'validate', 'levels'):
+        print('Usage: build.py <pictures | inline | validate | levels>')
         print('To rebuild the entire thing, run `build.sh` instead.')
         sys.exit(-1)
 
@@ -232,3 +268,5 @@ if __name__ == '__main__':
             build_inline()
         case 'validate':
             build_validate()
+        case 'levels':
+            build_levels()

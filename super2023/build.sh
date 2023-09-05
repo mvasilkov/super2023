@@ -12,6 +12,7 @@ mkdir build
 
 # Build
 virtual/bin/python build.py pictures
+virtual/bin/python build.py levels
 node_modules/.bin/tsc
 
 # Michikoid

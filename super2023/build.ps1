@@ -33,6 +33,7 @@ $null = mkdir build
 
 # Build
 & $python build.py pictures
+& $python build.py levels
 node_modules/.bin/tsc
 
 # Michikoid

@@ -80,10 +80,6 @@ export const canvas = new CanvasHandle(document.querySelector('#c'),
 export const con = canvas.con
 con.lineWidth = 1.5
 
-/** Overlay canvas */
-export const oCanvas = new CanvasHandle(document.querySelector('#o'),
-    Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
-
 // Input
 
 export const keyboard = new Keyboard
