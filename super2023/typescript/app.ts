@@ -14,16 +14,17 @@ import { audioHandle, initializeAudio, sound } from './audio/audio.js'
 import { getGamepadDirection } from './gamepad.js'
 import { renderIcons } from './icons.js'
 import { renderIntro, renderIntroEnd } from './intro.js'
+import { levels } from './levels.js'
 import { Palette, Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
 let level: Level
 
 try {
-    level = loadLevel(0)
+    level = loadLevel(location.hash.slice(1))
 }
 catch (err) {
-    level = loadLevel(1)
+    level = loadLevel(levels[1]!)
 }
 
 type MoveScalar = -1 | 0 | 1

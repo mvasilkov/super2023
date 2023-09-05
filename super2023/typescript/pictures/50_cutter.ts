@@ -4,7 +4,7 @@
  */
 'use strict'
 
-export const value = 0x4c3346f46f60b6eb689cf5911db8c7n
+export const value = "0b054c3346f46f60b6eb689cf5911db8c7"
 export const width = 11
 export const height = 5
 export const cardinality = 7

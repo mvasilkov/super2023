@@ -5,11 +5,10 @@
 'use strict'
 
 import { easeInOutQuad, easeOutQuad, lerp } from '../node_modules/natlib/interpolation.js'
-import { ShortBool, type ExtendedBool, type NonnegativeInteger } from '../node_modules/natlib/prelude.js'
+import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
-import { levels } from './levels.js'
 import { cascadeMove } from './rules.js'
 import {
     COLOR_DUCK_2_B,
@@ -355,20 +354,10 @@ function paintBlock(
     con.fillRect(x + progress, y - height, size - progress, size)
 }
 
-export function loadLevel<T extends number>(index: NonnegativeInteger<T>): Level {
-    let width: number
-    let height: number
-    let bigint: bigint
-
-    if (index) {
-        [width, height, bigint] = levels[index]!
-    }
-    else {
-        const string = location.hash.slice(1)
-        width = parseInt(string.slice(0, 2), 16)
-        height = parseInt(string.slice(2, 4), 16)
-        bigint = BigInt('0x' + string.slice(4))
-    }
+export function loadLevel(string: string): Level {
+    const width = parseInt(string.slice(0, 2), 16)
+    const height = parseInt(string.slice(2, 4), 16)
+    const bigint = BigInt('0x' + string.slice(4))
 
     const level = new Level(width, height)
     level.board.load(bigint)

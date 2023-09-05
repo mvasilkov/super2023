@@ -56,20 +56,18 @@ HTML_INLINE_JS = '<script>%s</script>'
 LEVELS_PATH = OUR_ROOT / 'typescript' / 'levels.ts'
 
 LEVEL_IMPORT = '''
-import { height as lv%(n)dheight, value as lv%(n)dvalue, width as lv%(n)dwidth } from './pictures/%(level_name)s.js'
+import { value as lv%(n)dvalue } from './pictures/%(level_name)s.js'
 '''.lstrip()
 
 LEVEL_PROPS = '''
-    [lv%(n)dwidth, lv%(n)dheight, lv%(n)dvalue],
+    lv%(n)dvalue,
 '''.rstrip()
 
 LEVELS_FILE = f'''
 {FILE_LICENSE}
 
 %(imports)s
-type Level = [width: number, height: number, bigint: bigint]
-
-export const levels: readonly (Level | undefined)[] = [
+export const levels: readonly (string | undefined)[] = [
     ,%(levels)s
 ]
 '''.lstrip()
@@ -206,7 +204,7 @@ def build_pictures():
             picture_pal = [[pal_obj[color] for color in line] for line in picture]
             picture_int = picture_to_int(picture_pal, width, cardinality)
 
-            short_literal = js_literal(picture_int)
+            short_literal = f'"{width:02x}{height:02x}{picture_int:x}"'
             short_pal = GAME_PALETTE
 
         contents = OUT_FILE % (short_literal, width, height, cardinality, js_palette(short_pal))
