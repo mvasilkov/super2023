@@ -4,8 +4,8 @@
  */
 'use strict'
 
-export const value = 0x4c3346f46f60b6eb689cf5911db8c7n
-export const width = 11
+export const value = 0x52ec6d719dbb9ddc4f5f679n
+export const width = 9
 export const height = 5
 export const cardinality = 7
 export const palette = [
