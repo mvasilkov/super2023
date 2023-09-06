@@ -62,6 +62,7 @@ export function renderIntroEnd(t: number, tOscillator: number) {
 
     con.save()
 
+    con.beginPath()
     con.rect(0.5 * t * Settings.SCREEN_WIDTH, 0,
         (1 - t) * Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
     con.fillStyle = Palette.INTRO_2

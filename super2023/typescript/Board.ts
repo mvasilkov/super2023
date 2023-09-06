@@ -7,6 +7,7 @@
 import { decodeBitmapBigInt } from '../node_modules/natlib/bitmap/bitmap.js'
 import { Cluster, Piece, PieceType } from './Piece.js'
 import { Settings } from './setup.js'
+import { duckState } from './state.js'
 
 export class Board {
     readonly width: number
@@ -42,6 +43,12 @@ export class Board {
 
         stack = this.positions[piece.y]![piece.x]!
         stack.splice(stack.indexOf(piece), 1)
+
+        // This isn't the perfect place for this cleanup
+        if (piece.type === PieceType.DUCK) {
+            duckState.ducksOnGoal.delete(piece)
+            duckState.ducksOnGoalNext.delete(piece)
+        }
     }
 
     /** Move a piece to a position on the board. */

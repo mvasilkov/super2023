@@ -111,6 +111,9 @@ export class Level {
 
         new Cluster(this.board.pieces[PieceType.DUCK]!)
 
+        // Pieces just created could've appeared on goal.
+        this.updateDucksOnGoal(duckState.ducksOnGoalNext)
+
         enterPhase(duckState, DuckPhase.CONNECTING, Settings.CONNECT_DURATION)
     }
 
