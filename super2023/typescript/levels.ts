@@ -14,6 +14,7 @@ import { value as lv55value } from './pictures/55_cutter_box.js'
 import { value as lv60value } from './pictures/60_cutter_2.js'
 import { value as lv100value } from './pictures/100_construct.js'
 import { value as lv110value } from './pictures/110_push_box_2.js'
+import { value as lv120value } from './pictures/120_cut_construct.js'
 
 export const levels: readonly (string | undefined)[] = [
     ,
@@ -27,4 +28,5 @@ export const levels: readonly (string | undefined)[] = [
     lv60value,
     lv100value,
     lv110value,
+    lv120value,
 ]
