@@ -142,7 +142,14 @@ function update() {
             }
             // Could've changed in connectDucklings() or splitCluster()
             if (duckState.phase === DuckPhase.INTERACTIVE) {
+                level.checkWin()
                 updateControls()
+            }
+            break
+
+        case DuckPhase.ENTERING:
+            if (oldPhase === DuckPhase.LEAVING) {
+                level = loadLevel(levels[++duckState.levelIndex]!)
             }
     }
 

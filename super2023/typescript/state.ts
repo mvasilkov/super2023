@@ -31,6 +31,7 @@ export const duckPhaseMap = [
 ]
 
 export interface IDuckState extends IState {
+    levelIndex: number
     ducksOnGoal: Set<Piece>
     ducksOnGoalNext: Set<Piece>
 }
@@ -41,6 +42,7 @@ export const duckState: IDuckState = {
     phaseTtl: 0,
     oldTtl: 0,
     // IDuckState
+    levelIndex: 1,
     ducksOnGoal: new Set,
     ducksOnGoalNext: new Set,
 }

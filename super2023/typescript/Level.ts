@@ -149,6 +149,14 @@ export class Level {
         }
     }
 
+    checkWin() {
+        const duckCount = this.board.pieces[PieceType.DUCK]?.length
+        const goalCount = this.board.pieces[PieceType.GOAL]?.length
+        if (duckCount === goalCount && duckCount === duckState.ducksOnGoal.size && duckCount === duckState.ducksOnGoalNext.size) {
+            enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
+        }
+    }
+
     render(t: number, tOscillator: number) {
         const tDuck = duckState.phase === DuckPhase.MOVING ?
             easeInOutQuad(interpolatePhase(duckState, Settings.MOVE_DURATION, t)) :
@@ -366,5 +374,9 @@ export function loadLevel(string: string): Level {
     level.board.load(bigint)
     const clusterTypes = [PieceType.DUCK, PieceType.DUCKLING, PieceType.BOX]
     clusterTypes.forEach(type => level.board.buildClusters(type))
+
+    duckState.ducksOnGoal.clear()
+    duckState.ducksOnGoalNext.clear()
+
     return level
 }
