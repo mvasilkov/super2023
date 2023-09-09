@@ -9,8 +9,8 @@
     "html-minifier-terser": "^7.2.0",
     "michikoid": "^0.1.0",
     "roadroller": "^2.1.0",
-    "rollup": "^3.28.1",
-    "terser": "^5.19.3",
+    "rollup": "^3.29.0",
+    "terser": "^5.19.4",
     "typescript": "^5.2.2"
   }
 }

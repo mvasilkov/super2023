@@ -115,7 +115,7 @@ function update() {
 
                 for (const piece of level.active) {
                     if (piece.killed) {
-                        level.board.discardPiece(piece)
+                        level.discardPiece(piece)
                         if (piece.cluster) {
                             // new Cluster(piece.cluster.pieces.filter(p => p !== piece))
                             updateClusters.add(piece.cluster)
@@ -137,7 +137,7 @@ function update() {
                     level.splitCluster(cluster)
                 })
 
-                level.updateDucksOnGoal(duckState.ducksOnGoal)
+                level.updateDucksOnGoal(level.ducksOnGoal)
                 level.connectDucklings(ducks.filter(duck => !duck.killed))
             }
             // Could've changed in connectDucklings() or splitCluster()

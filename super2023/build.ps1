@@ -48,7 +48,7 @@ Get-ChildItem $outDir -Filter *.js -File -Recurse | ForEach-Object {
 node_modules/.bin/rollup -f iife -o build/app.js --no-freeze $outDir/app.js
 
 # Optimize
-node_modules/.bin/terser -cmo build/app.opt.js --comments false build/app.js
+node_modules/.bin/terser -cm --mangle-props only_annotated -o build/app.opt.js --comments false build/app.js
 node_modules/.bin/cleancss -O1 -o build/app.opt.css $outDir/app.css
 
 @'

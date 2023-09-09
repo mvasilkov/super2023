@@ -35,6 +35,8 @@ import { DuckPhase, duckState } from './state.js'
 export class Level {
     readonly board: Board
     readonly active: Set<Piece>
+    readonly ducksOnGoal: Set<Piece>
+    readonly ducksOnGoalNext: Set<Piece>
     // Rendering properties
     readonly cellSize: number
     readonly boardLeft: number
@@ -43,6 +45,10 @@ export class Level {
     constructor(width: number, height: number) {
         this.board = new Board(width, height)
         this.active = new Set
+        /*@__MANGLE_PROP__*/
+        this.ducksOnGoal = new Set
+        /*@__MANGLE_PROP__*/
+        this.ducksOnGoalNext = new Set
 
         this.cellSize = Math.min(Settings.SCREEN_WIDTH / width, Settings.SCREEN_HEIGHT / height)
         this.boardLeft = 0.5 * (Settings.SCREEN_WIDTH - width * this.cellSize)
@@ -74,13 +80,23 @@ export class Level {
             return ShortBool.TRUE
         }
 
-        this.updateDucksOnGoal(duckState.ducksOnGoalNext)
+        this.updateDucksOnGoal(this.ducksOnGoalNext)
         enterPhase(duckState, DuckPhase.MOVING, Settings.MOVE_DURATION)
         // .DeadCode
         return
         // .EndDeadCode
     }
 
+    discardPiece(piece: Readonly<Piece>) {
+        this.board.discardPiece(piece)
+
+        if (piece.type === PieceType.DUCK) {
+            this.ducksOnGoal.delete(piece)
+            this.ducksOnGoalNext.delete(piece)
+        }
+    }
+
+    /*@__MANGLE_PROP__*/
     updateDucksOnGoal(collection: Set<Piece>) {
         this.board.pieces[PieceType.DUCK]?.forEach(duck => {
             const onGoal = this.board.positions[duck.y]![duck.x]!.some(p => p.type === PieceType.GOAL)
@@ -103,7 +119,7 @@ export class Level {
 
         clusters.forEach(cluster => {
             cluster.pieces.forEach(duckling => {
-                this.board.discardPiece(duckling)
+                this.discardPiece(duckling)
                 const duck = this.board.createPiece(PieceType.DUCK, duckling.x, duckling.y)
                 this.active.add(duck)
             })
@@ -112,7 +128,7 @@ export class Level {
         new Cluster(this.board.pieces[PieceType.DUCK]!)
 
         // Pieces just created could've appeared on goal.
-        this.updateDucksOnGoal(duckState.ducksOnGoalNext)
+        this.updateDucksOnGoal(this.ducksOnGoalNext)
 
         enterPhase(duckState, DuckPhase.CONNECTING, Settings.CONNECT_DURATION)
     }
@@ -137,7 +153,7 @@ export class Level {
                 const ducklings: Piece<PieceType.DUCKLING>[] = []
                 clusters[n]!.pieces.forEach(duck => {
                     duck.killed = ShortBool.TRUE
-                    this.board.discardPiece(duck)
+                    this.discardPiece(duck)
                     const duckling = this.board.createPiece(PieceType.DUCKLING, duck.x, duck.y)
                     this.active.add(duckling)
                     ducklings.push(duckling)
@@ -152,7 +168,7 @@ export class Level {
     checkWin() {
         const duckCount = this.board.pieces[PieceType.DUCK]?.length
         const goalCount = this.board.pieces[PieceType.GOAL]?.length
-        if (duckCount === goalCount && duckCount === duckState.ducksOnGoal.size && duckCount === duckState.ducksOnGoalNext.size) {
+        if (duckCount === goalCount && duckCount === this.ducksOnGoal.size && duckCount === this.ducksOnGoalNext.size) {
             enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
         }
     }
@@ -258,7 +274,7 @@ export class Level {
                 con.stroke()
                 break
             case PieceType.DUCK:
-                const colorIndex = (duckState.ducksOnGoal.has(piece) ? 1 : 0) + (duckState.ducksOnGoalNext.has(piece) ? 2 : 0)
+                const colorIndex = (this.ducksOnGoal.has(piece) ? 1 : 0) + (this.ducksOnGoalNext.has(piece) ? 2 : 0)
 
                 paintBlock(x, y, size, bh, duckColors[colorIndex]!, duckSecondaryColors[colorIndex]!, 0, Settings.BLOCK_REFLECTION_OPACITY)
 
@@ -270,7 +286,7 @@ export class Level {
                     con.strokeStyle = Palette.DUCK_ON_GOAL_2
                     con.stroke()
                 }
-                else if (colorIndex === 0 && duckState.ducksOnGoal.size && duckState.ducksOnGoalNext.size) {
+                else if (colorIndex === 0 && this.ducksOnGoal.size && this.ducksOnGoalNext.size) {
                     con.beginPath()
                     con.moveTo(x + 0.2 * size, y - bh + 0.2 * size)
                     con.lineTo(x + 0.8 * size, y - bh + 0.8 * size)
@@ -374,9 +390,6 @@ export function loadLevel(string: string): Level {
     level.board.load(bigint)
     const clusterTypes = [PieceType.DUCK, PieceType.DUCKLING, PieceType.BOX]
     clusterTypes.forEach(type => level.board.buildClusters(type))
-
-    duckState.ducksOnGoal.clear()
-    duckState.ducksOnGoalNext.clear()
 
     return level
 }

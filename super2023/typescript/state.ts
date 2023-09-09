@@ -5,7 +5,6 @@
 'use strict'
 
 import type { IState } from '../node_modules/natlib/state'
-import type { Piece } from './Piece'
 import { Settings } from './setup.js'
 
 // Duck
@@ -32,8 +31,6 @@ export const duckPhaseMap = [
 
 export interface IDuckState extends IState {
     levelIndex: number
-    ducksOnGoal: Set<Piece>
-    ducksOnGoalNext: Set<Piece>
 }
 
 export const duckState: IDuckState = {
@@ -43,8 +40,6 @@ export const duckState: IDuckState = {
     oldTtl: 0,
     // IDuckState
     levelIndex: 1,
-    ducksOnGoal: new Set,
-    ducksOnGoalNext: new Set,
 }
 
 // Oscillator
