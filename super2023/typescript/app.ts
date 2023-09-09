@@ -142,8 +142,7 @@ function update() {
             }
             // Could've changed in connectDucklings() or splitCluster()
             if (duckState.phase === DuckPhase.INTERACTIVE) {
-                level.checkWin()
-                updateControls()
+                level.checkWin() || updateControls()
             }
             break
 

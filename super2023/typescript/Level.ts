@@ -165,12 +165,17 @@ export class Level {
         }
     }
 
-    checkWin() {
+    /** Return TRUE if the level is won. */
+    checkWin(): ExtendedBool {
         const duckCount = this.board.pieces[PieceType.DUCK]?.length
         const goalCount = this.board.pieces[PieceType.GOAL]?.length
         if (duckCount === goalCount && duckCount === this.ducksOnGoal.size && duckCount === this.ducksOnGoalNext.size) {
             enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
+            return ShortBool.TRUE
         }
+        // .DeadCode
+        return
+        // .EndDeadCode
     }
 
     render(t: number, tOscillator: number) {
@@ -245,8 +250,45 @@ export class Level {
         }
 
         let size = this.cellSize
-        x = x * size + this.boardLeft - Settings.BLOCK_GROW
-        y = y * size + this.boardTop - Settings.BLOCK_GROW
+        x = x * size + this.boardLeft
+        y = y * size + this.boardTop
+
+        if (piece.type === PieceType.VOID) {
+            con.fillStyle = Palette.NOTHING
+            con.fillRect(x, y, size, size)
+
+            y += (0.1 * easeInOutQuad(oscillate(tVibe)) - 0.05) * size
+
+            con.beginPath()
+            con.moveTo(x + 0.2 * size, y + 0.2 * size)
+            con.lineTo(x + 0.8 * size, y + 0.8 * size)
+            con.moveTo(x + 0.2 * size, y + 0.8 * size)
+            con.lineTo(x + 0.8 * size, y + 0.2 * size)
+            con.strokeStyle = Palette.VOID
+            con.stroke()
+
+            return
+        }
+        if (piece.type === PieceType.GOAL) {
+            const step = size / Settings.HATCHING_AMOUNT
+
+            con.beginPath()
+            for (let n = 0; n < Settings.HATCHING_AMOUNT; ++n) {
+                const sn = step * (n + 0.5)
+
+                con.moveTo(x, y + sn)
+                con.lineTo(x + sn, y)
+                con.moveTo(x + size, y + size - sn)
+                con.lineTo(x + size - sn, y + size)
+            }
+            con.strokeStyle = Palette.GOAL
+            con.stroke()
+
+            return
+        }
+
+        x -= Settings.BLOCK_GROW
+        y -= Settings.BLOCK_GROW
         size += 2 * Settings.BLOCK_GROW
 
         if (piece.killed) {
@@ -259,20 +301,6 @@ export class Level {
         const bh = Settings.BLOCK_HEIGHT * size
 
         switch (piece.type) {
-            case PieceType.VOID:
-                con.fillStyle = Palette.NOTHING
-                con.fillRect(x, y, size, size)
-
-                y += (0.1 * easeInOutQuad(oscillate(tVibe)) - 0.05) * size
-
-                con.beginPath()
-                con.moveTo(x + 0.2 * size, y + 0.2 * size)
-                con.lineTo(x + 0.8 * size, y + 0.8 * size)
-                con.moveTo(x + 0.2 * size, y + 0.8 * size)
-                con.lineTo(x + 0.8 * size, y + 0.2 * size)
-                con.strokeStyle = Palette.VOID
-                con.stroke()
-                break
             case PieceType.DUCK:
                 const colorIndex = (this.ducksOnGoal.has(piece) ? 1 : 0) + (this.ducksOnGoalNext.has(piece) ? 2 : 0)
 
@@ -340,21 +368,6 @@ export class Level {
                 con.arc(x + 0.5 * size, y - height + 0.5 * size, 0.3 * size, 0, 2 * Math.PI)
                 con.fillStyle = Palette.CUTTER
                 con.fill()
-                break
-            case PieceType.GOAL:
-                const step = size / Settings.HATCHING_AMOUNT
-
-                con.beginPath()
-                for (let n = 0; n < Settings.HATCHING_AMOUNT; ++n) {
-                    const sn = step * (n + 0.5)
-
-                    con.moveTo(x, y + sn)
-                    con.lineTo(x + sn, y)
-                    con.moveTo(x + size, y + size - sn)
-                    con.lineTo(x + size - sn, y + size)
-                }
-                con.strokeStyle = Palette.GOAL
-                con.stroke()
         }
     }
 }
