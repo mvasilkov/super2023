@@ -8,6 +8,7 @@ import { easeInOutQuad, easeOutQuad, lerp } from '../node_modules/natlib/interpo
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
+import { SoundEffect, sound } from './audio/audio.js'
 import { enterPhase, interpolatePhase } from './natlib_state.js'
 import { cascadeMove } from './rules.js'
 import {
@@ -62,10 +63,13 @@ export class Level {
     tryMove(piece: Piece, Δx: number, Δy: number): ExtendedBool {
         const plan = cascadeMove(this.board, piece, Δx, Δy)
         if (!plan) return ShortBool.TRUE
+
+        let killingMove = ShortBool.FALSE
+
         for ([piece, Δx, Δy] of plan) {
             this.board.putPiece(piece, piece.x + Δx, piece.y + Δy)
             if (this.board.positions[piece.y]![piece.x]!.some(p => p.type === PieceType.CUTTER)) {
-                piece.killed = ShortBool.TRUE
+                killingMove = piece.killed = ShortBool.TRUE
             }
             this.active.add(piece)
         }
@@ -78,6 +82,10 @@ export class Level {
                 this.active.delete(piece)
             }
             return ShortBool.TRUE
+        }
+
+        if (killingMove) {
+            sound(SoundEffect.DISCONNECT)
         }
 
         this.updateDucksOnGoal(this.ducksOnGoalNext)
@@ -131,6 +139,8 @@ export class Level {
         this.updateDucksOnGoal(this.ducksOnGoalNext)
 
         enterPhase(duckState, DuckPhase.CONNECTING, Settings.CONNECT_DURATION)
+
+        sound(SoundEffect.CONNECT)
     }
 
     splitCluster(cluster: Cluster) {
@@ -171,6 +181,7 @@ export class Level {
         const goalCount = this.board.pieces[PieceType.GOAL]?.length
         if (duckCount === goalCount && duckCount === this.ducksOnGoal.size && duckCount === this.ducksOnGoalNext.size) {
             enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
+            sound(SoundEffect.WIN)
             return ShortBool.TRUE
         }
         // .DeadCode

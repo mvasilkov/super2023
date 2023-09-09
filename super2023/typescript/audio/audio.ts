@@ -96,6 +96,7 @@ export const enum SoundEffect {
     BUTTON_CLICK,
     CONNECT,
     DISCONNECT,
+    WIN,
 }
 
 export function sound(effect: SoundEffect) {
@@ -107,15 +108,24 @@ export function sound(effect: SoundEffect) {
             break
 
         case SoundEffect.CONNECT:
-            playNote2(79, 0, 0.05) // G5
-            playNote2(83, 0.05, 0.05) // B5
-            playNote2(88, 0.1, 0.1) // E6
+            playNote2(76, 0, 0.05) // E5
+            playNote2(79, 0.05, 0.05) // G5
+            playNote2(83, 0.1, 0.1) // B5
             break
 
         case SoundEffect.DISCONNECT:
-            playNote2(88, 0, 0.05) // E6
-            playNote2(83, 0.05, 0.05) // B5
-            playNote2(79, 0.1, 0.1) // G5
+            playNote2(83, 0, 0.05) // B5
+            playNote2(79, 0.05, 0.05) // G5
+            playNote2(76, 0.1, 0.1) // E5
+            break
+
+        case SoundEffect.WIN:
+            playNote2(74, 0, 0.05) // D5
+            playNote2(76, 0.05, 0.05) // E5
+            playNote2(79, 0.1, 0.05) // G5
+            playNote2(83, 0.15, 0.05) // B5
+            playNote2(86, 0.2, 0.05) // D6
+            playNote2(88, 0.25, 0.1) // E6
             break
 
         /*
