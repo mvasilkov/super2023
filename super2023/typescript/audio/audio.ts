@@ -37,7 +37,10 @@ export const initializeAudio = (startMusic: ExtendedBool) => (con: AudioContext)
     ir.generateReverb(buf => {
         convolver.buffer = buf
 
-        if (!startMusic) return
+        if (!startMusic) {
+            sound(SoundEffect.BUTTON_CLICK)
+            return
+        }
 
         songStart = con.currentTime + 0.05
 
@@ -46,9 +49,9 @@ export const initializeAudio = (startMusic: ExtendedBool) => (con: AudioContext)
     }, 16000, 1000, 2 * TEMPO_MUL, 0.00001, -90)
 }
 
-export function toggleAudio(on: boolean) {
+export function toggleAudio(off: ExtendedBool) {
     if (audioOut) {
-        audioOut.gain.value = on ? 0.3333 : 0
+        audioOut.gain.value = off ? 0 : 0.3333
     }
 }
 

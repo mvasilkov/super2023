@@ -4,6 +4,7 @@
  */
 'use strict'
 
+import { type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import type { IState } from './natlib_state'
 import { Settings } from './setup.js'
 
@@ -31,6 +32,8 @@ export const duckPhaseMap = [
 
 export interface IDuckState extends IState {
     levelIndex: number
+    pointerHeld?: ExtendedBool
+    audioMuted?: ExtendedBool
 }
 
 export const duckState: IDuckState = {

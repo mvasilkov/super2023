@@ -74,6 +74,9 @@ export const enum Palette {
     BUTTON = '#ffcd75',
     BUTTON_2 = '#f5555d',
     BUTTON_3 = '#c42430',
+    // Icons
+    ICON = '#ffaa6e',
+    ICON_INACTIVE = '#ff695a',
 }
 
 // Output

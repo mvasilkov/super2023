@@ -5,11 +5,12 @@
 'use strict'
 
 import { Input } from '../node_modules/natlib/controls/Keyboard.js'
+import { ShortBool } from '../node_modules/natlib/prelude.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 import { Level, loadLevel } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { register0, register1 } from './Vec2.js'
-import { audioHandle, initializeAudio, sound } from './audio/audio.js'
+import { SoundEffect, audioHandle, initializeAudio, sound, toggleAudio } from './audio/audio.js'
 import { getGamepadDirection } from './gamepad.js'
 import { renderIcons } from './icons.js'
 import { renderIntro, renderIntroEnd } from './intro.js'
@@ -56,6 +57,33 @@ function updateControls() {
     }
 
     if (pointer.held) {
+        // Click in the icons area
+        const iconsAreaWidth3 = 3 * Settings.ICON_SIZE * Settings.ICON_SCALE + 2.5 * Settings.ICON_SPACING * Settings.ICON_SCALE // .Inline(1)
+        const iconsAreaWidth2 = 2 * Settings.ICON_SIZE * Settings.ICON_SCALE + 1.5 * Settings.ICON_SPACING * Settings.ICON_SCALE // .Inline(1)
+        const iconsAreaWidth1 = 1 * Settings.ICON_SIZE * Settings.ICON_SCALE + 0.5 * Settings.ICON_SPACING * Settings.ICON_SCALE // .Inline(1)
+
+        if (pointer.x > Settings.SCREEN_WIDTH - iconsAreaWidth3 && pointer.y < Settings.ICON_SIZE * Settings.ICON_SCALE) {
+            if (!duckState.pointerHeld) {
+                duckState.pointerHeld = ShortBool.TRUE
+
+                if (pointer.x > Settings.SCREEN_WIDTH - iconsAreaWidth1) {
+                    // Level select
+                    console.log('Level select')
+                }
+                else if (pointer.x > Settings.SCREEN_WIDTH - iconsAreaWidth2) {
+                    // Reset
+                    console.log('Reset')
+                }
+                else {
+                    // Toggle audio
+                    toggleAudio(duckState.audioMuted = !duckState.audioMuted)
+                }
+
+                sound(SoundEffect.BUTTON_CLICK)
+            }
+            return
+        }
+
         const ducks = level.board.pieces[PieceType.DUCK] ?? []
         if (!ducks.length) return
 
@@ -86,6 +114,7 @@ function updateControls() {
             level.tryMove(ducks[0]!, Δx as MoveScalarNonzero, 0)
         }
     }
+    else duckState.pointerHeld = ShortBool.FALSE
 
     const direction = getGamepadDirection()
     if (direction) {
