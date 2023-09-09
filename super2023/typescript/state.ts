@@ -4,7 +4,7 @@
  */
 'use strict'
 
-import type { IState } from '../node_modules/natlib/state'
+import type { IState } from './natlib_state'
 import { Settings } from './setup.js'
 
 // Duck

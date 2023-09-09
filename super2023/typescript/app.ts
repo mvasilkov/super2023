@@ -6,7 +6,6 @@
 
 import { Input } from '../node_modules/natlib/controls/Keyboard.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
-import { enterPhase, interpolatePhase, updatePhase } from '../node_modules/natlib/state.js'
 import { Level, loadLevel } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { register0, register1 } from './Vec2.js'
@@ -15,6 +14,7 @@ import { getGamepadDirection } from './gamepad.js'
 import { renderIcons } from './icons.js'
 import { renderIntro, renderIntroEnd } from './intro.js'
 import { levels } from './levels.js'
+import { enterPhase, interpolatePhase, updatePhase } from './natlib_state.js'
 import { Palette, Settings, con, keyboard, pointer } from './setup.js'
 import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState } from './state.js'
 
