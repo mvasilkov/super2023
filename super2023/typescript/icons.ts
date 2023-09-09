@@ -4,7 +4,7 @@
  */
 'use strict'
 
-import { con } from './setup.js'
+import { Settings, con } from './setup.js'
 
 const SVG_MUSIC = new Path2D('m10.09 11.963l9.274-3.332v5.54a3.825 3.825 0 0 0-1.91-.501c-1.958 0-3.545 1.426-3.545 3.185c0 1.759 1.587 3.185 3.545 3.185c1.959 0 3.546-1.426 3.546-3.185V7.492c0-1.12 0-2.059-.088-2.807a6.724 6.724 0 0 0-.043-.31c-.084-.51-.234-.988-.522-1.386a2.244 2.244 0 0 0-.676-.617l-.009-.005c-.771-.461-1.639-.428-2.532-.224c-.864.198-1.936.6-3.25 1.095l-2.284.859c-.615.231-1.137.427-1.547.63c-.435.216-.81.471-1.092.851c-.281.38-.398.79-.452 1.234c-.05.418-.05.926-.05 1.525v7.794a3.825 3.825 0 0 0-1.91-.501C4.587 15.63 3 17.056 3 18.815C3 20.574 4.587 22 6.545 22c1.959 0 3.546-1.426 3.546-3.185v-6.852Z')
 const SVG_RESET = new Path2D('M3.464 3.464C2 4.93 2 7.286 2 12c0 4.714 0 7.071 1.464 8.535C4.93 22 7.286 22 12 22c4.714 0 7.071 0 8.535-1.465C22 19.072 22 16.715 22 12c0-4.714 0-7.071-1.465-8.536C19.072 2 16.714 2 12 2S4.929 2 3.464 3.464Zm5.795 4.51A.75.75 0 1 0 8.24 6.872L5.99 8.949a.75.75 0 0 0 0 1.102l2.25 2.077a.75.75 0 1 0 1.018-1.102l-.84-.776h5.62a2.712 2.712 0 0 1 0 5.423H9.5a.75.75 0 1 0 0 1.5h4.539a4.212 4.212 0 0 0 0-8.423h-5.62l.84-.776Z')
@@ -14,17 +14,19 @@ export function renderIcons() {
     con.fillStyle = '#fff'
 
     con.save()
-    con.translate(0, 0)
+
+    con.scale(Settings.ICON_SCALE, Settings.ICON_SCALE)
+    con.translate(Settings.SCREEN_WIDTH / Settings.ICON_SCALE - 3 * Settings.ICON_SIZE - 2 * Settings.ICON_SPACING, 0)
+
     con.fill(SVG_MUSIC)
-    con.restore()
 
-    con.save()
-    con.translate(0, 24)
+    con.translate(Settings.ICON_SIZE + Settings.ICON_SPACING, 0)
+
     con.fill(SVG_RESET, 'evenodd')
-    con.restore()
 
-    con.save()
-    con.translate(0, 48)
+    con.translate(Settings.ICON_SIZE + Settings.ICON_SPACING, 0)
+
     con.fill(SVG_BACK, 'evenodd')
+
     con.restore()
 }
