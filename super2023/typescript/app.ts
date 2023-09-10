@@ -72,7 +72,7 @@ function updateControls() {
                 }
                 else if (pointer.x > Settings.SCREEN_WIDTH - iconsAreaWidth2) {
                     // Reset
-                    console.log('Reset')
+                    level = loadLevel(levels[duckState.levelIndex]!)
                 }
                 else {
                     // Toggle audio

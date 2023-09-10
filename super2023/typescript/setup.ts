@@ -7,6 +7,7 @@
 import { CanvasHandle } from '../node_modules/natlib/canvas/CanvasHandle.js'
 import { Keyboard } from '../node_modules/natlib/controls/Keyboard.js'
 import { Pointer } from '../node_modules/natlib/controls/Pointer.js'
+import { AutoScaleWrapper } from '../node_modules/natlib/viewport/AutoScaleWrapper.js'
 
 export const enum Settings {
     // Screen size
@@ -75,8 +76,8 @@ export const enum Palette {
     BUTTON_2 = '#f5555d',
     BUTTON_3 = '#c42430',
     // Icons
-    ICON = '#ffaa6e',
-    ICON_INACTIVE = '#ff695a',
+    ICON = '#ffcd75',
+    ICON_INACTIVE = '#ffcd7580',
 }
 
 // Output
@@ -87,13 +88,30 @@ export const canvas = new CanvasHandle(document.querySelector('#c'),
 export const con = canvas.con
 con.lineWidth = 1.5
 
+export const autoscale = new AutoScaleWrapper(document.querySelector('#a')!,
+    Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT)
+
+autoscale.addEventListeners()
+
 // Input
 
 export const keyboard = new Keyboard
 keyboard.addEventListeners(document)
 
-export const pointer = new Pointer(canvas.canvas)
+class XPointer extends Pointer {
+    override setPosition(event: MouseEvent | Touch) {
+        super.setPosition(event)
+        autoscale.documentToViewport(this)
+    }
+}
+
+export const pointer = new XPointer(canvas.canvas)
 pointer.addEventListeners(document)
+
+// Disable the context menu
+document.addEventListener('contextmenu', event => {
+    event.preventDefault()
+})
 
 // Helper functions
 
