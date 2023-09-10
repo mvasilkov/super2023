@@ -8,6 +8,7 @@ import { easeInOutQuad, easeOutQuad, lerp } from '../node_modules/natlib/interpo
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
+import { Vec2 } from './Vec2.js'
 import { SoundEffect, sound } from './audio/audio.js'
 import { enterPhase, interpolatePhase } from './natlib_state.js'
 import { cascadeMove } from './rules.js'
@@ -42,6 +43,7 @@ export class Level {
     readonly cellSize: number
     readonly boardLeft: number
     readonly boardTop: number
+    outline?: Path2D
 
     constructor(width: number, height: number) {
         this.board = new Board(width, height)
@@ -236,6 +238,12 @@ export class Level {
         con.strokeStyle = Palette.GRID
         con.stroke()
 
+        // Outline
+        if (this.outline) {
+            con.strokeStyle = Palette.OUTLINE
+            con.stroke(this.outline)
+        }
+
         // Floor tiles
         this.board.pieces[PieceType.GOAL]?.forEach(piece =>
             this.renderPiece(piece, piece.x, piece.y, tDuck, 0, duckColors, duckSecondaryColors))
@@ -415,5 +423,145 @@ export function loadLevel(string: string): Level {
     const clusterTypes = [PieceType.DUCK, PieceType.DUCKLING, PieceType.BOX]
     clusterTypes.forEach(type => level.board.buildClusters(type))
 
+    try {
+        level.outline = outline(level)
+    }
+    catch (err) {
+    }
+
     return level
 }
+
+//#region Level outline
+
+class Edge {
+    readonly start: Vec2
+    readonly end: Vec2
+    readonly dir: Vec2
+    next: Edge | null
+
+    constructor(x0: number, y0: number, x1: number, y1: number) {
+        this.start = new Vec2(x0, y0)
+        this.end = new Vec2(x1, y1)
+        this.dir = new Vec2(x1 - x0, y1 - y0)
+        this.next = null
+    }
+}
+
+type Cell = {
+    edges: Edge[]
+    value: ExtendedBool
+}
+
+function outline({ board, cellSize, boardLeft, boardTop }: Readonly<Level>): Path2D {
+    const ch: Cell[][] = Array.from({ length: board.height + 1 }, (_, y) => Array.from({ length: board.width + 1 }, (_, x) => ({
+        edges: [] as Edge[], // Edges starting at these coordinates
+        value: board.positions[y]?.[x]?.every(p => p.type !== PieceType.VOID),
+    })))
+    const edges: Set<Edge> = new Set
+    const edgesAfterNext: Set<Edge> = new Set // Edges pointed to by next
+
+    const path = new Path2D
+
+    // Debug
+    // console.log(ch.map(row => row.map(col => col.value ? '#' : ' ').join('')).join('\n'))
+
+    for (let y = 0; y < board.height; ++y) {
+        for (let x = 0; x < board.width; ++x) {
+            if (!ch[y]![x]!.value) continue
+
+            const left = x > 0 && ch[y]![x - 1]!.value ? null : new Edge(x, y + 1, x, y)
+            const up = y > 0 && ch[y - 1]![x]!.value ? null : new Edge(x, y, x + 1, y)
+            const right = ch[y]![x + 1]!.value ? null : new Edge(x + 1, y, x + 1, y + 1)
+            const down = ch[y + 1]![x]!.value ? null : new Edge(x + 1, y + 1, x, y + 1)
+
+            if (left && up) {
+                left.next = up
+                edgesAfterNext.add(up)
+            }
+            if (up && right) {
+                up.next = right
+                edgesAfterNext.add(right)
+            }
+            if (right && down) {
+                right.next = down
+                edgesAfterNext.add(down)
+            }
+            if (down && left) {
+                down.next = left
+                edgesAfterNext.add(left)
+            }
+
+            if (left) {
+                ch[left.start.y]![left.start.x]!.edges.push(left)
+                edges.add(left)
+            }
+            if (up) {
+                ch[up.start.y]![up.start.x]!.edges.push(up)
+                edges.add(up)
+            }
+            if (right) {
+                ch[right.start.y]![right.start.x]!.edges.push(right)
+                edges.add(right)
+            }
+            if (down) {
+                ch[down.start.y]![down.start.x]!.edges.push(down)
+                edges.add(down)
+            }
+        }
+    }
+
+    function findSubpath(edge: Edge) {
+        const endPoint = edge.start // If we've reached this, we're done with the subpath
+        path.moveTo(edge.start.x * cellSize + boardLeft, edge.start.y * cellSize + boardTop)
+        // console.log('Subpath:')
+
+        while (ShortBool.TRUE) {
+            // Take this edge
+            edges.delete(edge)
+            edgesAfterNext.delete(edge)
+            const arr = ch[edge.start.y]![edge.start.x]!.edges
+            arr.splice(arr.indexOf(edge), 1)
+            // Chain
+            while (!edge.next && ch[edge.end.y]![edge.end.x]!.edges.length === 1) {
+                const chain = ch[edge.end.y]![edge.end.x]!.edges[0]!
+                if (chain.dir.x !== edge.dir.x || chain.dir.y !== edge.dir.y) break
+                edge.end.copy(chain.end)
+                edge.next = chain.next
+                // Clean up
+                edges.delete(chain)
+                edgesAfterNext.delete(chain)
+                const arr = ch[chain.start.y]![chain.start.x]!.edges
+                arr.splice(arr.indexOf(chain), 1)
+            }
+
+            // Save and continue on the path
+            if (edge.end.x === endPoint.x && edge.end.y === endPoint.y) {
+                // console.log('Close subpath')
+                path.closePath()
+                break
+            }
+            else {
+                // console.log(`(${edge.start.x}, ${edge.start.y}) to (${edge.end.x}, ${edge.end.y})`)
+                path.lineTo(edge.end.x * cellSize + boardLeft, edge.end.y * cellSize + boardTop)
+            }
+
+            if (edge.next) edge = edge.next
+            else if (ch[edge.end.y]![edge.end.x]!.edges.length === 1) edge = ch[edge.end.y]![edge.end.x]!.edges[0]!
+            else throw Error('Logic error')
+        }
+    }
+
+    for (let edge of edgesAfterNext) {
+        findSubpath(edge)
+    }
+
+    for (const edge of edges) {
+        // console.log(`Leftover (${edge.start.x}, ${edge.start.y}) to (${edge.end.x}, ${edge.end.y})`)
+        findSubpath(edge)
+    }
+
+    return path
+}
+
+//#endregion

@@ -54,6 +54,7 @@ export const enum Palette {
     GRID = '#333c57',
     GOAL = '#a7f070',
     VOID = '#566c86',
+    OUTLINE = '#41a6f6',
     INTRO = '#ffcd75',
     INTRO_2 = '#ef7d57',
     // Blocks
