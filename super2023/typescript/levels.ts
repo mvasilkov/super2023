@@ -14,8 +14,8 @@ import { value as lv55value } from './pictures/55_cutter_box.js'
 import { value as lv60value } from './pictures/60_cutter_2.js'
 import { value as lv70value } from './pictures/70_carve.js'
 import { value as lv100value } from './pictures/100_construct.js'
-import { value as lv102value } from './pictures/102_box_construct.js'
 import { value as lv105value } from './pictures/105_construct_2.js'
+import { value as lv108value } from './pictures/108_box_construct.js'
 import { value as lv110value } from './pictures/110_push_box_2.js'
 import { value as lv120value } from './pictures/120_cut_construct.js'
 import { value as lv125value } from './pictures/125_push_box_3.js'
@@ -33,8 +33,8 @@ export const levels: readonly (string | undefined)[] = [
     lv60value,
     lv70value,
     lv100value,
-    lv102value,
     lv105value,
+    lv108value,
     lv110value,
     lv120value,
     lv125value,
