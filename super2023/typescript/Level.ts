@@ -149,7 +149,7 @@ export class Level {
         const clusters: Cluster[] = []
 
         for (const piece of pieces) {
-            const group = [...this.board.getGroup(piece)]
+            const group = [...this.board.getGroup(piece)].filter(p => pieces.has(p))
             if (!group.length) continue
 
             group.forEach(p => pieces.delete(p))
