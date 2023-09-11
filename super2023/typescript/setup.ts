@@ -41,9 +41,8 @@ export const enum Settings {
     CASTLE_LENGTH = 7, // Size(Y)
     CASTLE_HEIGHT = 7, // Size(Z)
     // Icons
-    ICON_SIZE = 24,
-    ICON_SCALE = 2,
-    ICON_SPACING = 4,
+    ICON_SIZE = 48,
+    ICON_SPACING = 8,
 }
 
 // Palette: https://lospec.com/palette-list/sweetie-16

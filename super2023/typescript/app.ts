@@ -58,11 +58,11 @@ function updateControls() {
 
     if (pointer.held) {
         // Click in the icons area
-        const iconsAreaWidth3 = 3 * Settings.ICON_SIZE * Settings.ICON_SCALE + 2.5 * Settings.ICON_SPACING * Settings.ICON_SCALE // .Inline(1)
-        const iconsAreaWidth2 = 2 * Settings.ICON_SIZE * Settings.ICON_SCALE + 1.5 * Settings.ICON_SPACING * Settings.ICON_SCALE // .Inline(1)
-        const iconsAreaWidth1 = 1 * Settings.ICON_SIZE * Settings.ICON_SCALE + 0.5 * Settings.ICON_SPACING * Settings.ICON_SCALE // .Inline(1)
+        const iconsAreaWidth3 = 3 * Settings.ICON_SIZE + 2.5 * Settings.ICON_SPACING // .Inline(1)
+        const iconsAreaWidth2 = 2 * Settings.ICON_SIZE + 1.5 * Settings.ICON_SPACING // .Inline(1)
+        const iconsAreaWidth1 = 1 * Settings.ICON_SIZE + 0.5 * Settings.ICON_SPACING // .Inline(1)
 
-        if (pointer.x > Settings.SCREEN_WIDTH - iconsAreaWidth3 && pointer.y < Settings.ICON_SIZE * Settings.ICON_SCALE) {
+        if (pointer.x > Settings.SCREEN_WIDTH - iconsAreaWidth3 && pointer.y < Settings.ICON_SIZE) {
             if (!duckState.pointerHeld) {
                 duckState.pointerHeld = ShortBool.TRUE
 
@@ -213,11 +213,3 @@ document.addEventListener('click', () => {
     audioHandle.initialize(initializeAudio(pointer.x < 0.5 * Settings.SCREEN_WIDTH))
     enterPhase(duckState, DuckPhase.ENTERING, Settings.ENTER_DURATION)
 }, { once: true })
-
-// TODO delete
-!((window as any)['leave'] = () => {
-    enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
-})
-
-// TODO delete
-!((window as any)['sound'] = sound)
