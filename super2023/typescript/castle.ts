@@ -90,31 +90,32 @@ function buildCastle() {
 
 buildCastle()
 
-export function renderCastle(t: number, done: number) {
-    const N = done * zstrides.length // done ∈ [0, 1]
+export function renderCastle(t: number) {
     const size = t * Settings.CASTLE_BLK_SIZE * Settings.CASTLE_BLK_SCALE
 
     let p = 0
-    for (let n = 0; n < N; ++n) {
+    for (let n = 0; n < zstrides.length; ++n) {
         const count = zstrides[n]!
+        const sz = size - (1 - t) * n
+        if (sz <= 0) continue
 
         con.beginPath()
         for (let q = p; q < p + count; ++q) {
-            renderIsoBlockTop(xs[q]!, ys[q]!, zs[q]!, size)
+            renderIsoBlockTop(xs[q]!, ys[q]!, zs[q]!, sz)
         }
         con.fillStyle = Palette.CASTLE
         con.fill()
 
         con.beginPath()
         for (let q = p; q < p + count; ++q) {
-            renderIsoBlockRight(xs[q]!, ys[q]!, zs[q]!, size)
+            renderIsoBlockRight(xs[q]!, ys[q]!, zs[q]!, sz)
         }
         con.fillStyle = Palette.CASTLE_2
         con.fill()
 
         con.beginPath()
         for (let q = p; q < p + count; ++q) {
-            renderIsoBlockLeft(xs[q]!, ys[q]!, zs[q]!, size)
+            renderIsoBlockLeft(xs[q]!, ys[q]!, zs[q]!, sz)
         }
         con.fillStyle = Palette.CASTLE_3
         con.fill()

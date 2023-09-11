@@ -20,7 +20,7 @@ export function renderIntro(t: number, tOscillator: number) {
     con.fillRect(0, 0.5 * (1 - t) * Settings.SCREEN_HEIGHT,
         Settings.SCREEN_WIDTH, t * Settings.SCREEN_HEIGHT)
 
-    renderCastle(t, 1)
+    renderCastle(t)
 
     con.beginPath()
     printCenter(0.5 * Settings.SCREEN_WIDTH, lerp(-20, 0.25 * Settings.SCREEN_HEIGHT, easeOutQuad(t0)), 6, 'SUPER CASTLE GAME', 1.5, tOscillator)
@@ -69,7 +69,7 @@ export function renderIntroEnd(t: number, tOscillator: number) {
     con.fill()
     con.clip()
 
-    renderCastle(1, 1)
+    renderCastle(1)
 
     con.beginPath()
     printCenter(0.5 * Settings.SCREEN_WIDTH, 0.25 * Settings.SCREEN_HEIGHT, 6, 'SUPER CASTLE GAME', 1.5, tOscillator)
