@@ -1,3 +1,14 @@
+* {
+  -webkit-user-drag: none;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* https://mvasilkov.animuchan.net/system-font-stacks */
 
 html,

@@ -8,7 +8,7 @@ const FILES = [
     'SolarBackspaceBold.svg',
 ]
 
-const VAR_NAME = [
+const VAR_NAMES = [
     'SVG_MUSIC',
     'SVG_RESET',
     'SVG_BACK',
@@ -16,7 +16,7 @@ const VAR_NAME = [
 
 for (let n = 0; n < FILES.length; ++n) {
     const file = FILES[n]
-    const variable = VAR_NAME[n]
+    const variable = VAR_NAMES[n]
 
     console.log(`Reading ${file} (${variable})`)
 

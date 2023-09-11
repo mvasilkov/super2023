@@ -17,3 +17,9 @@ yarn
 ./build.sh
 open build/index.html
 ```
+
+## Acknowledgements
+
+- [Solar Icons][sol] by 480 Design, licensed under CC BY 4.0
+
+[sol]: https://www.figma.com/community/file/1166831539721848736
