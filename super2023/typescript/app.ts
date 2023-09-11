@@ -209,7 +209,16 @@ function render(t: number) {
 
 startMainloop(update, render)
 
-document.addEventListener('click', () => {
+// https://html.spec.whatwg.org/multipage/interaction.html#activation-triggering-input-event
+
+document.addEventListener('mousedown', () => {
+    if (audioHandle.initialized) return
+    audioHandle.initialize(initializeAudio(pointer.x < 0.5 * Settings.SCREEN_WIDTH))
+    enterPhase(duckState, DuckPhase.ENTERING, Settings.ENTER_DURATION)
+}, { once: true })
+
+document.addEventListener('touchend', () => {
+    if (audioHandle.initialized) return
     audioHandle.initialize(initializeAudio(pointer.x < 0.5 * Settings.SCREEN_WIDTH))
     enterPhase(duckState, DuckPhase.ENTERING, Settings.ENTER_DURATION)
 }, { once: true })
