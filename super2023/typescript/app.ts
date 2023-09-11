@@ -62,15 +62,15 @@ function updateControls() {
         const iconsAreaWidth2 = 2 * Settings.ICON_SIZE + 1.5 * Settings.ICON_SPACING // .Inline(1)
         const iconsAreaWidth1 = 1 * Settings.ICON_SIZE + 0.5 * Settings.ICON_SPACING // .Inline(1)
 
-        if (pointer.x > Settings.SCREEN_WIDTH - iconsAreaWidth3 && pointer.y < Settings.ICON_SIZE) {
+        if (pointer.x >= Settings.SCREEN_WIDTH - iconsAreaWidth3 && pointer.x < Settings.SCREEN_WIDTH && pointer.y < Settings.ICON_SIZE) {
             if (!duckState.pointerHeld) {
                 duckState.pointerHeld = ShortBool.TRUE
 
-                if (pointer.x > Settings.SCREEN_WIDTH - iconsAreaWidth1) {
+                if (pointer.x >= Settings.SCREEN_WIDTH - iconsAreaWidth1) {
                     // Level select
                     console.log('Level select')
                 }
-                else if (pointer.x > Settings.SCREEN_WIDTH - iconsAreaWidth2) {
+                else if (pointer.x >= Settings.SCREEN_WIDTH - iconsAreaWidth2) {
                     // Reset
                     level = loadLevel(levels[duckState.levelIndex]!)
                 }

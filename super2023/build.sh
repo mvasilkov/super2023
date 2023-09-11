@@ -25,7 +25,7 @@ virtual/bin/python build.py validate
 node_modules/.bin/rollup -f iife -o build/app.js --no-freeze $out_dir/app.js
 
 # Optimize
-node_modules/.bin/terser -cmo build/app.opt.js --comments false build/app.js
+node_modules/.bin/terser -cm --mangle-props only_annotated -o build/app.opt.js --comments false build/app.js
 node_modules/.bin/cleancss -O1 -o build/app.opt.css $out_dir/app.css
 
 cat <<END >build/options.json
@@ -36,6 +36,8 @@ cat <<END >build/options.json
 }
 END
 node_modules/.bin/html-minifier-terser -c build/options.json -o build/index.html $out_dir/index.html
+
+virtual/bin/python build.py manifest
 
 # Roadroller
 if [ "$1" = "R1" ] || [ "$1" = "R2" ]; then
@@ -50,7 +52,7 @@ fi
 
 # Package
 virtual/bin/python build.py inline
-zip -jX9 build/app.zip build/index.html
+zip -jX9 build/app.zip build/index.html build/app.json
 # brew install advancecomp
 advzip -z4 build/app.zip
 # https://github.com/fhanau/Efficient-Compression-Tool

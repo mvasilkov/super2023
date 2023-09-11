@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from itertools import chain, permutations
+import json
 from os.path import abspath
 from pathlib import Path
 import sys
@@ -71,6 +72,9 @@ export const levels: readonly (string | undefined)[] = [
     ,%(levels)s
 ]
 '''.lstrip()
+
+MANIFEST_IN = OUR_ROOT / 'out' / 'app.json'
+MANIFEST_OUT = BUILD_DIR / 'app.json'
 
 
 def get_color(png: Image, x: int, y: int) -> tuple[int, int, int] | None:
@@ -253,9 +257,14 @@ def build_levels():
     LEVELS_PATH.write_text(contents, encoding='utf-8', newline='\n')
 
 
+def build_manifest():
+    obj = json.loads(MANIFEST_IN.read_text(encoding='utf-8'))
+    MANIFEST_OUT.write_text(json.dumps(obj, separators=(',', ':')), encoding='utf-8', newline='\n')
+
+
 if __name__ == '__main__':
-    if len(sys.argv) != 2 or sys.argv[1] not in ('pictures', 'inline', 'validate', 'levels'):
-        print('Usage: build.py <pictures | inline | validate | levels>')
+    if len(sys.argv) != 2 or sys.argv[1] not in ('pictures', 'inline', 'validate', 'levels', 'manifest'):
+        print('Usage: build.py <pictures | inline | validate | levels | manifest>')
         print('To rebuild the entire thing, run `build.sh` instead.')
         sys.exit(-1)
 
@@ -268,3 +277,5 @@ if __name__ == '__main__':
             build_validate()
         case 'levels':
             build_levels()
+        case 'manifest':
+            build_manifest()

@@ -60,6 +60,8 @@ node_modules/.bin/cleancss -O1 -o build/app.opt.css $outDir/app.css
 '@ | Set-Content build/options.json
 node_modules/.bin/html-minifier-terser -c build/options.json -o build/index.html $outDir/index.html
 
+& $python build.py manifest
+
 # Roadroller
 if ($args[0] -eq 'R1' -or $args[0] -eq 'R2') {
   if ($args[0] -eq 'R1') {
@@ -74,7 +76,7 @@ if ($args[0] -eq 'R1' -or $args[0] -eq 'R2') {
 
 # Package
 & $python build.py inline
-zip -jX9 build/app.zip build/index.html
+zip -jX9 build/app.zip build/index.html build/app.json
 # https://www.advancemame.it/download
 advzip -z4 build/app.zip
 # https://github.com/fhanau/Efficient-Compression-Tool

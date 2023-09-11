@@ -1,6 +1,6 @@
 * {
-  -webkit-user-drag: none;
   touch-action: none;
+  -webkit-user-drag: none;
 }
 
 html,
@@ -16,6 +16,7 @@ html {
 
 canvas {
   display: block;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #a {
