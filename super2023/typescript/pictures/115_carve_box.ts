@@ -4,9 +4,9 @@
  */
 'use strict'
 
-export const value = "09052c0a0c3a11e2df55b5b4a46d1"
-export const width = 9
-export const height = 5
+export const value = "0c0d74b4615140b03be5ac9dc1e9ceca9f2e47a7408c85a25d406180ce4f33969ef77152c649f51ecf2f7146a986bceb938b45d4"
+export const width = 12
+export const height = 13
 export const cardinality = 7
 export const palette = [
   0x29366f,
