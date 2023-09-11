@@ -9,7 +9,7 @@ import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { Vec2 } from './Vec2.js'
-import { SoundEffect, sound } from './audio/audio.js'
+import { SoundEffect, sound, step } from './audio/audio.js'
 import { enterPhase, interpolatePhase } from './natlib_state.js'
 import { cascadeMove } from './rules.js'
 import {
@@ -92,6 +92,7 @@ export class Level {
 
         this.updateDucksOnGoal(this.ducksOnGoalNext)
         enterPhase(duckState, DuckPhase.MOVING, Settings.MOVE_DURATION)
+        step()
         // .DeadCode
         return
         // .EndDeadCode

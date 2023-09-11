@@ -8,6 +8,7 @@ import { convertMidiToFrequency } from '../../node_modules/natlib/audio/audio.js
 import { AudioHandle } from '../../node_modules/natlib/audio/AudioHandle.js'
 import type { ExtendedBool } from '../../node_modules/natlib/prelude'
 import { Mulberry32 } from '../../node_modules/natlib/prng/Mulberry32.js'
+import { randomUint32LessThan } from '../../node_modules/natlib/prng/prng.js'
 import { Settings } from '../setup.js'
 import { ImpulseResponse } from './ImpulseResponse.js'
 import { play } from './song.js'
@@ -15,6 +16,8 @@ import { play } from './song.js'
 const TEMPO_MUL = 120 / 70
 
 export const audioHandle = new AudioHandle
+
+const prng = new Mulberry32(Settings.SCREEN_WIDTH)
 
 let audioOut: GainNode
 let songStart: number
@@ -33,7 +36,7 @@ export const initializeAudio = (startMusic: ExtendedBool) => (con: AudioContext)
     reverbDry.connect(con.destination)
     reverbWet.connect(con.destination)
 
-    const ir = new ImpulseResponse(2, con.sampleRate, new Mulberry32(Settings.SCREEN_WIDTH))
+    const ir = new ImpulseResponse(2, con.sampleRate, prng)
     ir.generateReverb(buf => {
         convolver.buffer = buf
 
@@ -152,6 +155,37 @@ function playNote2(n: number, start: number, duration: number) {
     })
     // decay(osc, start).connect(audioOut)
     osc.connect(audioOut)
+    osc.start(start)
+    osc.stop(start + duration)
+}
+
+// B, C, D, D#, E, F#, G, A
+const stepNotes = [35, 36, 38, 39, 40, 42, 43, 45]
+
+export function step() {
+    if (!audioOut) return
+
+    const con = audioHandle.con!
+
+    const start = con.currentTime
+    const duration = 0.2
+    const frequency = convertMidiToFrequency(stepNotes[randomUint32LessThan(prng, stepNotes.length)]!)
+
+    const osc = new OscillatorNode(con, {
+        type: 'square',
+        frequency: frequency,
+    })
+    const gain = new GainNode(con)
+
+    osc.connect(gain)
+    gain.connect(audioOut)
+
+    osc.frequency.setValueAtTime(frequency, start)
+    gain.gain.setValueAtTime(1, start)
+
+    osc.frequency.exponentialRampToValueAtTime(0.5 * frequency, start + duration)
+    gain.gain.exponentialRampToValueAtTime(0.00001, start + duration)
+
     osc.start(start)
     osc.stop(start + duration)
 }
