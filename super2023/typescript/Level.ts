@@ -12,6 +12,7 @@ import { Vec2 } from './Vec2.js'
 import { SoundEffect, sound, step } from './audio/audio.js'
 import { levels } from './levels.js'
 import { enterPhase, interpolatePhase } from './natlib_state.js'
+import { printCenter } from './print.js'
 import { cascadeMove } from './rules.js'
 import {
     COLOR_DUCK_2_B,
@@ -251,6 +252,8 @@ export class Level {
         this.board.pieces[PieceType.GOAL]?.forEach(piece =>
             this.renderPiece(piece, piece.x, piece.y, tDuck, 0, duckColors, duckSecondaryColors))
 
+        this.levelText()
+
         // Blocks
         for (let y = 0; y < this.board.height; ++y) {
             for (let x = 0; x < this.board.width; ++x) {
@@ -260,6 +263,10 @@ export class Level {
                 pieces.forEach(piece => piece.type !== PieceType.GOAL && this.renderPiece(piece, x, y, tDuck, tVibe, duckColors, duckSecondaryColors))
             }
         }
+    }
+
+    levelText() {
+        // For overriding
     }
 
     renderPiece(piece: Piece, x: number, y: number, tDuck: number, tVibe: number, duckColors: string[], duckSecondaryColors: string[]) {
@@ -423,9 +430,9 @@ class LevelSelect extends Level {
         const { x, y } = this.board.pieces[PieceType.DUCK]![0]!
         let goal: Piece
         if (this.board.positions[y]![x]!.some(p => p.type === PieceType.GOAL && (goal = p))) {
-            const xx = 0.5 * (goal!.x - 1) // .Inline(1)
-            const yy = 0.5 * (goal!.y - 1) // .Inline(1)
-            duckState.levelIndex = 6 * yy + xx - 1
+            const x0 = 0.5 * (goal!.x - 2) // .Inline(1)
+            const y0 = 0.5 * (goal!.y - 2) // .Inline(1)
+            duckState.levelIndex = 6 * y0 + x0 - 1
             enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
             sound(SoundEffect.WIN)
             return ShortBool.TRUE
@@ -433,6 +440,47 @@ class LevelSelect extends Level {
         // .DeadCode
         return
         // .EndDeadCode
+    }
+
+    override levelText() {
+        con.save()
+
+        con.shadowColor = Palette.NOTHING
+        con.shadowOffsetX = con.shadowOffsetY = 3
+
+        // In progress
+        con.beginPath()
+
+        for (let n = 1; n < levels.length - 2; ++n) {
+            if (duckState.clear[n]) continue
+
+            const x0 = this.boardLeft + (2 * (n % 6) + 2) * this.cellSize // .Inline(1)
+            const y0 = this.boardTop + (2 * Math.floor(n / 6) + 2.5) * this.cellSize // .Inline(1)
+            const ch = String.fromCharCode(64 + n) // .Inline(1)
+
+            printCenter(x0, y0 + 0.5 * Settings.LEVEL_SELECT_FONT_SIZE, Settings.LEVEL_SELECT_FONT_SIZE, ch, 0, 0)
+        }
+
+        con.fillStyle = Palette.LEVEL_INCOMPLETE
+        con.fill()
+
+        // Clear
+        con.beginPath()
+
+        for (let n = 1; n < levels.length - 2; ++n) {
+            if (!duckState.clear[n]) continue
+
+            const x0 = this.boardLeft + (2 * (n % 6) + 2) * this.cellSize // .Inline(1)
+            const y0 = this.boardTop + (2 * Math.floor(n / 6) + 2.5) * this.cellSize // .Inline(1)
+            const ch = String.fromCharCode(64 + n) // .Inline(1)
+
+            printCenter(x0, y0 + 0.5 * Settings.LEVEL_SELECT_FONT_SIZE, Settings.LEVEL_SELECT_FONT_SIZE, ch, 0, 0)
+        }
+
+        con.fillStyle = Palette.LEVEL_CLEAR
+        con.fill()
+
+        con.restore()
     }
 }
 

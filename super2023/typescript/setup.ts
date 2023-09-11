@@ -43,6 +43,8 @@ export const enum Settings {
     // Icons
     ICON_SIZE = 48,
     ICON_SPACING = 8,
+    // Level select
+    LEVEL_SELECT_FONT_SIZE = 6,
 }
 
 // Palette: https://lospec.com/palette-list/sweetie-16
@@ -78,6 +80,9 @@ export const enum Palette {
     // Icons
     ICON = '#ffcd75',
     ICON_INACTIVE = '#ffcd7580',
+    // Level select
+    LEVEL_CLEAR = '#a7f070',
+    LEVEL_INCOMPLETE = '#f4f4f4',
 }
 
 // Output
