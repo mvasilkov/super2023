@@ -118,6 +118,12 @@ function updateControls() {
 
     const direction = getGamepadDirection()
     if (direction) {
+        if (direction.b) {
+            // Reset
+            level = loadLevel(levels[duckState.levelIndex]!)
+            return
+        }
+
         const ducks = level.board.pieces[PieceType.DUCK] ?? []
         if (!ducks.length) return
 

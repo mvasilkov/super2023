@@ -1,5 +1,11 @@
 # Super Castle Game
 
+## Controls
+
+* Arrow keys or WASD
+* Tap on the screen
+* Gamepad left analog stick (and B to restart the level)
+
 ## Installation
 
 ```bash
