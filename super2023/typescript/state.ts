@@ -4,7 +4,8 @@
  */
 'use strict'
 
-import { type ExtendedBool } from '../node_modules/natlib/prelude.js'
+import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
+import { levels } from './levels.js'
 import type { IState } from './natlib_state'
 import { Settings } from './setup.js'
 
@@ -32,6 +33,7 @@ export const duckPhaseMap = [
 
 export interface IDuckState extends IState {
     levelIndex: number
+    clear: { [levelIndex: number]: ExtendedBool }
     pointerHeld?: ExtendedBool
     audioMuted?: ExtendedBool
 }
@@ -43,6 +45,7 @@ export const duckState: IDuckState = {
     oldTtl: 0,
     // IDuckState
     levelIndex: 1,
+    clear: {},
 }
 
 // Oscillator
@@ -64,4 +67,20 @@ export const oscillatorState: IOscillatorState = {
     phase: OscillatorPhase.INITIAL,
     phaseTtl: 0,
     oldTtl: 0,
+}
+
+// Load state
+
+try {
+    if (localStorage.superCastleIndex && localStorage.superCastleClear) {
+        const loadedIndex = +localStorage.superCastleIndex
+        const loadedClear = JSON.parse(localStorage.superCastleClear)
+
+        if (loadedIndex && loadedIndex < levels.length && levels[loadedIndex] && loadedClear[1] === ShortBool.TRUE) {
+            duckState.levelIndex = loadedIndex
+            Object.assign(duckState.clear, loadedClear)
+        }
+    }
+}
+catch (err) {
 }

@@ -7,7 +7,6 @@
 import { CanvasHandle } from '../node_modules/natlib/canvas/CanvasHandle.js'
 import { Keyboard } from '../node_modules/natlib/controls/Keyboard.js'
 import { Pointer } from '../node_modules/natlib/controls/Pointer.js'
-import type { ExtendedBool } from '../node_modules/natlib/prelude'
 import { AutoScaleWrapper } from '../node_modules/natlib/viewport/AutoScaleWrapper.js'
 
 export const enum Settings {
@@ -154,9 +153,3 @@ export const COLOR_GOAL_B = srgbToLinear(0x70)
 export const COLOR_GOAL_2_R = srgbToLinear(0x38)
 export const COLOR_GOAL_2_G = srgbToLinear(0xb7)
 export const COLOR_GOAL_2_B = srgbToLinear(0x64)
-
-// Save state
-
-interface ILevelsDone {
-    [levelIndex: number]: ExtendedBool
-}

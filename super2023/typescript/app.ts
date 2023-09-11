@@ -25,7 +25,7 @@ try {
     level = loadLevel(location.hash.slice(1))
 }
 catch (err) {
-    level = loadLevel(levels[1]!)
+    level = loadLevel(levels[duckState.levelIndex]!)
 }
 
 type MoveScalar = -1 | 0 | 1
@@ -177,7 +177,12 @@ function update() {
 
         case DuckPhase.ENTERING:
             if (oldPhase === DuckPhase.LEAVING) {
+                duckState.clear[duckState.levelIndex] = ShortBool.TRUE
                 level = loadLevel(levels[++duckState.levelIndex]!)
+
+                // Save state
+                localStorage.superCastleIndex = duckState.levelIndex
+                localStorage.superCastleClear = JSON.stringify(duckState.clear)
             }
     }
 
