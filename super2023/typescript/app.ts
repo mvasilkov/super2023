@@ -68,7 +68,15 @@ function updateControls() {
 
                 if (pointer.x >= Settings.SCREEN_WIDTH - iconsAreaWidth1) {
                     // Level select
-                    console.log('Level select')
+                    if (duckState.levelIndex === levels.length - 1) {
+                        // Reset (since we're in the level select screen)
+                        level = loadLevel(levels[duckState.levelIndex]!)
+                    }
+                    else {
+                        duckState.levelIndex = levels.length - 2
+                        enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
+                        sound(SoundEffect.WIN)
+                    }
                 }
                 else if (pointer.x >= Settings.SCREEN_WIDTH - iconsAreaWidth2) {
                     // Reset
@@ -183,7 +191,6 @@ function update() {
 
         case DuckPhase.ENTERING:
             if (oldPhase === DuckPhase.LEAVING) {
-                duckState.clear[duckState.levelIndex] = ShortBool.TRUE
                 level = loadLevel(levels[++duckState.levelIndex]!)
 
                 // Save state

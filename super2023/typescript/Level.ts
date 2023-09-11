@@ -10,6 +10,7 @@ import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { Vec2 } from './Vec2.js'
 import { SoundEffect, sound, step } from './audio/audio.js'
+import { levels } from './levels.js'
 import { enterPhase, interpolatePhase } from './natlib_state.js'
 import { cascadeMove } from './rules.js'
 import {
@@ -183,6 +184,7 @@ export class Level {
         const duckCount = this.board.pieces[PieceType.DUCK]?.length
         const goalCount = this.board.pieces[PieceType.GOAL]?.length
         if (duckCount === goalCount && duckCount === this.ducksOnGoal.size && duckCount === this.ducksOnGoalNext.size) {
+            duckState.clear[duckState.levelIndex] = ShortBool.TRUE
             enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
             sound(SoundEffect.WIN)
             return ShortBool.TRUE
@@ -414,12 +416,36 @@ function paintBlock(
     con.fillRect(x + progress, y - height, size - progress, size)
 }
 
+//#region Level select
+
+class LevelSelect extends Level {
+    override checkWin(): ExtendedBool {
+        const { x, y } = this.board.pieces[PieceType.DUCK]![0]!
+        let goal: Piece
+        if (this.board.positions[y]![x]!.some(p => p.type === PieceType.GOAL && (goal = p))) {
+            const xx = 0.5 * (goal!.x - 1) // .Inline(1)
+            const yy = 0.5 * (goal!.y - 1) // .Inline(1)
+            duckState.levelIndex = 6 * yy + xx - 1
+            enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
+            sound(SoundEffect.WIN)
+            return ShortBool.TRUE
+        }
+        // .DeadCode
+        return
+        // .EndDeadCode
+    }
+}
+
+//#endregion Level select
+
 export function loadLevel(string: string): Level {
     const width = parseInt(string.slice(0, 2), 16)
     const height = parseInt(string.slice(2, 4), 16)
     const bigint = BigInt('0x' + string.slice(4))
 
-    const level = new Level(width, height)
+    const LevelClass = duckState.levelIndex === levels.length - 1 ? LevelSelect : Level
+
+    const level = new LevelClass(width, height)
     level.board.load(bigint)
     const clusterTypes = [PieceType.DUCK, PieceType.DUCKLING, PieceType.BOX]
     clusterTypes.forEach(type => level.board.buildClusters(type))
