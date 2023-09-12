@@ -2,9 +2,11 @@
 
 ## Controls
 
-* Arrow keys or WASD
-* Tap on the screen
-* Gamepad left analog stick (and B to restart the level)
+- Arrow keys or WASD (and R to restart the level)
+- Tap on the screen
+- Gamepad left analog stick (and B to restart the level)
+
+The icons are: toggle audio, restart the level, and level select.
 
 ## Installation
 

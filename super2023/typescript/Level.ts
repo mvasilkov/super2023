@@ -423,6 +423,32 @@ function paintBlock(
     con.fillRect(x + progress, y - height, size - progress, size)
 }
 
+//#region Level 1
+
+class Level1 extends Level {
+    override render(t: number, tOscillator: number) {
+        super.render(t, tOscillator)
+
+        con.save()
+
+        con.shadowColor = Palette.NOTHING
+        con.shadowOffsetX = con.shadowOffsetY = 3
+
+        con.beginPath()
+
+        const x = 0.5 * Settings.SCREEN_WIDTH // .Inline(1)
+        const y = this.boardTop + 4.5 * this.cellSize // .Inline(1)
+        printCenter(x, y, 4, 'ARROWS TO MOVE OR TAP ON SCREEN', 1, tOscillator)
+
+        con.fillStyle = Palette.DUCK
+        con.fill()
+
+        con.restore()
+    }
+}
+
+//#endregion Level 1
+
 //#region Level select
 
 class LevelSelect extends Level {
@@ -491,7 +517,7 @@ export function loadLevel(string: string): Level {
     const height = parseInt(string.slice(2, 4), 16)
     const bigint = BigInt('0x' + string.slice(4))
 
-    const LevelClass = duckState.levelIndex === levels.length - 1 ? LevelSelect : Level
+    const LevelClass = duckState.levelIndex === 1 ? Level1 : duckState.levelIndex === levels.length - 1 ? LevelSelect : Level
 
     const level = new LevelClass(width, height)
     level.board.load(bigint)

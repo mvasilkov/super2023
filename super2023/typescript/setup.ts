@@ -5,9 +5,9 @@
 'use strict'
 
 import { CanvasHandle } from '../node_modules/natlib/canvas/CanvasHandle.js'
-import { Keyboard } from '../node_modules/natlib/controls/Keyboard.js'
 import { Pointer } from '../node_modules/natlib/controls/Pointer.js'
 import { AutoScaleWrapper } from '../node_modules/natlib/viewport/AutoScaleWrapper.js'
+import { Keyboard } from './Keyboard.js'
 
 export const enum Settings {
     // Screen size

@@ -4,9 +4,9 @@
  */
 'use strict'
 
-import { Input } from '../node_modules/natlib/controls/Keyboard.js'
 import { ShortBool } from '../node_modules/natlib/prelude.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
+import { Input } from './Keyboard.js'
 import { Level, loadLevel } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { register0, register1 } from './Vec2.js'
@@ -32,6 +32,12 @@ type MoveScalar = -1 | 0 | 1
 type MoveScalarNonzero = -1 | 1
 
 function updateControls() {
+    if (keyboard.state[Input.R]) {
+        // Reset
+        level = loadLevel(levels[duckState.levelIndex]!)
+        return
+    }
+
     const left = keyboard.state[Input.LEFT] || keyboard.state[Input.LEFT_A]
     const up = keyboard.state[Input.UP] || keyboard.state[Input.UP_W]
     const right = keyboard.state[Input.RIGHT] || keyboard.state[Input.RIGHT_D]
@@ -76,6 +82,7 @@ function updateControls() {
                         duckState.levelIndex = levels.length - 2
                         enterPhase(duckState, DuckPhase.LEAVING, Settings.LEAVE_DURATION)
                         sound(SoundEffect.WIN)
+                        return
                     }
                 }
                 else if (pointer.x >= Settings.SCREEN_WIDTH - iconsAreaWidth2) {
