@@ -45,7 +45,7 @@ export const enum Settings {
     ICON_SPACING = 8,
     // Level select
     LEVEL_SELECT_FONT_SIZE = 6,
-    COMMUNITY_LEVELS_URL = 'https://github.com/mvasilkov/super2023/tree/master/levels',
+    COMMUNITY_LEVELS_URL = 'https://github.com/mvasilkov/super2023/tree/master/levels#levels',
 }
 
 // Palette: https://lospec.com/palette-list/sweetie-16

@@ -22,10 +22,26 @@ import { DuckPhase, duckPhaseMap, duckState, oscillatorPhaseMap, oscillatorState
 let level: Level
 
 try {
-    level = loadLevel(location.hash.slice(1))
+    level = loadLevel(location.hash.slice(1), ShortBool.TRUE)
+    duckState.levelIndex = levels.length - 2
 }
 catch (err) {
     level = loadLevel(levels[duckState.levelIndex]!)
+}
+
+function resetLevel() {
+    if (level.external) {
+        try {
+            level = loadLevel(location.hash.slice(1), ShortBool.TRUE)
+            duckState.levelIndex = levels.length - 2
+        }
+        catch (err) {
+            level = loadLevel(levels[duckState.levelIndex]!)
+        }
+    }
+    else {
+        level = loadLevel(levels[duckState.levelIndex]!)
+    }
 }
 
 type MoveScalar = -1 | 0 | 1
@@ -34,8 +50,7 @@ type MoveScalarNonzero = -1 | 1
 function updateControls() {
     if (keyboard.state[Input.R]) {
         // Reset
-        level = loadLevel(levels[duckState.levelIndex]!)
-        return
+        return resetLevel()
     }
 
     const left = keyboard.state[Input.LEFT] || keyboard.state[Input.LEFT_A]
@@ -74,9 +89,9 @@ function updateControls() {
 
                 if (pointer.x >= Settings.SCREEN_WIDTH - iconsAreaWidth1) {
                     // Level select
-                    if (duckState.levelIndex === levels.length - 1) {
+                    if (duckState.levelIndex === levels.length - 1 && !level.external) {
                         // Reset (since we're in the level select screen)
-                        level = loadLevel(levels[duckState.levelIndex]!)
+                        resetLevel()
                     }
                     else {
                         duckState.levelIndex = levels.length - 2
@@ -87,7 +102,7 @@ function updateControls() {
                 }
                 else if (pointer.x >= Settings.SCREEN_WIDTH - iconsAreaWidth2) {
                     // Reset
-                    level = loadLevel(levels[duckState.levelIndex]!)
+                    resetLevel()
                 }
                 else {
                     // Toggle audio
@@ -105,8 +120,14 @@ function updateControls() {
             pointer.x < Settings.SCREEN_WIDTH - (level.boardLeft + 2 * level.cellSize) &&
             pointer.y >= level.boardTop + 8 * level.cellSize) {
 
-            toggleAudio(duckState.audioMuted = ShortBool.TRUE)
-            open(Settings.COMMUNITY_LEVELS_URL, 'levels')
+            if (!duckState.pointerHeld) {
+                duckState.pointerHeld = ShortBool.TRUE
+
+                pointer.held = ShortBool.FALSE // Since we're opening a new tab
+                toggleAudio(duckState.audioMuted = ShortBool.TRUE)
+                open(Settings.COMMUNITY_LEVELS_URL, 'levels')
+            }
+            return
         }
 
         const ducks = level.board.pieces[PieceType.DUCK] ?? []
@@ -145,8 +166,7 @@ function updateControls() {
     if (direction) {
         if (direction.b) {
             // Reset
-            level = loadLevel(levels[duckState.levelIndex]!)
-            return
+            return resetLevel()
         }
 
         const ducks = level.board.pieces[PieceType.DUCK] ?? []

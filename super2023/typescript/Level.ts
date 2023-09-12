@@ -38,6 +38,7 @@ import { DuckPhase, duckState } from './state.js'
 
 export class Level {
     readonly board: Board
+    readonly external: ExtendedBool
     readonly active: Set<Piece>
     readonly ducksOnGoal: Set<Piece>
     readonly ducksOnGoalNext: Set<Piece>
@@ -47,8 +48,9 @@ export class Level {
     readonly boardTop: number
     outline?: Path2D
 
-    constructor(width: number, height: number) {
+    constructor(width: number, height: number, external?: ExtendedBool) {
         this.board = new Board(width, height)
+        this.external = external
         this.active = new Set
         /*@__MANGLE_PROP__*/
         this.ducksOnGoal = new Set
@@ -532,14 +534,14 @@ class LevelSelect extends Level {
 
 //#endregion Level select
 
-export function loadLevel(string: string): Level {
+export function loadLevel(string: string, external?: ExtendedBool): Level {
     const width = parseInt(string.slice(0, 2), 16)
     const height = parseInt(string.slice(2, 4), 16)
     const bigint = BigInt('0x' + string.slice(4))
 
-    const LevelClass = duckState.levelIndex === 1 ? Level1 : duckState.levelIndex === levels.length - 1 ? LevelSelect : Level
+    const LevelClass = external ? Level : duckState.levelIndex === 1 ? Level1 : duckState.levelIndex === levels.length - 1 ? LevelSelect : Level
 
-    const level = new LevelClass(width, height)
+    const level = new LevelClass(width, height, external)
     level.board.load(bigint)
     const clusterTypes = [PieceType.DUCK, PieceType.DUCKLING, PieceType.BOX]
     clusterTypes.forEach(type => level.board.buildClusters(type))
