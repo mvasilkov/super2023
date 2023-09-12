@@ -16,7 +16,7 @@ export const enum Settings {
     // Durations (in ticks, 1 second = 50 ticks)
     MOVE_DURATION = 10,
     CONNECT_DURATION = 20,
-    OSCILLATOR_DURATION = 48,
+    OSCILLATOR_DURATION = 64,
     LEAVE_DURATION = 64,
     ENTER_DURATION = 64,
     TITLE_ENTER_DURATION = 96,
