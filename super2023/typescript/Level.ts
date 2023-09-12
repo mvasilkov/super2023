@@ -468,6 +468,26 @@ class LevelSelect extends Level {
         // .EndDeadCode
     }
 
+    override render(t: number, tOscillator: number) {
+        super.render(t, tOscillator)
+
+        con.save()
+
+        con.shadowColor = Palette.NOTHING
+        con.shadowOffsetX = con.shadowOffsetY = 3
+
+        con.beginPath()
+
+        const x = 0.5 * Settings.SCREEN_WIDTH // .Inline(1)
+        const y = this.boardTop + 8.5 * this.cellSize // .Inline(1)
+        printCenter(x, y, 4, 'CLICK HERE FOR MORE LEVELS', 1, tOscillator)
+
+        con.fillStyle = Palette.LEVELS_LINK
+        con.fill()
+
+        con.restore()
+    }
+
     override levelText() {
         con.save()
 

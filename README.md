@@ -1,5 +1,7 @@
 # Super Castle Game
 
+[Community Levels][lvl]
+
 ## Controls
 
 - Arrow keys or WASD (and R to restart the level)
@@ -30,4 +32,5 @@ open build/index.html
 
 - [Solar Icons][sol] by 480 Design, licensed under CC BY 4.0
 
+[lvl]: https://github.com/mvasilkov/super2023/tree/master/levels
 [sol]: https://www.figma.com/community/file/1166831539721848736

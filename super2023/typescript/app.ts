@@ -99,6 +99,16 @@ function updateControls() {
             return
         }
 
+        // Level select 'Click here' thing
+        if (duckState.levelIndex === levels.length - 1 &&
+            pointer.x >= level.boardLeft + 2 * level.cellSize &&
+            pointer.x < Settings.SCREEN_WIDTH - (level.boardLeft + 2 * level.cellSize) &&
+            pointer.y >= level.boardTop + 8 * level.cellSize) {
+
+            toggleAudio(duckState.audioMuted = ShortBool.TRUE)
+            open(Settings.COMMUNITY_LEVELS_URL, 'levels')
+        }
+
         const ducks = level.board.pieces[PieceType.DUCK] ?? []
         if (!ducks.length) return
 

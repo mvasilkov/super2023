@@ -22,12 +22,12 @@ export const enum DuckPhase {
 }
 
 export const duckPhaseMap = [
-    DuckPhase.TITLE_SCREEN, Settings.TITLE_ENTER_DURATION,
+    DuckPhase.TITLE_SCREEN, Settings.TITLE_ENTER_DURATION as number,
     , ,
     , ,
     DuckPhase.INTERACTIVE, ,
     DuckPhase.INTERACTIVE, ,
-    DuckPhase.ENTERING, Settings.ENTER_DURATION,
+    DuckPhase.ENTERING, Settings.ENTER_DURATION as number,
     DuckPhase.INTERACTIVE, ,
 ]
 
@@ -56,8 +56,8 @@ export const enum OscillatorPhase {
 }
 
 export const oscillatorPhaseMap = [
-    OscillatorPhase.CYCLE, Settings.OSCILLATOR_DURATION,
-    OscillatorPhase.CYCLE, Settings.OSCILLATOR_DURATION,
+    OscillatorPhase.CYCLE, Settings.OSCILLATOR_DURATION as number,
+    OscillatorPhase.CYCLE, Settings.OSCILLATOR_DURATION as number,
 ]
 
 export interface IOscillatorState extends IState {
