@@ -11,7 +11,7 @@ import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 
 // Settings
 
-const GAME_URL = 'https://reirei.neocities.org/'
+const GAME_URL = 'https://js13kgames.com/games/super-castle-game/index.html'
 
 // Board
 
