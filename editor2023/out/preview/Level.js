@@ -23,6 +23,7 @@ export class Level {
     const tDuck = 0;
     const duckColors = ["#ffcd75"];
     const duckSecondaryColors = ["#ef7d57"];
+    con.clearRect(0, 0, 500, 500);
     con.fillStyle = "#1a1c2c" /* Palette.BOARD */;
     con.fillRect(this.boardLeft, this.boardTop, this.board.width * this.cellSize, this.board.height * this.cellSize);
     // Grid

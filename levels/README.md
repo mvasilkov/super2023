@@ -10,8 +10,9 @@
 
 ## Levels
 
-[Push and Parcel][push]
-[Labyrinthine][lab]
+| | |
+| :---: | :---: |
+| [<img src="https://github.com/mvasilkov/super2023/blob/master/levels/pictures/push.png?raw=true" width="250" height="250">][push]<br>[Push and Parcel][push] | [<img src="https://github.com/mvasilkov/super2023/blob/master/levels/pictures/lab.png?raw=true" width="250" height="250">][lab]<br>[Labyrinthine][lab] |
 
 [editor]: https://reirei.neocities.org/editor
 [issues]: https://github.com/mvasilkov/super2023/issues
