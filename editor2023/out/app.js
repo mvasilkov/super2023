@@ -8,6 +8,7 @@ import { decodeBitmapBigInt } from '../node_modules/natlib/bitmap/bitmap.js'
 import { CanvasHandle } from '../node_modules/natlib/canvas/CanvasHandle.js'
 import { Pointer } from '../node_modules/natlib/controls/Pointer.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
+import { loadLevel } from './preview/Level.js'
 
 // Settings
 
@@ -129,6 +130,15 @@ function decodeBoard() {
 encodeBoard()
 
 codeInput.addEventListener('input', () => decodeBoard())
+
+// Preview
+
+document.querySelector('#preview').addEventListener('click', event => {
+    event.stopPropagation()
+
+    const level = loadLevel(codeInput.value)
+    level.render(0, 0)
+})
 
 // Setup
 
