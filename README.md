@@ -2,7 +2,7 @@
 
 > An open mind is like a fortress with its gates unbarred and unguarded.
 
-[Community Levels][lvl]
+[Play Super Castle Game][play] ・ [Community Levels][lvl]
 
 *Super Castle Game* uses [natlib][nat], a highly composable library for small games.
 
@@ -54,6 +54,7 @@ open build/index.html
 
 - [Solar Icons][sol] by 480 Design, licensed under CC BY 4.0
 
+[play]: https://js13kgames.com/games/super-castle-game/index.html
 [lvl]: https://github.com/mvasilkov/super2023/tree/master/levels
 [nat]: https://github.com/mvasilkov/natlib
 [rei]: https://github.com/mvasilkov

@@ -120,6 +120,8 @@ function decodeBoard() {
         decodeBitmapBigInt(bigint, width, height, cardinality, (x, y, value) => {
             board[y][x] = value
         })
+
+        playLink.href = GAME_URL + '#' + string
     }
     catch (err) {
         console.error(err)
