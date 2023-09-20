@@ -6,12 +6,12 @@
 
 import { easeInOutQuad, easeOutQuad, lerp } from '../node_modules/natlib/interpolation.js'
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
+import { enterPhase, interpolatePhase } from '../node_modules/natlib/state.js'
 import { Board } from './Board.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { Vec2 } from './Vec2.js'
 import { SoundEffect, sound, step } from './audio/audio.js'
 import { levels } from './levels.js'
-import { enterPhase, interpolatePhase } from './natlib_state.js'
 import { printCenter } from './print.js'
 import { cascadeMove } from './rules.js'
 import {

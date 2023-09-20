@@ -5,8 +5,8 @@
 'use strict'
 
 import { ShortBool, type ExtendedBool } from '../node_modules/natlib/prelude.js'
+import type { IState } from '../node_modules/natlib/state.js'
 import { levels } from './levels.js'
-import type { IState } from './natlib_state'
 import { Settings } from './setup.js'
 
 // Duck

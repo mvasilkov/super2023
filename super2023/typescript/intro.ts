@@ -5,8 +5,8 @@
 'use strict'
 
 import { easeInOutQuad, easeOutQuad, lerp } from '../node_modules/natlib/interpolation.js'
+import { interpolatePhase } from '../node_modules/natlib/state.js'
 import { renderCastle } from './castle.js'
-import { interpolatePhase } from './natlib_state.js'
 import { printCenter } from './print.js'
 import { Palette, Settings, con } from './setup.js'
 import { DuckPhase, duckState } from './state.js'
