@@ -2,17 +2,17 @@
   "author": "Mark Vasilkov (https://github.com/mvasilkov)",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "natlib": "^0.1.13"
+    "natlib": "^0.1.14"
   },
   "devDependencies": {
     "clean-css-cli": "^5.6.2",
-    "fast-xml-parser": "^4.2.7",
+    "fast-xml-parser": "^4.3.1",
     "html-minifier-terser": "^7.2.0",
     "michikoid": "^0.1.0",
     "roadroller": "^2.1.0",
-    "rollup": "^3.29.1",
+    "rollup": "^3.29.3",
     "svgpath": "^2.6.0",
-    "terser": "^5.19.4",
+    "terser": "^5.20.0",
     "typescript": "^5.2.2"
   }
 }

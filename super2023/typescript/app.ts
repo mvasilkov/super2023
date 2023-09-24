@@ -4,10 +4,10 @@
  */
 'use strict'
 
+import { Input } from '../node_modules/natlib/controls/Keyboard.js'
 import { ShortBool } from '../node_modules/natlib/prelude.js'
 import { startMainloop } from '../node_modules/natlib/scheduling/mainloop.js'
 import { enterPhase, interpolatePhase, updatePhase } from '../node_modules/natlib/state.js'
-import { Input } from './Keyboard.js'
 import { Level, loadLevel } from './Level.js'
 import { Cluster, PieceType, type Piece } from './Piece.js'
 import { register0, register1 } from './Vec2.js'
