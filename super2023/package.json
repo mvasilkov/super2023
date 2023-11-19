@@ -8,11 +8,11 @@
     "clean-css-cli": "^5.6.2",
     "fast-xml-parser": "^4.3.2",
     "html-minifier-terser": "^7.2.0",
-    "michikoid": "^0.1.1",
+    "michikoid": "^0.1.2",
     "roadroller": "^2.1.0",
-    "rollup": "^4.1.4",
+    "rollup": "^4.5.0",
     "svgpath": "^2.6.0",
-    "terser": "^5.22.0",
+    "terser": "^5.24.0",
     "typescript": "^5.2.2"
   }
 }
