@@ -109,6 +109,7 @@ class XPointer extends Pointer {
     override setPosition(event: MouseEvent | Touch) {
         super.setPosition(event)
         autoscale.documentToViewport(this)
+        window.focus() // WA for event.preventDefault() not setting focus (?)
     }
 }
 

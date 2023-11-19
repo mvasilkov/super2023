@@ -279,6 +279,7 @@ ag.addEventListener('touchend', event => {
 // https://html.spec.whatwg.org/multipage/interaction.html#activation-triggering-input-event
 
 document.addEventListener('mousedown', () => {
+    window.focus()
     if (audioHandle.initialized) return
     audioHandle.initialize(initializeAudio(pointer.x < 0.5 * Settings.SCREEN_WIDTH))
     ag.style.display = 'none'
@@ -286,6 +287,7 @@ document.addEventListener('mousedown', () => {
 }, { once: true })
 
 document.addEventListener('touchend', () => {
+    window.focus()
     if (audioHandle.initialized) return
     audioHandle.initialize(initializeAudio(pointer.x < 0.5 * Settings.SCREEN_WIDTH))
     ag.style.display = 'none'
