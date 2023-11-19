@@ -29,5 +29,5 @@ export function getGamepadDirection(): Vec2B | undefined {
     }
     // .DeadCode
     return
-    // .EndDeadCode
+    // .End(DeadCode)
 }
